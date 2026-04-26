@@ -50,8 +50,10 @@ export '../core/storage/storage.dart';
 
 // Auth
 export 'auth/auth_service_locator.dart';
+export 'auth/data/datasources/auth_local_data_source.dart';
 export 'auth/data/datasources/auth_remote_data_source.dart';
 export 'auth/data/repositories/auth_repository_impl.dart';
+export 'auth/domain/models/auth_session.dart';
 export 'auth/domain/models/user.dart';
 export 'auth/domain/repositories/auth_repository.dart';
 export 'auth/domain/services/auth_service.dart';

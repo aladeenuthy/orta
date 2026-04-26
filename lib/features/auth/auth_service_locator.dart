@@ -7,9 +7,15 @@ class AuthServiceLocator implements ServiceLocator {
       () => AuthRemoteDataSource(api: locator<Api>()),
     );
 
+    locator.registerLazySingleton<AuthLocalDataSource>(
+      () => AuthLocalDataSource(storage: locator<LocalStorage>()),
+    );
+
     locator.registerLazySingleton<AuthRepository>(
-      () =>
-          AuthRepositoryImpl(remoteDataSource: locator<AuthRemoteDataSource>()),
+      () => AuthRepositoryImpl(
+        remoteDataSource: locator<AuthRemoteDataSource>(),
+        localDataSource: locator<AuthLocalDataSource>(),
+      ),
     );
 
     locator.registerLazySingleton<AuthService>(

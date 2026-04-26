@@ -6,6 +6,13 @@ class AuthService {
 
   final AuthRepository _repository;
 
+  Future<Either<AppError, AuthSession>> login({
+    required String email,
+    required String password,
+  }) {
+    return _repository.login(email: email, password: password);
+  }
+
   Future<Either<AppError, Unit>> register({
     required String name,
     required String email,

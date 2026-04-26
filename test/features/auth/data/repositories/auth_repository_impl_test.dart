@@ -1,36 +1,124 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:orta/features/features.dart';
 
-class MockAuthRemoteDataSource extends AuthRemoteDataSource {
-  MockAuthRemoteDataSource() : super(api: Api());
+class MockAuthRemoteDataSource extends Mock implements AuthRemoteDataSource {}
 
-  String? name;
-  String? email;
-  String? password;
-  Either<AppError, Unit> response = const Right<AppError, Unit>(unit);
-
-  @override
-  Future<Either<AppError, Unit>> register({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    return response;
-  }
-}
+class MockAuthLocalDataSource extends Mock implements AuthLocalDataSource {}
 
 void main() {
+  late MockAuthRemoteDataSource remoteDataSource;
+  late MockAuthLocalDataSource localDataSource;
+  late AuthRepositoryImpl repository;
+
+  const AuthSession session = AuthSession(
+    token: 'token',
+    user: User(
+      id: '69edb6a277d24da71a004b3e',
+      name: 'Test Doe',
+      email: 'Test@example.com',
+      role: 'worker',
+    ),
+  );
+
+  setUp(() {
+    remoteDataSource = MockAuthRemoteDataSource();
+    localDataSource = MockAuthLocalDataSource();
+    repository = AuthRepositoryImpl(
+      remoteDataSource: remoteDataSource,
+      localDataSource: localDataSource,
+    );
+  });
+
+  group('AuthRepositoryImpl.login', () {
+    test('delegates to remote data source and caches session', () async {
+      when(
+        () => remoteDataSource.login(
+          email: 'john@example.com',
+          password: 'StrongPass123!',
+        ),
+      ).thenAnswer((_) async => const Right<AppError, AuthSession>(session));
+      when(
+        () => localDataSource.cacheSession(session),
+      ).thenAnswer((_) async {});
+
+      final Either<AppError, AuthSession> result = await repository.login(
+        email: 'john@example.com',
+        password: 'StrongPass123!',
+      );
+
+      expect(result, equals(const Right<AppError, AuthSession>(session)));
+      verify(
+        () => remoteDataSource.login(
+          email: 'john@example.com',
+          password: 'StrongPass123!',
+        ),
+      ).called(1);
+      verify(() => localDataSource.cacheSession(session)).called(1);
+    });
+
+    test('returns remote data source errors without caching', () async {
+      when(
+        () => remoteDataSource.login(
+          email: 'john@example.com',
+          password: 'StrongPass123!',
+        ),
+      ).thenAnswer(
+        (_) async =>
+            const Left<AppError, AuthSession>(AppError('Invalid credentials')),
+      );
+
+      final Either<AppError, AuthSession> result = await repository.login(
+        email: 'john@example.com',
+        password: 'StrongPass123!',
+      );
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, AuthSession>(AppError('Invalid credentials')),
+        ),
+      );
+      verifyNever(() => localDataSource.cacheSession(session));
+    });
+
+    test('returns AppError when session caching fails', () async {
+      when(
+        () => remoteDataSource.login(
+          email: 'john@example.com',
+          password: 'StrongPass123!',
+        ),
+      ).thenAnswer((_) async => const Right<AppError, AuthSession>(session));
+      when(
+        () => localDataSource.cacheSession(session),
+      ).thenThrow(Exception('Cache failed'));
+
+      final Either<AppError, AuthSession> result = await repository.login(
+        email: 'john@example.com',
+        password: 'StrongPass123!',
+      );
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, AuthSession>(
+            AppError('Unable to cache login session'),
+          ),
+        ),
+      );
+    });
+  });
+
   group('AuthRepositoryImpl.register', () {
     test('delegates to remote data source', () async {
-      final MockAuthRemoteDataSource remoteDataSource =
-          MockAuthRemoteDataSource();
-      final AuthRepositoryImpl repository = AuthRepositoryImpl(
-        remoteDataSource: remoteDataSource,
-      );
+      when(
+        () => remoteDataSource.register(
+          name: 'Test Doe',
+          email: 'Test@example.com',
+          password: 'Marine345@',
+        ),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
 
       final Either<AppError, Unit> result = await repository.register(
         name: 'Test Doe',
@@ -39,17 +127,24 @@ void main() {
       );
 
       expect(result, equals(const Right<AppError, Unit>(unit)));
-      expect(remoteDataSource.name, 'Test Doe');
-      expect(remoteDataSource.email, 'Test@example.com');
-      expect(remoteDataSource.password, 'Marine345@');
+      verify(
+        () => remoteDataSource.register(
+          name: 'Test Doe',
+          email: 'Test@example.com',
+          password: 'Marine345@',
+        ),
+      ).called(1);
     });
 
     test('returns remote data source errors', () async {
-      final MockAuthRemoteDataSource remoteDataSource =
-          MockAuthRemoteDataSource()
-            ..response = const Left<AppError, Unit>(AppError('Email exists'));
-      final AuthRepositoryImpl repository = AuthRepositoryImpl(
-        remoteDataSource: remoteDataSource,
+      when(
+        () => remoteDataSource.register(
+          name: 'Test Doe',
+          email: 'Test@example.com',
+          password: 'Marine345@',
+        ),
+      ).thenAnswer(
+        (_) async => const Left<AppError, Unit>(AppError('Email exists')),
       );
 
       final Either<AppError, Unit> result = await repository.register(

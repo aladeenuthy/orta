@@ -22,4 +22,22 @@ class AuthRemoteDataSource extends BaseAppRepository {
       return right<AppError, Unit>(unit);
     });
   }
+
+  Future<Either<AppError, AuthSession>> login({
+    required String email,
+    required String password,
+  }) {
+    return makeRequest(() async {
+      final response = await post(
+        Endpoints.login,
+        data: <String, dynamic>{'email': email, 'password': password},
+      );
+
+      final AuthSession session = AuthSession.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+
+      return right<AppError, AuthSession>(session);
+    });
+  }
 }

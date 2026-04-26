@@ -1,33 +1,18 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:orta/features/features.dart';
 
-class MockApi extends Api {
-  String? postedUri;
-  dynamic postedData;
-  Object? error;
+class MockApi extends Mock implements Api {}
 
-  @override
-  Future<Response<dynamic>> post(
-    String uri, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    void Function(int count, int total)? onSendProgress,
-    void Function(int count, int total)? onReceiveProgress,
-  }) async {
-    postedUri = uri;
-    postedData = data;
+void main() {
+  late MockApi api;
+  late AuthRemoteDataSource dataSource;
 
-    final Object? currentError = error;
-    if (currentError != null) {
-      throw currentError;
-    }
-
+  Response<dynamic> authResponse(String path) {
     return Response<dynamic>(
-      requestOptions: RequestOptions(path: uri),
+      requestOptions: RequestOptions(path: path),
       data: <String, dynamic>{
         'token': 'token',
         'user': <String, dynamic>{
@@ -39,15 +24,93 @@ class MockApi extends Api {
       },
     );
   }
-}
 
-void main() {
+  setUp(() {
+    api = MockApi();
+    dataSource = AuthRemoteDataSource(api: api);
+  });
+
+  group('AuthRemoteDataSource.login', () {
+    test('posts login payload and parses the auth session', () async {
+      when(
+        () => api.post(
+          Endpoints.login,
+          data: <String, dynamic>{
+            'email': 'john@example.com',
+            'password': 'StrongPass123!',
+          },
+        ),
+      ).thenAnswer((_) async => authResponse(Endpoints.login));
+
+      final Either<AppError, AuthSession> result = await dataSource.login(
+        email: 'john@example.com',
+        password: 'StrongPass123!',
+      );
+
+      verify(
+        () => api.post(
+          Endpoints.login,
+          data: <String, dynamic>{
+            'email': 'john@example.com',
+            'password': 'StrongPass123!',
+          },
+        ),
+      ).called(1);
+      result.fold(
+        (AppError error) => fail('Expected auth session, got $error'),
+        (AuthSession session) {
+          expect(session.token, 'token');
+          expect(session.user.id, '69edb6a277d24da71a004b3e');
+          expect(session.user.name, 'Test Doe');
+          expect(session.user.email, 'Test@example.com');
+          expect(session.user.role, 'worker');
+        },
+      );
+    });
+
+    test('returns AppError when the API request fails', () async {
+      when(
+        () => api.post(
+          Endpoints.login,
+          data: <String, dynamic>{
+            'email': 'john@example.com',
+            'password': 'StrongPass123!',
+          },
+        ),
+      ).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(path: Endpoints.login),
+          message: 'Server error',
+        ),
+      );
+
+      final Either<AppError, AuthSession> result = await dataSource.login(
+        email: 'john@example.com',
+        password: 'StrongPass123!',
+      );
+
+      expect(result.isLeft(), isTrue);
+      result.fold(
+        (AppError error) => expect(error.message, isNotEmpty),
+        (_) => fail('Expected AppError'),
+      );
+    });
+  });
+
   group('AuthRemoteDataSource.register', () {
     test(
       'posts register payload and ignores successful response body',
       () async {
-        final MockApi api = MockApi();
-        final AuthRemoteDataSource dataSource = AuthRemoteDataSource(api: api);
+        when(
+          () => api.post(
+            Endpoints.register,
+            data: <String, dynamic>{
+              'name': 'Test Doe',
+              'email': 'Test@example.com',
+              'password': 'Marine345@',
+            },
+          ),
+        ).thenAnswer((_) async => authResponse(Endpoints.register));
 
         final Either<AppError, Unit> result = await dataSource.register(
           name: 'Test Doe',
@@ -56,22 +119,35 @@ void main() {
         );
 
         expect(result, equals(const Right<AppError, Unit>(unit)));
-        expect(api.postedUri, Endpoints.register);
-        expect(api.postedData, <String, dynamic>{
-          'name': 'Test Doe',
-          'email': 'Test@example.com',
-          'password': 'Marine345@',
-        });
+        verify(
+          () => api.post(
+            Endpoints.register,
+            data: <String, dynamic>{
+              'name': 'Test Doe',
+              'email': 'Test@example.com',
+              'password': 'Marine345@',
+            },
+          ),
+        ).called(1);
       },
     );
 
     test('returns AppError when the API request fails', () async {
-      final MockApi api = MockApi()
-        ..error = DioException(
+      when(
+        () => api.post(
+          Endpoints.register,
+          data: <String, dynamic>{
+            'name': 'Test Doe',
+            'email': 'Test@example.com',
+            'password': 'Marine345@',
+          },
+        ),
+      ).thenThrow(
+        DioException(
           requestOptions: RequestOptions(path: Endpoints.register),
           message: 'Server error',
-        );
-      final AuthRemoteDataSource dataSource = AuthRemoteDataSource(api: api);
+        ),
+      );
 
       final Either<AppError, Unit> result = await dataSource.register(
         name: 'Test Doe',
