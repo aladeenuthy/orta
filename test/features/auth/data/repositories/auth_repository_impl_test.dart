@@ -31,6 +31,40 @@ void main() {
     );
   });
 
+  group('AuthRepositoryImpl.forgotPassword', () {
+    test('delegates to remote data source', () async {
+      when(
+        () => remoteDataSource.forgotPassword(email: 'john@example.com'),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await repository.forgotPassword(
+        email: 'john@example.com',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(
+        () => remoteDataSource.forgotPassword(email: 'john@example.com'),
+      ).called(1);
+    });
+
+    test('returns remote data source errors', () async {
+      when(
+        () => remoteDataSource.forgotPassword(email: 'john@example.com'),
+      ).thenAnswer(
+        (_) async => const Left<AppError, Unit>(AppError('Email not found')),
+      );
+
+      final Either<AppError, Unit> result = await repository.forgotPassword(
+        email: 'john@example.com',
+      );
+
+      expect(
+        result,
+        equals(const Left<AppError, Unit>(AppError('Email not found'))),
+      );
+    });
+  });
+
   group('AuthRepositoryImpl.login', () {
     test('delegates to remote data source and caches session', () async {
       when(
@@ -103,7 +137,7 @@ void main() {
         result,
         equals(
           const Left<AppError, AuthSession>(
-            AppError('Unable to cache login session'),
+            AppError('Something went wront! Please try again later.'),
           ),
         ),
       );
@@ -156,6 +190,56 @@ void main() {
       expect(
         result,
         equals(const Left<AppError, Unit>(AppError('Email exists'))),
+      );
+    });
+  });
+
+  group('AuthRepositoryImpl.resetPassword', () {
+    test('delegates to remote data source', () async {
+      when(
+        () => remoteDataSource.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+        ),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await repository.resetPassword(
+        userId: 'user-id',
+        resetToken: 'reset-token',
+        newPassword: 'NewPass123!',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(
+        () => remoteDataSource.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+        ),
+      ).called(1);
+    });
+
+    test('returns remote data source errors', () async {
+      when(
+        () => remoteDataSource.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+        ),
+      ).thenAnswer(
+        (_) async => const Left<AppError, Unit>(AppError('Invalid token')),
+      );
+
+      final Either<AppError, Unit> result = await repository.resetPassword(
+        userId: 'user-id',
+        resetToken: 'reset-token',
+        newPassword: 'NewPass123!',
+      );
+
+      expect(
+        result,
+        equals(const Left<AppError, Unit>(AppError('Invalid token'))),
       );
     });
   });

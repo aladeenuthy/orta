@@ -6,6 +6,10 @@ class AuthService {
 
   final AuthRepository _repository;
 
+  Future<Either<AppError, Unit>> forgotPassword({required String email}) {
+    return _repository.forgotPassword(email: email);
+  }
+
   Future<Either<AppError, AuthSession>> login({
     required String email,
     required String password,
@@ -19,5 +23,24 @@ class AuthService {
     required String password,
   }) {
     return _repository.register(name: name, email: email, password: password);
+  }
+
+  Future<Either<AppError, Unit>> resetPassword({
+    required String userId,
+    required String resetToken,
+    required String newPassword,
+    required String confirmPassword,
+  }) {
+    if (newPassword != confirmPassword) {
+      return Future<Either<AppError, Unit>>.value(
+        left<AppError, Unit>(const AppError('Passwords do not match')),
+      );
+    }
+
+    return _repository.resetPassword(
+      userId: userId,
+      resetToken: resetToken,
+      newPassword: newPassword,
+    );
   }
 }

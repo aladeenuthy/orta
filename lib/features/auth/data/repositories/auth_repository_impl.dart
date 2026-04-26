@@ -12,6 +12,11 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthLocalDataSource _localDataSource;
 
   @override
+  Future<Either<AppError, Unit>> forgotPassword({required String email}) {
+    return _remoteDataSource.forgotPassword(email: email);
+  }
+
+  @override
   Future<Either<AppError, AuthSession>> login({
     required String email,
     required String password,
@@ -43,6 +48,19 @@ class AuthRepositoryImpl implements AuthRepository {
       name: name,
       email: email,
       password: password,
+    );
+  }
+
+  @override
+  Future<Either<AppError, Unit>> resetPassword({
+    required String userId,
+    required String resetToken,
+    required String newPassword,
+  }) {
+    return _remoteDataSource.resetPassword(
+      userId: userId,
+      resetToken: resetToken,
+      newPassword: newPassword,
     );
   }
 }

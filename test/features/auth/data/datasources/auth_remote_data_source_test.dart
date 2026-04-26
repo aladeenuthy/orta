@@ -30,6 +30,56 @@ void main() {
     dataSource = AuthRemoteDataSource(api: api);
   });
 
+  group('AuthRemoteDataSource.forgotPassword', () {
+    test(
+      'posts forgot password payload and ignores successful response body',
+      () async {
+        when(
+          () => api.post(
+            Endpoints.forgotPassword,
+            data: <String, dynamic>{'email': 'john@example.com'},
+          ),
+        ).thenAnswer((_) async => authResponse(Endpoints.forgotPassword));
+
+        final Either<AppError, Unit> result = await dataSource.forgotPassword(
+          email: 'john@example.com',
+        );
+
+        expect(result, equals(const Right<AppError, Unit>(unit)));
+        verify(
+          () => api.post(
+            Endpoints.forgotPassword,
+            data: <String, dynamic>{'email': 'john@example.com'},
+          ),
+        ).called(1);
+      },
+    );
+
+    test('returns AppError when the API request fails', () async {
+      when(
+        () => api.post(
+          Endpoints.forgotPassword,
+          data: <String, dynamic>{'email': 'john@example.com'},
+        ),
+      ).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(path: Endpoints.forgotPassword),
+          message: 'Server error',
+        ),
+      );
+
+      final Either<AppError, Unit> result = await dataSource.forgotPassword(
+        email: 'john@example.com',
+      );
+
+      expect(result.isLeft(), isTrue);
+      result.fold(
+        (AppError error) => expect(error.message, isNotEmpty),
+        (_) => fail('Expected AppError'),
+      );
+    });
+  });
+
   group('AuthRemoteDataSource.login', () {
     test('posts login payload and parses the auth session', () async {
       when(
@@ -153,6 +203,72 @@ void main() {
         name: 'Test Doe',
         email: 'Test@example.com',
         password: 'Marine345@',
+      );
+
+      expect(result.isLeft(), isTrue);
+      result.fold(
+        (AppError error) => expect(error.message, isNotEmpty),
+        (_) => fail('Expected AppError'),
+      );
+    });
+  });
+
+  group('AuthRemoteDataSource.resetPassword', () {
+    test(
+      'posts reset password payload and ignores successful response body',
+      () async {
+        when(
+          () => api.post(
+            Endpoints.resetPassword,
+            data: <String, dynamic>{
+              'id': 'user-id',
+              'resetToken': 'reset-token',
+              'newPassword': 'NewPass123!',
+            },
+          ),
+        ).thenAnswer((_) async => authResponse(Endpoints.resetPassword));
+
+        final Either<AppError, Unit> result = await dataSource.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+        );
+
+        expect(result, equals(const Right<AppError, Unit>(unit)));
+        verify(
+          () => api.post(
+            Endpoints.resetPassword,
+            data: <String, dynamic>{
+              'id': 'user-id',
+              'resetToken': 'reset-token',
+              'newPassword': 'NewPass123!',
+            },
+          ),
+        ).called(1);
+      },
+    );
+
+    test('returns AppError when the API request fails', () async {
+      when(
+        () => api.post(
+          Endpoints.resetPassword,
+          data: <String, dynamic>{
+            'id': 'user-id',
+            'resetToken': 'reset-token',
+            'newPassword': 'NewPass123!',
+          },
+        ),
+      ).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(path: Endpoints.resetPassword),
+          message: 'Server error',
+        ),
+      );
+
+      final Either<AppError, Unit> result = await dataSource.resetPassword(
+        userId: 'user-id',
+        resetToken: 'reset-token',
+        newPassword: 'NewPass123!',
       );
 
       expect(result.isLeft(), isTrue);

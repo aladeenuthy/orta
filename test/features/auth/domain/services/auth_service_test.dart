@@ -24,6 +24,40 @@ void main() {
     service = AuthService(repository: repository);
   });
 
+  group('AuthService.forgotPassword', () {
+    test('delegates forgot password to repository', () async {
+      when(
+        () => repository.forgotPassword(email: 'john@example.com'),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await service.forgotPassword(
+        email: 'john@example.com',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(
+        () => repository.forgotPassword(email: 'john@example.com'),
+      ).called(1);
+    });
+
+    test('returns repository errors', () async {
+      when(
+        () => repository.forgotPassword(email: 'john@example.com'),
+      ).thenAnswer(
+        (_) async => const Left<AppError, Unit>(AppError('Email not found')),
+      );
+
+      final Either<AppError, Unit> result = await service.forgotPassword(
+        email: 'john@example.com',
+      );
+
+      expect(
+        result,
+        equals(const Left<AppError, Unit>(AppError('Email not found'))),
+      );
+    });
+  });
+
   group('AuthService.login', () {
     test('delegates login to repository', () async {
       when(
@@ -118,6 +152,82 @@ void main() {
       expect(
         result,
         equals(const Left<AppError, Unit>(AppError('Invalid email'))),
+      );
+    });
+  });
+
+  group('AuthService.resetPassword', () {
+    test(
+      'delegates reset password to repository when passwords match',
+      () async {
+        when(
+          () => repository.resetPassword(
+            userId: 'user-id',
+            resetToken: 'reset-token',
+            newPassword: 'NewPass123!',
+          ),
+        ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+        final Either<AppError, Unit> result = await service.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+          confirmPassword: 'NewPass123!',
+        );
+
+        expect(result, equals(const Right<AppError, Unit>(unit)));
+        verify(
+          () => repository.resetPassword(
+            userId: 'user-id',
+            resetToken: 'reset-token',
+            newPassword: 'NewPass123!',
+          ),
+        ).called(1);
+      },
+    );
+
+    test('returns AppError when passwords do not match', () async {
+      final Either<AppError, Unit> result = await service.resetPassword(
+        userId: 'user-id',
+        resetToken: 'reset-token',
+        newPassword: 'NewPass123!',
+        confirmPassword: 'DifferentPass123!',
+      );
+
+      expect(
+        result,
+        equals(const Left<AppError, Unit>(AppError('Passwords do not match'))),
+      );
+      verifyNever(
+        () => repository.resetPassword(
+          userId: any(named: 'userId'),
+          resetToken: any(named: 'resetToken'),
+          newPassword: any(named: 'newPassword'),
+        ),
+      );
+    });
+
+    test('returns repository errors', () async {
+      when(
+        () => repository.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+        ),
+      ).thenAnswer(
+        (_) async => const Left<AppError, Unit>(AppError('Invalid token')),
+      );
+
+      final Either<AppError, Unit> result = await service.resetPassword(
+        userId: 'user-id',
+        resetToken: 'reset-token',
+        newPassword: 'NewPass123!',
+        confirmPassword: 'NewPass123!',
+      );
+
+      expect(
+        result,
+        equals(const Left<AppError, Unit>(AppError('Invalid token'))),
       );
     });
   });

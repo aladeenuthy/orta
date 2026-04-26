@@ -4,19 +4,11 @@ import 'package:orta/features/features.dart';
 class AuthRemoteDataSource extends BaseAppRepository {
   AuthRemoteDataSource({required super.api});
 
-  Future<Either<AppError, Unit>> register({
-    required String name,
-    required String email,
-    required String password,
-  }) {
+  Future<Either<AppError, Unit>> forgotPassword({required String email}) {
     return makeRequest(() async {
       await post(
-        Endpoints.register,
-        data: <String, dynamic>{
-          'name': name,
-          'email': email,
-          'password': password,
-        },
+        Endpoints.forgotPassword,
+        data: <String, dynamic>{'email': email},
       );
 
       return right<AppError, Unit>(unit);
@@ -38,6 +30,44 @@ class AuthRemoteDataSource extends BaseAppRepository {
       );
 
       return right<AppError, AuthSession>(session);
+    });
+  }
+
+  Future<Either<AppError, Unit>> register({
+    required String name,
+    required String email,
+    required String password,
+  }) {
+    return makeRequest(() async {
+      await post(
+        Endpoints.register,
+        data: <String, dynamic>{
+          'name': name,
+          'email': email,
+          'password': password,
+        },
+      );
+
+      return right<AppError, Unit>(unit);
+    });
+  }
+
+  Future<Either<AppError, Unit>> resetPassword({
+    required String userId,
+    required String resetToken,
+    required String newPassword,
+  }) {
+    return makeRequest(() async {
+      await post(
+        Endpoints.resetPassword,
+        data: <String, dynamic>{
+          'id': userId,
+          'resetToken': resetToken,
+          'newPassword': newPassword,
+        },
+      );
+
+      return right<AppError, Unit>(unit);
     });
   }
 }
