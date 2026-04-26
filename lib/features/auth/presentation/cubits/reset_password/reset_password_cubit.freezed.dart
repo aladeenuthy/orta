@@ -1,0 +1,175 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'reset_password_cubit.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
+
+/// @nodoc
+mixin _$ResetPasswordState {
+  ViewState get viewState => throw _privateConstructorUsedError;
+  String? get errorMessage => throw _privateConstructorUsedError;
+
+  /// Create a copy of ResetPasswordState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ResetPasswordStateCopyWith<ResetPasswordState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ResetPasswordStateCopyWith<$Res> {
+  factory $ResetPasswordStateCopyWith(
+    ResetPasswordState value,
+    $Res Function(ResetPasswordState) then,
+  ) = _$ResetPasswordStateCopyWithImpl<$Res, ResetPasswordState>;
+  @useResult
+  $Res call({ViewState viewState, String? errorMessage});
+}
+
+/// @nodoc
+class _$ResetPasswordStateCopyWithImpl<$Res, $Val extends ResetPasswordState>
+    implements $ResetPasswordStateCopyWith<$Res> {
+  _$ResetPasswordStateCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ResetPasswordState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? viewState = null, Object? errorMessage = freezed}) {
+    return _then(
+      _value.copyWith(
+            viewState: null == viewState
+                ? _value.viewState
+                : viewState // ignore: cast_nullable_to_non_nullable
+                      as ViewState,
+            errorMessage: freezed == errorMessage
+                ? _value.errorMessage
+                : errorMessage // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ResetPasswordStateImplCopyWith<$Res>
+    implements $ResetPasswordStateCopyWith<$Res> {
+  factory _$$ResetPasswordStateImplCopyWith(
+    _$ResetPasswordStateImpl value,
+    $Res Function(_$ResetPasswordStateImpl) then,
+  ) = __$$ResetPasswordStateImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({ViewState viewState, String? errorMessage});
+}
+
+/// @nodoc
+class __$$ResetPasswordStateImplCopyWithImpl<$Res>
+    extends _$ResetPasswordStateCopyWithImpl<$Res, _$ResetPasswordStateImpl>
+    implements _$$ResetPasswordStateImplCopyWith<$Res> {
+  __$$ResetPasswordStateImplCopyWithImpl(
+    _$ResetPasswordStateImpl _value,
+    $Res Function(_$ResetPasswordStateImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ResetPasswordState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? viewState = null, Object? errorMessage = freezed}) {
+    return _then(
+      _$ResetPasswordStateImpl(
+        viewState: null == viewState
+            ? _value.viewState
+            : viewState // ignore: cast_nullable_to_non_nullable
+                  as ViewState,
+        errorMessage: freezed == errorMessage
+            ? _value.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$ResetPasswordStateImpl extends _ResetPasswordState {
+  const _$ResetPasswordStateImpl({
+    this.viewState = ViewState.initial,
+    this.errorMessage,
+  }) : super._();
+
+  @override
+  @JsonKey()
+  final ViewState viewState;
+  @override
+  final String? errorMessage;
+
+  @override
+  String toString() {
+    return 'ResetPasswordState(viewState: $viewState, errorMessage: $errorMessage)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ResetPasswordStateImpl &&
+            (identical(other.viewState, viewState) ||
+                other.viewState == viewState) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, viewState, errorMessage);
+
+  /// Create a copy of ResetPasswordState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ResetPasswordStateImplCopyWith<_$ResetPasswordStateImpl> get copyWith =>
+      __$$ResetPasswordStateImplCopyWithImpl<_$ResetPasswordStateImpl>(
+        this,
+        _$identity,
+      );
+}
+
+abstract class _ResetPasswordState extends ResetPasswordState {
+  const factory _ResetPasswordState({
+    final ViewState viewState,
+    final String? errorMessage,
+  }) = _$ResetPasswordStateImpl;
+  const _ResetPasswordState._() : super._();
+
+  @override
+  ViewState get viewState;
+  @override
+  String? get errorMessage;
+
+  /// Create a copy of ResetPasswordState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ResetPasswordStateImplCopyWith<_$ResetPasswordStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
