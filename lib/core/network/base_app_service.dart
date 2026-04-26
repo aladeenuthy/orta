@@ -7,13 +7,11 @@ import "package:dio/dio.dart";
 import "../app/error.dart";
 import "api.dart";
 
-abstract class ServiceEvent {}
+abstract class ServiceEvent {
+  const ServiceEvent();
+}
 
-abstract class BaseAppRepository {
-  BaseAppRepository({required Api api}) : _api = api;
-
-  final Api _api;
-
+abstract class BaseAppService {
   final StreamController<ServiceEvent> _eventStream =
       StreamController<ServiceEvent>.broadcast();
 
@@ -22,6 +20,16 @@ abstract class BaseAppRepository {
   void publishEvent(ServiceEvent event) {
     _eventStream.add(event);
   }
+
+  Future<void> disposeEvents() {
+    return _eventStream.close();
+  }
+}
+
+abstract class BaseAppRepository {
+  BaseAppRepository({required Api api}) : _api = api;
+
+  final Api _api;
 
   Future<Either<AppError, T>> makeRequest<T>(
     Future<Either<AppError, T>> Function() request,

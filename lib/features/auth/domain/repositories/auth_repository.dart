@@ -2,7 +2,11 @@ import 'package:dartz/dartz.dart';
 import 'package:orta/features/features.dart';
 
 abstract class AuthRepository {
+  Future<Either<AppError, Unit>> clearSession();
+
   Future<Either<AppError, Unit>> forgotPassword({required String email});
+
+  Future<Either<AppError, AuthSession?>> getCachedSession();
 
   Future<Either<AppError, User>> getUser();
 
