@@ -1,3 +1,16 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'shift_filters.freezed.dart';
+
+@freezed
+class ShiftFilters with _$ShiftFilters {
+  const factory ShiftFilters({
+    ShiftStatusFilter? status,
+    ShiftSortBy? sortBy,
+    ShiftSortOrder? sortOrder,
+  }) = _ShiftFilters;
+}
+
 enum ShiftStatusFilter {
   active('active'),
   cancelled('cancelled'),

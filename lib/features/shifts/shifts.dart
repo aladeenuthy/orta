@@ -4,4 +4,6 @@ export 'domain/models/shift.dart';
 export 'domain/models/shift_filters.dart';
 export 'domain/repositories/shifts_repository.dart';
 export 'domain/services/shifts_service.dart';
+export 'presentation/blocs/my_shifts/my_shifts_bloc.dart';
+export 'presentation/cubits/shift_detail/shift_detail_cubit.dart';
 export 'shifts_service_locator.dart';
