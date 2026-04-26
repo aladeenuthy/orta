@@ -13,6 +13,8 @@ export '../core/config/environment_config.dart';
 // Core - Service Locators
 export '../core/core_service_locators.dart';
 // Core - Domain
+export '../core/domain/models/coordinates.dart';
+export '../core/domain/models/location.dart';
 export '../core/network/base_app_service.dart';
 export '../core/network/paginated_response.dart';
 export '../core/locators.dart';
@@ -51,3 +53,6 @@ export '../core/storage/storage.dart';
 
 // Auth
 export 'auth/auth.dart';
+
+// Shifts
+export 'shifts/shifts.dart';
