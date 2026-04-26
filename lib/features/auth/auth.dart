@@ -7,6 +7,8 @@ export 'domain/models/reset_password_args.dart';
 export 'domain/models/user.dart';
 export 'domain/repositories/auth_repository.dart';
 export 'domain/services/auth_service.dart';
+export 'domain/services/auth_service_event.dart';
+export 'presentation/cubits/auth/auth_cubit.dart';
 export 'presentation/cubits/forgot_password/forgot_password_cubit.dart';
 export 'presentation/cubits/get_user/get_user_cubit.dart';
 export 'presentation/cubits/login/login_cubit.dart';

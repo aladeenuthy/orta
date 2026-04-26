@@ -24,6 +24,76 @@ void main() {
     service = AuthService(repository: repository);
   });
 
+  group('AuthService.clearSession', () {
+    test('delegates clear session to repository', () async {
+      when(
+        () => repository.clearSession(),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await service.clearSession();
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(() => repository.clearSession()).called(1);
+    });
+
+    test('publishes AuthSessionCleared when clear session succeeds', () async {
+      when(
+        () => repository.clearSession(),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+      final Future<void> eventExpectation = expectLater(
+        service.eventStream,
+        emits(isA<AuthSessionCleared>()),
+      );
+
+      await service.clearSession();
+
+      await eventExpectation;
+    });
+
+    test('returns repository errors', () async {
+      when(() => repository.clearSession()).thenAnswer(
+        (_) async =>
+            const Left<AppError, Unit>(AppError('Unable to clear session')),
+      );
+
+      final Either<AppError, Unit> result = await service.clearSession();
+
+      expect(
+        result,
+        equals(const Left<AppError, Unit>(AppError('Unable to clear session'))),
+      );
+    });
+  });
+
+  group('AuthService.getCachedSession', () {
+    test('delegates cached session lookup to repository', () async {
+      when(
+        () => repository.getCachedSession(),
+      ).thenAnswer((_) async => const Right<AppError, AuthSession?>(session));
+
+      final Either<AppError, AuthSession?> result = await service
+          .getCachedSession();
+
+      expect(result, equals(const Right<AppError, AuthSession?>(session)));
+      verify(() => repository.getCachedSession()).called(1);
+    });
+
+    test('returns repository errors', () async {
+      when(() => repository.getCachedSession()).thenAnswer(
+        (_) async =>
+            const Left<AppError, AuthSession?>(AppError('Cache failed')),
+      );
+
+      final Either<AppError, AuthSession?> result = await service
+          .getCachedSession();
+
+      expect(
+        result,
+        equals(const Left<AppError, AuthSession?>(AppError('Cache failed'))),
+      );
+    });
+  });
+
   group('AuthService.getUser', () {
     test('delegates current user fetch to repository', () async {
       const User user = User(
@@ -35,6 +105,9 @@ void main() {
       when(
         () => repository.getUser(),
       ).thenAnswer((_) async => const Right<AppError, User>(user));
+      when(
+        () => repository.getCachedSession(),
+      ).thenAnswer((_) async => const Right<AppError, AuthSession?>(session));
 
       final Either<AppError, User> result = await service.getUser();
 
@@ -53,7 +126,44 @@ void main() {
         result,
         equals(const Left<AppError, User>(AppError('Unauthorized'))),
       );
+      verifyNever(() => repository.getCachedSession());
     });
+
+    test(
+      'publishes AuthSessionUpdated when get user refreshes cache',
+      () async {
+        const User user = User(
+          id: '69edb6a277d24da71a004b3e',
+          name: 'Updated Doe',
+          email: 'updated@example.com',
+          role: 'worker',
+        );
+        const AuthSession updatedSession = AuthSession(
+          token: 'token',
+          user: user,
+        );
+        when(
+          () => repository.getUser(),
+        ).thenAnswer((_) async => const Right<AppError, User>(user));
+        when(() => repository.getCachedSession()).thenAnswer(
+          (_) async => const Right<AppError, AuthSession?>(updatedSession),
+        );
+        final Future<void> eventExpectation = expectLater(
+          service.eventStream,
+          emits(
+            isA<AuthSessionUpdated>().having(
+              (AuthSessionUpdated event) => event.session,
+              'session',
+              updatedSession,
+            ),
+          ),
+        );
+
+        await service.getUser();
+
+        await eventExpectation;
+      },
+    );
   });
 
   group('AuthService.forgotPassword', () {
@@ -111,6 +221,32 @@ void main() {
           password: 'StrongPass123!',
         ),
       ).called(1);
+    });
+
+    test('publishes AuthSessionUpdated when login succeeds', () async {
+      when(
+        () => repository.login(
+          email: 'john@example.com',
+          password: 'StrongPass123!',
+        ),
+      ).thenAnswer((_) async => const Right<AppError, AuthSession>(session));
+      final Future<void> eventExpectation = expectLater(
+        service.eventStream,
+        emits(
+          isA<AuthSessionUpdated>().having(
+            (AuthSessionUpdated event) => event.session,
+            'session',
+            session,
+          ),
+        ),
+      );
+
+      await service.login(
+        email: 'john@example.com',
+        password: 'StrongPass123!',
+      );
+
+      await eventExpectation;
     });
 
     test('returns repository errors', () async {

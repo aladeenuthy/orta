@@ -31,8 +31,79 @@ void main() {
     );
   });
 
+  group('AuthRepositoryImpl.clearSession', () {
+    test('delegates to local data source', () async {
+      when(() => localDataSource.clearSession()).thenAnswer((_) async {});
+
+      final Either<AppError, Unit> result = await repository.clearSession();
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(() => localDataSource.clearSession()).called(1);
+    });
+
+    test('returns AppError when clearing cached session fails', () async {
+      when(
+        () => localDataSource.clearSession(),
+      ).thenThrow(Exception('Cache failed'));
+
+      final Either<AppError, Unit> result = await repository.clearSession();
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, Unit>(
+            AppError('Something went wront! Please try again later.'),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('AuthRepositoryImpl.getCachedSession', () {
+    test('returns cached session from local data source', () async {
+      when(
+        () => localDataSource.getCachedSession(),
+      ).thenAnswer((_) async => session);
+
+      final Either<AppError, AuthSession?> result = await repository
+          .getCachedSession();
+
+      expect(result, equals(const Right<AppError, AuthSession?>(session)));
+      verify(() => localDataSource.getCachedSession()).called(1);
+    });
+
+    test('returns null when no cached session exists', () async {
+      when(
+        () => localDataSource.getCachedSession(),
+      ).thenAnswer((_) async => null);
+
+      final Either<AppError, AuthSession?> result = await repository
+          .getCachedSession();
+
+      expect(result, equals(const Right<AppError, AuthSession?>(null)));
+    });
+
+    test('returns AppError when reading cached session fails', () async {
+      when(
+        () => localDataSource.getCachedSession(),
+      ).thenThrow(Exception('Cache failed'));
+
+      final Either<AppError, AuthSession?> result = await repository
+          .getCachedSession();
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, AuthSession?>(
+            AppError('Something went wront! Please try again later.'),
+          ),
+        ),
+      );
+    });
+  });
+
   group('AuthRepositoryImpl.getUser', () {
-    test('delegates to remote data source', () async {
+    test('delegates to remote data source and caches returned user', () async {
       const User user = User(
         id: '69edb6a277d24da71a004b3e',
         name: 'Test Doe',
@@ -42,11 +113,13 @@ void main() {
       when(
         () => remoteDataSource.getUser(),
       ).thenAnswer((_) async => const Right<AppError, User>(user));
+      when(() => localDataSource.cacheUser(user)).thenAnswer((_) async {});
 
       final Either<AppError, User> result = await repository.getUser();
 
       expect(result, equals(const Right<AppError, User>(user)));
       verify(() => remoteDataSource.getUser()).called(1);
+      verify(() => localDataSource.cacheUser(user)).called(1);
     });
 
     test('returns remote data source errors', () async {
@@ -59,6 +132,33 @@ void main() {
       expect(
         result,
         equals(const Left<AppError, User>(AppError('Unauthorized'))),
+      );
+      verifyNever(() => localDataSource.cacheUser(session.user));
+    });
+
+    test('returns AppError when caching returned user fails', () async {
+      const User user = User(
+        id: '69edb6a277d24da71a004b3e',
+        name: 'Test Doe',
+        email: 'Test@example.com',
+        role: 'worker',
+      );
+      when(
+        () => remoteDataSource.getUser(),
+      ).thenAnswer((_) async => const Right<AppError, User>(user));
+      when(
+        () => localDataSource.cacheUser(user),
+      ).thenThrow(Exception('Cache failed'));
+
+      final Either<AppError, User> result = await repository.getUser();
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, User>(
+            AppError('Something went wront! Please try again later.'),
+          ),
+        ),
       );
     });
   });

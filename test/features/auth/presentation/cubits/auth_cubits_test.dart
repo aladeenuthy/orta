@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +21,206 @@ void main() {
 
   setUp(() {
     authService = MockAuthService();
+    when(
+      () => authService.eventStream,
+    ).thenAnswer((_) => const Stream<ServiceEvent>.empty());
+  });
+
+  group('AuthCubit', () {
+    late StreamController<ServiceEvent> eventController;
+
+    tearDown(() async {
+      if (!eventController.isClosed) {
+        await eventController.close();
+      }
+    });
+
+    blocTest<AuthCubit, AuthState>(
+      'emits loading and authenticated when cached session exists',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () {
+        when(
+          () => authService.getCachedSession(),
+        ).thenAnswer((_) async => const Right<AppError, AuthSession?>(session));
+        return AuthCubit(authService: authService);
+      },
+      act: (AuthCubit cubit) => cubit.checkAuthentication(),
+      expect: () => <AuthState>[
+        const AuthState(viewState: ViewState.loading),
+        const AuthState(viewState: ViewState.loaded, session: session),
+      ],
+      verify: (_) {
+        verify(() => authService.getCachedSession()).called(1);
+      },
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'emits loading and unauthenticated when cached session is missing',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () {
+        when(
+          () => authService.getCachedSession(),
+        ).thenAnswer((_) async => const Right<AppError, AuthSession?>(null));
+        return AuthCubit(authService: authService);
+      },
+      act: (AuthCubit cubit) => cubit.checkAuthentication(),
+      expect: () => <AuthState>[
+        const AuthState(viewState: ViewState.loading),
+        const AuthState(viewState: ViewState.loaded),
+      ],
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'emits loading and error when cached session lookup fails',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () {
+        when(() => authService.getCachedSession()).thenAnswer(
+          (_) async =>
+              const Left<AppError, AuthSession?>(AppError('Cache failed')),
+        );
+        return AuthCubit(authService: authService);
+      },
+      act: (AuthCubit cubit) => cubit.checkAuthentication(),
+      expect: () => <AuthState>[
+        const AuthState(viewState: ViewState.loading),
+        const AuthState(
+          viewState: ViewState.error,
+          errorMessage: 'Cache failed',
+        ),
+      ],
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'sets authenticated session',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () => AuthCubit(authService: authService),
+      act: (AuthCubit cubit) => cubit.setAuthenticated(session),
+      expect: () => <AuthState>[
+        const AuthState(viewState: ViewState.loaded, session: session),
+      ],
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'clears session and emits unauthenticated on logout',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () {
+        when(
+          () => authService.clearSession(),
+        ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+        return AuthCubit(authService: authService);
+      },
+      seed: () =>
+          const AuthState(viewState: ViewState.loaded, session: session),
+      act: (AuthCubit cubit) => cubit.logout(),
+      expect: () => <AuthState>[
+        const AuthState(viewState: ViewState.loading, session: session),
+        const AuthState(viewState: ViewState.loaded),
+      ],
+      verify: (_) {
+        verify(() => authService.clearSession()).called(1);
+      },
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'emits loading and error when logout fails',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () {
+        when(() => authService.clearSession()).thenAnswer(
+          (_) async => const Left<AppError, Unit>(AppError('Unable to logout')),
+        );
+        return AuthCubit(authService: authService);
+      },
+      seed: () =>
+          const AuthState(viewState: ViewState.loaded, session: session),
+      act: (AuthCubit cubit) => cubit.logout(),
+      expect: () => <AuthState>[
+        const AuthState(viewState: ViewState.loading, session: session),
+        const AuthState(
+          viewState: ViewState.error,
+          session: session,
+          errorMessage: 'Unable to logout',
+        ),
+      ],
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'updates session from auth service event',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () => AuthCubit(authService: authService),
+      act: (_) => eventController.add(const AuthSessionUpdated(session)),
+      wait: const Duration(milliseconds: 1),
+      expect: () => <AuthState>[
+        const AuthState(viewState: ViewState.loaded, session: session),
+      ],
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'clears session from auth service event',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () => AuthCubit(authService: authService),
+      seed: () =>
+          const AuthState(viewState: ViewState.loaded, session: session),
+      act: (_) => eventController.add(const AuthSessionCleared()),
+      wait: const Duration(milliseconds: 1),
+      expect: () => <AuthState>[const AuthState(viewState: ViewState.loaded)],
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'resets error message',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () => AuthCubit(authService: authService),
+      seed: () => const AuthState(
+        viewState: ViewState.error,
+        errorMessage: 'Cache failed',
+      ),
+      act: (AuthCubit cubit) => cubit.resetErrorMessage(),
+      expect: () => <AuthState>[const AuthState()],
+    );
   });
 
   group('LoginCubit', () {
