@@ -67,9 +67,12 @@ void main() {
       final PaginatedResponse<Shift> paginatedResponse =
           PaginatedResponse<Shift>(
             data: <Shift>[shiftModel()],
-            total: 1,
-            page: 1,
+            currentPage: 1,
+            totalPages: 1,
+            totalCount: 1,
             hasNextPage: false,
+            hasPrevPage: false,
+            limit: 5,
           );
       when(
         () => remoteDataSource.getMyShifts(

@@ -50,20 +50,10 @@ class ShiftsRemoteDataSource extends BaseAppRepository {
       final Map<String, dynamic> responseData = Map<String, dynamic>.from(
         response.data as Map,
       );
-      final List<dynamic> shifts = responseData['shifts'] as List<dynamic>;
-      final Map<String, dynamic> pagination = Map<String, dynamic>.from(
-        responseData['pagination'] as Map,
-      );
-
       final PaginatedResponse<Shift> paginatedResponse =
           PaginatedResponse<Shift>.fromJson(
-            json: <String, dynamic>{
-              'data': shifts,
-              'total': pagination['totalCount'],
-              'page': pagination['currentPage'],
-              'end': !(pagination['hasNextPage'] as bool),
-            },
-            dataKey: 'data',
+            json: responseData,
+            dataKey: 'shifts',
             fromJson: (dynamic json) =>
                 Shift.fromJson(Map<String, dynamic>.from(json as Map)),
           );

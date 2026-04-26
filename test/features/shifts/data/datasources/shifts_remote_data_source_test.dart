@@ -150,6 +150,7 @@ void main() {
             totalPages: 3,
             totalCount: 11,
             hasNextPage: true,
+            hasPrevPage: true,
             limit: 5,
           ),
         ),
@@ -181,9 +182,12 @@ void main() {
         (PaginatedResponse<Shift> response) {
           expect(response.data, hasLength(1));
           expect(response.data.first.title, 'Morning Care');
-          expect(response.total, 11);
-          expect(response.page, 2);
+          expect(response.totalCount, 11);
+          expect(response.currentPage, 2);
+          expect(response.totalPages, 3);
           expect(response.hasNextPage, isTrue);
+          expect(response.hasPrevPage, isTrue);
+          expect(response.limit, 5);
         },
       );
     });
