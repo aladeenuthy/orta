@@ -25,6 +25,20 @@ void main() {
     );
   }
 
+  Response<dynamic> userResponse(String path) {
+    return Response<dynamic>(
+      requestOptions: RequestOptions(path: path),
+      data: <String, dynamic>{
+        'user': <String, dynamic>{
+          'id': '69edb6a277d24da71a004b3e',
+          'name': 'Test Doe',
+          'email': 'Test@example.com',
+          'role': 'worker',
+        },
+      },
+    );
+  }
+
   setUp(() {
     api = MockApi();
     dataSource = AuthRemoteDataSource(api: api);
@@ -71,6 +85,43 @@ void main() {
       final Either<AppError, Unit> result = await dataSource.forgotPassword(
         email: 'john@example.com',
       );
+
+      expect(result.isLeft(), isTrue);
+      result.fold(
+        (AppError error) => expect(error.message, isNotEmpty),
+        (_) => fail('Expected AppError'),
+      );
+    });
+  });
+
+  group('AuthRemoteDataSource.getUser', () {
+    test('gets current user and parses response', () async {
+      when(
+        () => api.get(Endpoints.getUser),
+      ).thenAnswer((_) async => userResponse(Endpoints.getUser));
+
+      final Either<AppError, User> result = await dataSource.getUser();
+
+      verify(() => api.get(Endpoints.getUser)).called(1);
+      result.fold((AppError error) => fail('Expected user, got $error'), (
+        User user,
+      ) {
+        expect(user.id, '69edb6a277d24da71a004b3e');
+        expect(user.name, 'Test Doe');
+        expect(user.email, 'Test@example.com');
+        expect(user.role, 'worker');
+      });
+    });
+
+    test('returns AppError when the API request fails', () async {
+      when(() => api.get(Endpoints.getUser)).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(path: Endpoints.getUser),
+          message: 'Server error',
+        ),
+      );
+
+      final Either<AppError, User> result = await dataSource.getUser();
 
       expect(result.isLeft(), isTrue);
       result.fold(

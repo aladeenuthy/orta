@@ -10,6 +10,10 @@ class AuthService {
     return _repository.forgotPassword(email: email);
   }
 
+  Future<Either<AppError, User>> getUser() {
+    return _repository.getUser();
+  }
+
   Future<Either<AppError, AuthSession>> login({
     required String email,
     required String password,

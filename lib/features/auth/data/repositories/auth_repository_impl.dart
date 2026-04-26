@@ -17,6 +17,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<AppError, User>> getUser() {
+    return _remoteDataSource.getUser();
+  }
+
+  @override
   Future<Either<AppError, AuthSession>> login({
     required String email,
     required String password,

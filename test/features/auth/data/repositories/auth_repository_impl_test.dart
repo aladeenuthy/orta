@@ -31,6 +31,38 @@ void main() {
     );
   });
 
+  group('AuthRepositoryImpl.getUser', () {
+    test('delegates to remote data source', () async {
+      const User user = User(
+        id: '69edb6a277d24da71a004b3e',
+        name: 'Test Doe',
+        email: 'Test@example.com',
+        role: 'worker',
+      );
+      when(
+        () => remoteDataSource.getUser(),
+      ).thenAnswer((_) async => const Right<AppError, User>(user));
+
+      final Either<AppError, User> result = await repository.getUser();
+
+      expect(result, equals(const Right<AppError, User>(user)));
+      verify(() => remoteDataSource.getUser()).called(1);
+    });
+
+    test('returns remote data source errors', () async {
+      when(() => remoteDataSource.getUser()).thenAnswer(
+        (_) async => const Left<AppError, User>(AppError('Unauthorized')),
+      );
+
+      final Either<AppError, User> result = await repository.getUser();
+
+      expect(
+        result,
+        equals(const Left<AppError, User>(AppError('Unauthorized'))),
+      );
+    });
+  });
+
   group('AuthRepositoryImpl.forgotPassword', () {
     test('delegates to remote data source', () async {
       when(

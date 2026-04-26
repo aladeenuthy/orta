@@ -24,6 +24,38 @@ void main() {
     service = AuthService(repository: repository);
   });
 
+  group('AuthService.getUser', () {
+    test('delegates current user fetch to repository', () async {
+      const User user = User(
+        id: '69edb6a277d24da71a004b3e',
+        name: 'Test Doe',
+        email: 'Test@example.com',
+        role: 'worker',
+      );
+      when(
+        () => repository.getUser(),
+      ).thenAnswer((_) async => const Right<AppError, User>(user));
+
+      final Either<AppError, User> result = await service.getUser();
+
+      expect(result, equals(const Right<AppError, User>(user)));
+      verify(() => repository.getUser()).called(1);
+    });
+
+    test('returns repository errors', () async {
+      when(() => repository.getUser()).thenAnswer(
+        (_) async => const Left<AppError, User>(AppError('Unauthorized')),
+      );
+
+      final Either<AppError, User> result = await service.getUser();
+
+      expect(
+        result,
+        equals(const Left<AppError, User>(AppError('Unauthorized'))),
+      );
+    });
+  });
+
   group('AuthService.forgotPassword', () {
     test('delegates forgot password to repository', () async {
       when(

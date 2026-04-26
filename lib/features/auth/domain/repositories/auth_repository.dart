@@ -4,6 +4,8 @@ import 'package:orta/features/features.dart';
 abstract class AuthRepository {
   Future<Either<AppError, Unit>> forgotPassword({required String email});
 
+  Future<Either<AppError, User>> getUser();
+
   Future<Either<AppError, AuthSession>> login({
     required String email,
     required String password,

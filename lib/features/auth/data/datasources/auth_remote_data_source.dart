@@ -15,6 +15,20 @@ class AuthRemoteDataSource extends BaseAppRepository {
     });
   }
 
+  Future<Either<AppError, User>> getUser() {
+    return makeRequest(() async {
+      final response = await get(Endpoints.getUser);
+      final Map<String, dynamic> data = Map<String, dynamic>.from(
+        response.data as Map,
+      );
+      final User user = User.fromJson(
+        Map<String, dynamic>.from(data['user'] as Map),
+      );
+
+      return right<AppError, User>(user);
+    });
+  }
+
   Future<Either<AppError, AuthSession>> login({
     required String email,
     required String password,
