@@ -1,10 +1,10 @@
-import 'core_service_locators.dart';
-import 'service_locator.dart';
+import '../features/features.dart';
 
 class Locators {
   static register() async {
     List<ServiceLocator> locators = <ServiceLocator>[
       CoreServiceLocator(),
+      AuthServiceLocator(),
     ];
     for (final ServiceLocator item in locators) {
       await Future<void>.delayed(const Duration(milliseconds: 100));

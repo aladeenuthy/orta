@@ -4,7 +4,6 @@ import "package:dio/dio.dart";
 
 import "base_api.dart";
 
-
 /// Custom error to handle token expiration scenarios in Dio.
 class TokenExpiredError extends DioException {
   TokenExpiredError({required super.requestOptions});
@@ -30,7 +29,6 @@ class Api extends BaseApi {
         ),
       );
     }
-
 
     return dio;
   }
@@ -64,7 +62,6 @@ class Api extends BaseApi {
         rethrow;
       }
 
-    
       return dio.get(
         effectiveUri,
         queryParameters: queryParameters,
@@ -95,10 +92,10 @@ class Api extends BaseApi {
     options ??= Options();
     late Response<dynamic> response;
 
-
     try {
       response = await dio.post(
         effectiveUri,
+        data: data,
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,
@@ -106,7 +103,6 @@ class Api extends BaseApi {
         onReceiveProgress: onReceiveProgress,
       );
     } on TokenExpiredError {
- 
       return dio.post(
         effectiveUri,
         data: data,
@@ -148,7 +144,6 @@ class Api extends BaseApi {
         onReceiveProgress: onReceiveProgress,
       );
     } on TokenExpiredError {
-    
       return dio.put(
         effectiveUri,
         data: data,
@@ -231,7 +226,6 @@ class Api extends BaseApi {
         cancelToken: cancelToken,
       );
     } on TokenExpiredError {
-     
       return dio.delete(
         effectiveUri,
         data: data,
@@ -284,5 +278,4 @@ class Api extends BaseApi {
 
     return response;
   }
-
 }

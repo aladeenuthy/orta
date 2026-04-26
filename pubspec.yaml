@@ -37,6 +37,7 @@ dependencies:
   dio: ^5.7.0
   flutter_bloc: ^9.1.0
   freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
   dartz: ^0.10.1
   flutter_screenutil: ^5.9.3
   get_it: ^8.2.0
