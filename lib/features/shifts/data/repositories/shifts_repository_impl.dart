@@ -8,6 +8,21 @@ class ShiftsRepositoryImpl implements ShiftsRepository {
   final ShiftsRemoteDataSource _remoteDataSource;
 
   @override
+  Future<Either<AppError, Unit>> cancelShift(String id) {
+    return _remoteDataSource.cancelShift(id);
+  }
+
+  @override
+  Future<Either<AppError, Unit>> clockIn(String id) {
+    return _remoteDataSource.clockIn(id);
+  }
+
+  @override
+  Future<Either<AppError, Unit>> clockOut(String id) {
+    return _remoteDataSource.clockOut(id);
+  }
+
+  @override
   Future<Either<AppError, PaginatedResponse<Shift>>> getMyShifts({
     required int page,
     required int limit,

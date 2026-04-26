@@ -4,6 +4,30 @@ import 'package:orta/features/features.dart';
 class ShiftsRemoteDataSource extends BaseAppRepository {
   ShiftsRemoteDataSource({required super.api});
 
+  Future<Either<AppError, Unit>> cancelShift(String id) {
+    return makeRequest(() async {
+      await patch(Endpoints.cancelShift(id));
+
+      return right<AppError, Unit>(unit);
+    });
+  }
+
+  Future<Either<AppError, Unit>> clockIn(String id) {
+    return makeRequest(() async {
+      await patch(Endpoints.clockInShift(id));
+
+      return right<AppError, Unit>(unit);
+    });
+  }
+
+  Future<Either<AppError, Unit>> clockOut(String id) {
+    return makeRequest(() async {
+      await patch(Endpoints.clockOutShift(id));
+
+      return right<AppError, Unit>(unit);
+    });
+  }
+
   Future<Either<AppError, PaginatedResponse<Shift>>> getMyShifts({
     required int page,
     required int limit,

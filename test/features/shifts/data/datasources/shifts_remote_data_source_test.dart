@@ -17,6 +17,117 @@ void main() {
     dataSource = ShiftsRemoteDataSource(api: api);
   });
 
+  group('ShiftsRemoteDataSource.cancelShift', () {
+    test('patches cancel shift endpoint', () async {
+      when(() => api.patch(Endpoints.cancelShift('shift-id'))).thenAnswer(
+        (_) async => Response<dynamic>(
+          requestOptions: RequestOptions(
+            path: Endpoints.cancelShift('shift-id'),
+          ),
+          data: <String, dynamic>{'success': true},
+        ),
+      );
+
+      final Either<AppError, Unit> result = await dataSource.cancelShift(
+        'shift-id',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(() => api.patch(Endpoints.cancelShift('shift-id'))).called(1);
+    });
+
+    test('returns AppError when the API request fails', () async {
+      when(() => api.patch(Endpoints.cancelShift('shift-id'))).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(
+            path: Endpoints.cancelShift('shift-id'),
+          ),
+          message: 'Server error',
+        ),
+      );
+
+      final Either<AppError, Unit> result = await dataSource.cancelShift(
+        'shift-id',
+      );
+
+      expect(result.isLeft(), isTrue);
+    });
+  });
+
+  group('ShiftsRemoteDataSource.clockIn', () {
+    test('patches clock-in endpoint', () async {
+      when(() => api.patch(Endpoints.clockInShift('shift-id'))).thenAnswer(
+        (_) async => Response<dynamic>(
+          requestOptions: RequestOptions(
+            path: Endpoints.clockInShift('shift-id'),
+          ),
+          data: <String, dynamic>{'success': true},
+        ),
+      );
+
+      final Either<AppError, Unit> result = await dataSource.clockIn(
+        'shift-id',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(() => api.patch(Endpoints.clockInShift('shift-id'))).called(1);
+    });
+
+    test('returns AppError when the API request fails', () async {
+      when(() => api.patch(Endpoints.clockInShift('shift-id'))).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(
+            path: Endpoints.clockInShift('shift-id'),
+          ),
+          message: 'Server error',
+        ),
+      );
+
+      final Either<AppError, Unit> result = await dataSource.clockIn(
+        'shift-id',
+      );
+
+      expect(result.isLeft(), isTrue);
+    });
+  });
+
+  group('ShiftsRemoteDataSource.clockOut', () {
+    test('patches clock-out endpoint', () async {
+      when(() => api.patch(Endpoints.clockOutShift('shift-id'))).thenAnswer(
+        (_) async => Response<dynamic>(
+          requestOptions: RequestOptions(
+            path: Endpoints.clockOutShift('shift-id'),
+          ),
+          data: <String, dynamic>{'success': true},
+        ),
+      );
+
+      final Either<AppError, Unit> result = await dataSource.clockOut(
+        'shift-id',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(() => api.patch(Endpoints.clockOutShift('shift-id'))).called(1);
+    });
+
+    test('returns AppError when the API request fails', () async {
+      when(() => api.patch(Endpoints.clockOutShift('shift-id'))).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(
+            path: Endpoints.clockOutShift('shift-id'),
+          ),
+          message: 'Server error',
+        ),
+      );
+
+      final Either<AppError, Unit> result = await dataSource.clockOut(
+        'shift-id',
+      );
+
+      expect(result.isLeft(), isTrue);
+    });
+  });
+
   group('ShiftsRemoteDataSource.getMyShifts', () {
     test('gets paginated shifts with query parameters', () async {
       when(

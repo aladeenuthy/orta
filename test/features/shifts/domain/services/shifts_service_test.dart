@@ -16,6 +16,47 @@ void main() {
     service = ShiftsService(repository: repository);
   });
 
+  group('ShiftsService.cancelShift', () {
+    test('delegates to repository', () async {
+      when(
+        () => repository.cancelShift('shift-id'),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await service.cancelShift(
+        'shift-id',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(() => repository.cancelShift('shift-id')).called(1);
+    });
+  });
+
+  group('ShiftsService.clockIn', () {
+    test('delegates to repository', () async {
+      when(
+        () => repository.clockIn('shift-id'),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await service.clockIn('shift-id');
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(() => repository.clockIn('shift-id')).called(1);
+    });
+  });
+
+  group('ShiftsService.clockOut', () {
+    test('delegates to repository', () async {
+      when(
+        () => repository.clockOut('shift-id'),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await service.clockOut('shift-id');
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(() => repository.clockOut('shift-id')).called(1);
+    });
+  });
+
   group('ShiftsService.getMyShifts', () {
     test('delegates to repository', () async {
       final PaginatedResponse<Shift> paginatedResponse =
