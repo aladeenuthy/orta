@@ -14,10 +14,7 @@ class MyApp extends StatelessWidget {
         builder: (context, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: AppMocks.previewHomeDashboard ? const HomeScreen() : null,
-            initialRoute: AppMocks.previewHomeDashboard
-                ? null
-                : AppRoutes.splash,
+            initialRoute: AppRoutes.splash,
             navigatorKey: AppRouter.navigatorKey,
             onGenerateRoute: AppRouter.onGenerateRoute,
             title: 'Orta',

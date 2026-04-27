@@ -12,11 +12,11 @@ class ShiftFilters with _$ShiftFilters {
 }
 
 enum ShiftStatusFilter {
-  scheduled('scheduled'),
-  active('active'),
-  cancelled('cancelled'),
-  completed('completed'),
-  inProgress('in_progress');
+  scheduled('Scheduled'),
+  active('In Progress'),
+  cancelled('Cancelled'),
+  completed('Completed'),
+  inProgress('In Progress');
 
   const ShiftStatusFilter(this.value);
 

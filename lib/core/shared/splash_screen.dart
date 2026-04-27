@@ -57,10 +57,6 @@ class _SplashScreenState extends State<SplashScreen>
         if (state.isUnauthenticated) {
           AppRouter.toReplacementNamed(AppRoutes.register);
         }
-
-        if (state.isAuthenticated) {
-          AppRouter.toReplacementNamed(AppRoutes.home);
-        }
       },
       child: Scaffold(
         backgroundColor: AppColors.white,

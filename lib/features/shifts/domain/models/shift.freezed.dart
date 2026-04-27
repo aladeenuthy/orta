@@ -25,17 +25,25 @@ mixin _$Shift {
   String get title => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
   List<String> get typeOfShift => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
   String get user => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   DateTime get startTime => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   DateTime get finishTime => throw _privateConstructorUsedError;
   int get numOfShiftsPerDay => throw _privateConstructorUsedError;
   Location get location => throw _privateConstructorUsedError;
   @ShiftStatusConverter()
   ShiftStatus? get status => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   DateTime? get clockInTime => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   DateTime? get clockOutTime => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   DateTime get date => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   DateTime? get updatedAt => throw _privateConstructorUsedError;
   num? get pay => throw _privateConstructorUsedError;
 
@@ -58,16 +66,35 @@ abstract class $ShiftCopyWith<$Res> {
     String title,
     String role,
     List<String> typeOfShift,
-    String user,
+    @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson) String user,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     DateTime startTime,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     DateTime finishTime,
     int numOfShiftsPerDay,
     Location location,
     @ShiftStatusConverter() ShiftStatus? status,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     DateTime? clockInTime,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     DateTime? clockOutTime,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     DateTime date,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     DateTime? createdAt,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     DateTime? updatedAt,
     num? pay,
   });
@@ -202,16 +229,35 @@ abstract class _$$ShiftImplCopyWith<$Res> implements $ShiftCopyWith<$Res> {
     String title,
     String role,
     List<String> typeOfShift,
-    String user,
+    @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson) String user,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     DateTime startTime,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     DateTime finishTime,
     int numOfShiftsPerDay,
     Location location,
     @ShiftStatusConverter() ShiftStatus? status,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     DateTime? clockInTime,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     DateTime? clockOutTime,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     DateTime date,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     DateTime? createdAt,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     DateTime? updatedAt,
     num? pay,
   });
@@ -331,16 +377,36 @@ class _$ShiftImpl implements _Shift {
     required this.title,
     required this.role,
     required final List<String> typeOfShift,
+    @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
     required this.user,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     required this.startTime,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     required this.finishTime,
     required this.numOfShiftsPerDay,
     required this.location,
     @ShiftStatusConverter() this.status,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     this.clockInTime,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     this.clockOutTime,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     required this.date,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     this.createdAt,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     this.updatedAt,
     this.pay,
   }) : _typeOfShift = typeOfShift;
@@ -363,10 +429,13 @@ class _$ShiftImpl implements _Shift {
   }
 
   @override
+  @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
   final String user;
   @override
+  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   final DateTime startTime;
   @override
+  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   final DateTime finishTime;
   @override
   final int numOfShiftsPerDay;
@@ -376,14 +445,19 @@ class _$ShiftImpl implements _Shift {
   @ShiftStatusConverter()
   final ShiftStatus? status;
   @override
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   final DateTime? clockInTime;
   @override
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   final DateTime? clockOutTime;
   @override
+  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   final DateTime date;
   @override
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   final DateTime? createdAt;
   @override
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   final DateTime? updatedAt;
   @override
   final num? pay;
@@ -469,16 +543,36 @@ abstract class _Shift implements Shift {
     required final String title,
     required final String role,
     required final List<String> typeOfShift,
+    @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
     required final String user,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     required final DateTime startTime,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     required final DateTime finishTime,
     required final int numOfShiftsPerDay,
     required final Location location,
     @ShiftStatusConverter() final ShiftStatus? status,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     final DateTime? clockInTime,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     final DateTime? clockOutTime,
+    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     required final DateTime date,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     final DateTime? createdAt,
+    @JsonKey(
+      fromJson: _nullableDateTimeFromJson,
+      toJson: _nullableDateTimeToJson,
+    )
     final DateTime? updatedAt,
     final num? pay,
   }) = _$ShiftImpl;
@@ -494,10 +588,13 @@ abstract class _Shift implements Shift {
   @override
   List<String> get typeOfShift;
   @override
+  @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
   String get user;
   @override
+  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   DateTime get startTime;
   @override
+  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   DateTime get finishTime;
   @override
   int get numOfShiftsPerDay;
@@ -507,14 +604,19 @@ abstract class _Shift implements Shift {
   @ShiftStatusConverter()
   ShiftStatus? get status;
   @override
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   DateTime? get clockInTime;
   @override
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   DateTime? get clockOutTime;
   @override
+  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   DateTime get date;
   @override
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   DateTime? get createdAt;
   @override
+  @JsonKey(fromJson: _nullableDateTimeFromJson, toJson: _nullableDateTimeToJson)
   DateTime? get updatedAt;
   @override
   num? get pay;

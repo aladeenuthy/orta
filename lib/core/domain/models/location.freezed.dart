@@ -28,7 +28,7 @@ mixin _$Location {
   String? get constituency => throw _privateConstructorUsedError;
   String? get adminDistrict => throw _privateConstructorUsedError;
   String? get address => throw _privateConstructorUsedError;
-  @JsonKey(name: 'cordinates')
+  @JsonKey(name: 'coordinates', readValue: _readCoordinates)
   Coordinates get coordinates => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
@@ -56,7 +56,8 @@ abstract class $LocationCopyWith<$Res> {
     String? constituency,
     String? adminDistrict,
     String? address,
-    @JsonKey(name: 'cordinates') Coordinates coordinates,
+    @JsonKey(name: 'coordinates', readValue: _readCoordinates)
+    Coordinates coordinates,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -165,7 +166,8 @@ abstract class _$$LocationImplCopyWith<$Res>
     String? constituency,
     String? adminDistrict,
     String? address,
-    @JsonKey(name: 'cordinates') Coordinates coordinates,
+    @JsonKey(name: 'coordinates', readValue: _readCoordinates)
+    Coordinates coordinates,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -258,7 +260,8 @@ class _$LocationImpl implements _Location {
     this.constituency,
     this.adminDistrict,
     this.address,
-    @JsonKey(name: 'cordinates') required this.coordinates,
+    @JsonKey(name: 'coordinates', readValue: _readCoordinates)
+    required this.coordinates,
     this.createdAt,
     this.updatedAt,
   });
@@ -281,7 +284,7 @@ class _$LocationImpl implements _Location {
   @override
   final String? address;
   @override
-  @JsonKey(name: 'cordinates')
+  @JsonKey(name: 'coordinates', readValue: _readCoordinates)
   final Coordinates coordinates;
   @override
   final DateTime? createdAt;
@@ -356,7 +359,8 @@ abstract class _Location implements Location {
     final String? constituency,
     final String? adminDistrict,
     final String? address,
-    @JsonKey(name: 'cordinates') required final Coordinates coordinates,
+    @JsonKey(name: 'coordinates', readValue: _readCoordinates)
+    required final Coordinates coordinates,
     final DateTime? createdAt,
     final DateTime? updatedAt,
   }) = _$LocationImpl;
@@ -379,7 +383,7 @@ abstract class _Location implements Location {
   @override
   String? get address;
   @override
-  @JsonKey(name: 'cordinates')
+  @JsonKey(name: 'coordinates', readValue: _readCoordinates)
   Coordinates get coordinates;
   @override
   DateTime? get createdAt;

@@ -13,25 +13,17 @@ _$ShiftImpl _$$ShiftImplFromJson(Map<String, dynamic> json) => _$ShiftImpl(
   typeOfShift: (json['typeOfShift'] as List<dynamic>)
       .map((e) => e as String)
       .toList(),
-  user: json['user'] as String,
-  startTime: DateTime.parse(json['startTime'] as String),
-  finishTime: DateTime.parse(json['finishTime'] as String),
+  user: _userNameFromJson(json['user']),
+  startTime: _dateTimeFromJson(json['startTime']),
+  finishTime: _dateTimeFromJson(json['finishTime']),
   numOfShiftsPerDay: (json['numOfShiftsPerDay'] as num).toInt(),
   location: Location.fromJson(json['location'] as Map<String, dynamic>),
   status: const ShiftStatusConverter().fromJson(json['status'] as String?),
-  clockInTime: json['clockInTime'] == null
-      ? null
-      : DateTime.parse(json['clockInTime'] as String),
-  clockOutTime: json['clockOutTime'] == null
-      ? null
-      : DateTime.parse(json['clockOutTime'] as String),
-  date: DateTime.parse(json['date'] as String),
-  createdAt: json['createdAt'] == null
-      ? null
-      : DateTime.parse(json['createdAt'] as String),
-  updatedAt: json['updatedAt'] == null
-      ? null
-      : DateTime.parse(json['updatedAt'] as String),
+  clockInTime: _nullableDateTimeFromJson(json['clockInTime']),
+  clockOutTime: _nullableDateTimeFromJson(json['clockOutTime']),
+  date: _dateTimeFromJson(json['date']),
+  createdAt: _nullableDateTimeFromJson(json['createdAt']),
+  updatedAt: _nullableDateTimeFromJson(json['updatedAt']),
   pay: json['pay'] as num?,
 );
 
@@ -41,16 +33,16 @@ Map<String, dynamic> _$$ShiftImplToJson(_$ShiftImpl instance) =>
       'title': instance.title,
       'role': instance.role,
       'typeOfShift': instance.typeOfShift,
-      'user': instance.user,
-      'startTime': instance.startTime.toIso8601String(),
-      'finishTime': instance.finishTime.toIso8601String(),
+      'user': _userToJson(instance.user),
+      'startTime': _dateTimeToJson(instance.startTime),
+      'finishTime': _dateTimeToJson(instance.finishTime),
       'numOfShiftsPerDay': instance.numOfShiftsPerDay,
       'location': instance.location.toJson(),
       'status': const ShiftStatusConverter().toJson(instance.status),
-      'clockInTime': instance.clockInTime?.toIso8601String(),
-      'clockOutTime': instance.clockOutTime?.toIso8601String(),
-      'date': instance.date.toIso8601String(),
-      'createdAt': instance.createdAt?.toIso8601String(),
-      'updatedAt': instance.updatedAt?.toIso8601String(),
+      'clockInTime': _nullableDateTimeToJson(instance.clockInTime),
+      'clockOutTime': _nullableDateTimeToJson(instance.clockOutTime),
+      'date': _dateTimeToJson(instance.date),
+      'createdAt': _nullableDateTimeToJson(instance.createdAt),
+      'updatedAt': _nullableDateTimeToJson(instance.updatedAt),
       'pay': instance.pay,
     };

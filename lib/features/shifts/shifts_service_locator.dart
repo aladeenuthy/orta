@@ -8,11 +8,9 @@ class ShiftsServiceLocator implements ServiceLocator {
     );
 
     locator.registerLazySingleton<ShiftsRepository>(
-      () => AppMocks.previewHomeDashboard
-          ? const MockShiftsRepository()
-          : ShiftsRepositoryImpl(
-              remoteDataSource: locator<ShiftsRemoteDataSource>(),
-            ),
+      () => ShiftsRepositoryImpl(
+        remoteDataSource: locator<ShiftsRemoteDataSource>(),
+      ),
     );
 
     locator.registerLazySingleton<ShiftsService>(

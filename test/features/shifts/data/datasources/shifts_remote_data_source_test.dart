@@ -136,7 +136,7 @@ void main() {
           queryParameters: <String, dynamic>{
             'page': 2,
             'limit': 5,
-            'status': 'active',
+            'status': 'In Progress',
             'sortBy': 'date',
             'sortOrder': 'desc',
           },
@@ -171,7 +171,7 @@ void main() {
           queryParameters: <String, dynamic>{
             'page': 2,
             'limit': 5,
-            'status': 'active',
+            'status': 'In Progress',
             'sortBy': 'date',
             'sortOrder': 'desc',
           },

@@ -15,7 +15,7 @@ Map<String, dynamic> shiftJson({String id = 'shift-id'}) {
       'name': 'Main Office',
       'address': '12 Worker Street',
       'postCode': 'SW1A 1AA',
-      'cordinates': <String, dynamic>{
+      'coordinates': <String, dynamic>{
         'longitude': 180,
         'latitude': 90,
         'useRotaCloud': true,

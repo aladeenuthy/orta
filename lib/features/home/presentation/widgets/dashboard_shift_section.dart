@@ -117,12 +117,17 @@ class DashboardShiftSectionState extends State<DashboardShiftSection> {
     }
 
     if (state is GetItemsSuccess<Shift> && shifts.isEmpty) {
-      return Padding(
-        padding: EdgeInsets.only(bottom: 20.0.height),
-        child: Text(
-          'No shifts found',
-          style: context.text.bodyMedium?.copyWith(
-            color: AppColors.textSecondary,
+      return Center(
+        child: SizedBox(
+          height: 130.0.height,
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              'No shifts found',
+              style: context.text.bodyMedium?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
           ),
         ),
       );

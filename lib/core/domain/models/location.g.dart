@@ -16,7 +16,7 @@ _$LocationImpl _$$LocationImplFromJson(Map<String, dynamic> json) =>
       adminDistrict: json['adminDistrict'] as String?,
       address: json['address'] as String?,
       coordinates: Coordinates.fromJson(
-        json['cordinates'] as Map<String, dynamic>,
+        _readCoordinates(json, 'coordinates') as Map<String, dynamic>,
       ),
       createdAt: json['createdAt'] == null
           ? null
@@ -35,7 +35,7 @@ Map<String, dynamic> _$$LocationImplToJson(_$LocationImpl instance) =>
       'constituency': instance.constituency,
       'adminDistrict': instance.adminDistrict,
       'address': instance.address,
-      'cordinates': instance.coordinates.toJson(),
+      'coordinates': instance.coordinates.toJson(),
       'createdAt': instance.createdAt?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
     };

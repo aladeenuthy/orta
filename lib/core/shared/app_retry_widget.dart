@@ -18,6 +18,8 @@ class AppRetryWidget extends StatelessWidget {
         AppSpacings.verticalSpaceMedium(),
         AppButton(
           label: 'Retry',
+          textColor: AppColors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20.0.radius)),
           onPressed: () {
             onRetry();
           },

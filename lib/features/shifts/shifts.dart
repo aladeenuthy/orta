@@ -1,5 +1,4 @@
 export 'data/datasources/shifts_remote_data_source.dart';
-export 'data/repositories/mock_shifts_repository.dart';
 export 'data/repositories/shifts_repository_impl.dart';
 export 'domain/models/shift.dart';
 export 'domain/models/shift_detail_args.dart';

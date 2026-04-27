@@ -17,11 +17,16 @@ class Location with _$Location {
     String? constituency,
     String? adminDistrict,
     String? address,
-    @JsonKey(name: 'cordinates') required Coordinates coordinates,
+    @JsonKey(name: 'coordinates', readValue: _readCoordinates)
+    required Coordinates coordinates,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _Location;
 
   factory Location.fromJson(Map<String, dynamic> json) =>
       _$LocationFromJson(json);
+}
+
+Object? _readCoordinates(Map<dynamic, dynamic> json, String key) {
+  return json['coordinates'] ?? json['cordinates'];
 }
