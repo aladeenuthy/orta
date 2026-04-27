@@ -49,6 +49,11 @@ class _SplashScreenState extends State<SplashScreen>
           previous.viewState != current.viewState ||
           previous.session != current.session,
       listener: (BuildContext context, AuthState state) {
+        if (state.isAuthenticated) {
+          AppRouter.toReplacementNamed(AppRoutes.home);
+          return;
+        }
+
         if (state.isUnauthenticated) {
           AppRouter.toReplacementNamed(AppRoutes.register);
         }

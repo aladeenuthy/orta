@@ -9,6 +9,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final ForgotPasswordCubit _cubit = context.read<ForgotPasswordCubit>();
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +72,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               initialValue: state.email,
                               inputType: TextInputType.emailAddress,
                               validate: Validator.emailValidator,
-                              onChanged: context
-                                  .read<ForgotPasswordCubit>()
-                                  .emailChanged,
+                              onChanged: _cubit.emailChanged,
                             ),
                             AppSpacings.vertical(40),
                             AppButton(
@@ -112,6 +111,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       return;
     }
 
-    context.read<ForgotPasswordCubit>().forgotPassword();
+    _cubit.forgotPassword();
   }
 }

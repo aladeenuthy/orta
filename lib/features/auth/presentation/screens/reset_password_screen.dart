@@ -11,6 +11,7 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final ResetPasswordCubit _cubit = context.read<ResetPasswordCubit>();
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +70,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             hintText: 'Enter Password',
                             initialValue: state.password,
                             validate: Validator.password,
-                            onChanged: context
-                                .read<ResetPasswordCubit>()
-                                .passwordChanged,
+                            onChanged: _cubit.passwordChanged,
                           ),
                           AppSpacings.vertical(31),
                           AuthPasswordField(
@@ -84,9 +83,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   value,
                                   state.password,
                                 ),
-                            onChanged: context
-                                .read<ResetPasswordCubit>()
-                                .confirmPasswordChanged,
+                            onChanged: _cubit.confirmPasswordChanged,
                           ),
                           AppSpacings.vertical(40),
                           AppButton(
@@ -124,7 +121,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       return;
     }
 
-    context.read<ResetPasswordCubit>().resetPassword(
+    _cubit.resetPassword(
       userId: widget.args.userId,
       resetToken: widget.args.resetToken,
     );

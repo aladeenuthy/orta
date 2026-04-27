@@ -6,6 +6,7 @@ class AppRoutes {
   static const String register = "/register";
   static const String forgotPassword = "/forgot-password";
   static const String resetPassword = "/reset-password";
+  static const String home = "/home";
 }
 
 class AppRouter {
@@ -14,10 +15,20 @@ class AppRouter {
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     final Widget page = switch (settings.name) {
-      AppRoutes.login => const LoginScreen(),
-      AppRoutes.register => const RegisterScreen(),
-      AppRoutes.forgotPassword => const ForgotPasswordScreen(),
+      AppRoutes.login => BlocProvider<LoginCubit>(
+        create: (_) => locator<LoginCubit>(),
+        child: const LoginScreen(),
+      ),
+      AppRoutes.register => BlocProvider<RegisterCubit>(
+        create: (_) => locator<RegisterCubit>(),
+        child: const RegisterScreen(),
+      ),
+      AppRoutes.forgotPassword => BlocProvider<ForgotPasswordCubit>(
+        create: (_) => locator<ForgotPasswordCubit>(),
+        child: const ForgotPasswordScreen(),
+      ),
       AppRoutes.resetPassword => _resetPasswordScreen(settings.arguments),
+      AppRoutes.home => const _TemporaryHomeScreen(),
       AppRoutes.splash || _ => const SplashScreen(),
     };
 
@@ -33,10 +44,16 @@ class AppRouter {
 
   static Widget _resetPasswordScreen(Object? arguments) {
     if (arguments is ResetPasswordArgs) {
-      return ResetPasswordScreen(args: arguments);
+      return BlocProvider<ResetPasswordCubit>(
+        create: (_) => locator<ResetPasswordCubit>(),
+        child: ResetPasswordScreen(args: arguments),
+      );
     }
 
-    return const ForgotPasswordScreen();
+    return BlocProvider<ForgotPasswordCubit>(
+      create: (_) => locator<ForgotPasswordCubit>(),
+      child: const ForgotPasswordScreen(),
+    );
   }
 
   static void back() {
@@ -112,6 +129,33 @@ class AppRouter {
         widget: p,
       ),
       (Route<dynamic> route) => isFirst ?? false,
+    );
+  }
+}
+
+class _TemporaryHomeScreen extends StatelessWidget {
+  const _TemporaryHomeScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const Text('Home'),
+            AppSpacings.vertical(20),
+            AppButton(
+              label: 'Logout',
+              expanded: false,
+              onPressed: () async {
+                await context.read<AuthCubit>().logout();
+                AppRouter.toCloseAllNamed(AppRoutes.login);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
