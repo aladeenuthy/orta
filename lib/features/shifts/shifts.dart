@@ -14,6 +14,7 @@ export 'presentation/cubits/shift_detail/shift_detail_cubit.dart';
 export 'presentation/screens/shift_detail_screen.dart';
 export 'presentation/screens/shift_list_screen.dart';
 export 'presentation/widgets/shift_card.dart';
+export 'presentation/widgets/shift_decision_dialog.dart';
 export 'presentation/widgets/location_mark.dart';
 export 'presentation/widgets/shift_status_chip.dart';
 export 'shifts_service_locator.dart';

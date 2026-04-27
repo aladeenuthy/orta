@@ -10,6 +10,7 @@ part 'location.g.dart';
 class Location with _$Location {
   @JsonSerializable(explicitToJson: true)
   const factory Location({
+    required String id,
     required String name,
     String? postCode,
     num? distance,
@@ -24,4 +25,3 @@ class Location with _$Location {
   factory Location.fromJson(Map<String, dynamic> json) =>
       _$LocationFromJson(json);
 }
-

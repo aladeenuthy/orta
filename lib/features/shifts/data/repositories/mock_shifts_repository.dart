@@ -73,6 +73,7 @@ class MockShiftsRepository implements ShiftsRepository {
   }
 
   static final Location _warehouseA = Location(
+    id: 'warehouse-a',
     name: 'Warehouse A',
     address: '14155 Sullyfield Circle',
     postCode: 'Suite H, Chantilly, VA 20121',
@@ -80,6 +81,7 @@ class MockShiftsRepository implements ShiftsRepository {
   );
 
   static final Location _warehouseB = Location(
+    id: 'warehouse-b',
     name: 'Warehouse B',
     address: '12 Southbank Lane',
     postCode: 'SE1 9PX',

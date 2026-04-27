@@ -21,6 +21,7 @@ Location _$LocationFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Location {
+  String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get postCode => throw _privateConstructorUsedError;
   num? get distance => throw _privateConstructorUsedError;
@@ -48,6 +49,7 @@ abstract class $LocationCopyWith<$Res> {
       _$LocationCopyWithImpl<$Res, Location>;
   @useResult
   $Res call({
+    String id,
     String name,
     String? postCode,
     num? distance,
@@ -77,6 +79,7 @@ class _$LocationCopyWithImpl<$Res, $Val extends Location>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? postCode = freezed,
     Object? distance = freezed,
@@ -89,6 +92,10 @@ class _$LocationCopyWithImpl<$Res, $Val extends Location>
   }) {
     return _then(
       _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
             name: null == name
                 ? _value.name
                 : name // ignore: cast_nullable_to_non_nullable
@@ -151,6 +158,7 @@ abstract class _$$LocationImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
+    String id,
     String name,
     String? postCode,
     num? distance,
@@ -180,6 +188,7 @@ class __$$LocationImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? postCode = freezed,
     Object? distance = freezed,
@@ -192,6 +201,10 @@ class __$$LocationImplCopyWithImpl<$Res>
   }) {
     return _then(
       _$LocationImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
         name: null == name
             ? _value.name
             : name // ignore: cast_nullable_to_non_nullable
@@ -238,6 +251,7 @@ class __$$LocationImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$LocationImpl implements _Location {
   const _$LocationImpl({
+    required this.id,
     required this.name,
     this.postCode,
     this.distance,
@@ -252,6 +266,8 @@ class _$LocationImpl implements _Location {
   factory _$LocationImpl.fromJson(Map<String, dynamic> json) =>
       _$$LocationImplFromJson(json);
 
+  @override
+  final String id;
   @override
   final String name;
   @override
@@ -274,7 +290,7 @@ class _$LocationImpl implements _Location {
 
   @override
   String toString() {
-    return 'Location(name: $name, postCode: $postCode, distance: $distance, constituency: $constituency, adminDistrict: $adminDistrict, address: $address, coordinates: $coordinates, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Location(id: $id, name: $name, postCode: $postCode, distance: $distance, constituency: $constituency, adminDistrict: $adminDistrict, address: $address, coordinates: $coordinates, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -282,6 +298,7 @@ class _$LocationImpl implements _Location {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LocationImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.postCode, postCode) ||
                 other.postCode == postCode) &&
@@ -304,6 +321,7 @@ class _$LocationImpl implements _Location {
   @override
   int get hashCode => Object.hash(
     runtimeType,
+    id,
     name,
     postCode,
     distance,
@@ -331,6 +349,7 @@ class _$LocationImpl implements _Location {
 
 abstract class _Location implements Location {
   const factory _Location({
+    required final String id,
     required final String name,
     final String? postCode,
     final num? distance,
@@ -345,6 +364,8 @@ abstract class _Location implements Location {
   factory _Location.fromJson(Map<String, dynamic> json) =
       _$LocationImpl.fromJson;
 
+  @override
+  String get id;
   @override
   String get name;
   @override

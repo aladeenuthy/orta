@@ -6,11 +6,15 @@ class ShiftCard extends StatelessWidget {
     required this.shift,
     this.showOngoingChip = false,
     this.showActions = false,
+    this.onAccept,
+    this.onReject,
   });
 
   final Shift shift;
   final bool showOngoingChip;
   final bool showActions;
+  final ValueChanged<Shift>? onAccept;
+  final ValueChanged<Shift>? onReject;
 
   @override
   Widget build(BuildContext context) {
@@ -97,20 +101,10 @@ class ShiftCard extends StatelessWidget {
             ),
             if (showActions) ...<Widget>[
               AppSpacings.vertical(14),
-              Row(
-                children: <Widget>[
-                  _ShiftActionButton(
-                    label: 'Accept',
-                    filled: true,
-                    onTap: () {},
-                  ),
-                  AppSpacings.horizontal(18),
-                  _ShiftActionButton(
-                    label: 'Reject',
-                    filled: false,
-                    onTap: () {},
-                  ),
-                ],
+              _ShiftActions(
+                shift: shift,
+                onAccept: onAccept,
+                onReject: onReject,
               ),
             ],
           ],
@@ -148,6 +142,53 @@ class ShiftCard extends StatelessWidget {
     }
 
     return pay.toStringAsFixed(2);
+  }
+}
+
+class _ShiftActions extends StatelessWidget {
+  const _ShiftActions({
+    required this.shift,
+    required this.onAccept,
+    required this.onReject,
+  });
+
+  final Shift shift;
+  final ValueChanged<Shift>? onAccept;
+  final ValueChanged<Shift>? onReject;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        _ShiftActionButton(
+          label: 'Accept',
+          filled: true,
+          onTap: () {
+            ShiftDecisionModal.show(
+              context: context,
+              action: ShiftDecisionAction.accept,
+              onConfirmed: () {
+                onAccept?.call(shift);
+              },
+            );
+          },
+        ),
+        AppSpacings.horizontal(18),
+        _ShiftActionButton(
+          label: 'Reject',
+          filled: false,
+          onTap: () {
+            ShiftDecisionModal.show(
+              context: context,
+              action: ShiftDecisionAction.reject,
+              onConfirmed: () {
+                onReject?.call(shift);
+              },
+            );
+          },
+        ),
+      ],
+    );
   }
 }
 

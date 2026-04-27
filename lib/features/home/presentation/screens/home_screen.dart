@@ -124,16 +124,16 @@ class _DashboardHomeBodyState extends State<_DashboardHomeBody> {
                   Icon(
                     CupertinoIcons.bell,
                     color: AppColors.textColor,
-                    size: 34.0.radius,
+                    size: 30.0.radius,
                   ),
                   AppSpacings.horizontal(18),
                   CircleAvatar(
-                    radius: 22.0.radius,
+                    radius: 20.0.radius,
                     backgroundColor: AppColors.primaryLight,
                     child: Icon(
                       Icons.person,
                       color: AppColors.primary,
-                      size: 24.0.radius,
+                      size: 20.0.radius,
                     ),
                   ),
                 ],

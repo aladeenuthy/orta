@@ -146,7 +146,7 @@ class _ShiftDetailBody extends StatelessWidget {
         16.0.width,
         24.0.height,
       ),
-      child: Column(
+      child: AppAnimatedColumn(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const _MapPreview(),
@@ -457,17 +457,26 @@ class _ShiftPrimaryAction extends StatelessWidget {
       builder: (BuildContext context, ShiftActionsState state) {
         return AppButton(
           color: AppColors.primary,
-          enabled:!state.isLoading,
+          enabled: !state.isLoading,
           height: 42,
           borderRadius: BorderRadius.circular(8.0.radius),
           margin: EdgeInsets.zero,
-          onPressed:() {
-                  if (isInProgress) {
-                    context.read<ShiftActionsCubit>().clockOut(shiftId);
-                    return;
-                  }
-                  context.read<ShiftActionsCubit>().clockIn(shiftId);
-                },
+          onPressed: () {
+            ShiftDecisionModal.show(
+              context: context,
+              action: isInProgress
+                  ? ShiftDecisionAction.clockOut
+                  : ShiftDecisionAction.clockIn,
+              onConfirmed: () {
+                if (isInProgress) {
+                  context.read<ShiftActionsCubit>().clockOut(shiftId);
+                  return;
+                }
+
+                context.read<ShiftActionsCubit>().clockIn(shiftId);
+              },
+            );
+          },
           child: Text(
             label,
             style: context.text.titleMedium?.copyWith(
