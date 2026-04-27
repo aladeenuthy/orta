@@ -235,11 +235,23 @@ void main() {
         ).thenAnswer((_) async => const Right<AppError, AuthSession>(session));
         return LoginCubit(authService: authService);
       },
-      act: (LoginCubit cubit) =>
-          cubit.login(email: 'john@example.com', password: 'StrongPass123!'),
+      seed: () => const LoginState(
+        email: 'john@example.com',
+        password: 'StrongPass123!',
+      ),
+      act: (LoginCubit cubit) => cubit.login(),
       expect: () => <LoginState>[
-        const LoginState(viewState: ViewState.loading),
-        const LoginState(viewState: ViewState.loaded, session: session),
+        const LoginState(
+          viewState: ViewState.loading,
+          email: 'john@example.com',
+          password: 'StrongPass123!',
+        ),
+        const LoginState(
+          viewState: ViewState.loaded,
+          email: 'john@example.com',
+          password: 'StrongPass123!',
+          session: session,
+        ),
       ],
       verify: (_) {
         verify(
@@ -265,14 +277,36 @@ void main() {
         );
         return LoginCubit(authService: authService);
       },
-      act: (LoginCubit cubit) =>
-          cubit.login(email: 'john@example.com', password: 'StrongPass123!'),
+      seed: () => const LoginState(
+        email: 'john@example.com',
+        password: 'StrongPass123!',
+      ),
+      act: (LoginCubit cubit) => cubit.login(),
       expect: () => <LoginState>[
-        const LoginState(viewState: ViewState.loading),
+        const LoginState(
+          viewState: ViewState.loading,
+          email: 'john@example.com',
+          password: 'StrongPass123!',
+        ),
         const LoginState(
           viewState: ViewState.error,
+          email: 'john@example.com',
+          password: 'StrongPass123!',
           errorMessage: 'Invalid login',
         ),
+      ],
+    );
+
+    blocTest<LoginCubit, LoginState>(
+      'updates login form fields',
+      build: () => LoginCubit(authService: authService),
+      act: (LoginCubit cubit) {
+        cubit.emailChanged('john@example.com');
+        cubit.passwordChanged('StrongPass123!');
+      },
+      expect: () => <LoginState>[
+        const LoginState(email: 'john@example.com'),
+        const LoginState(email: 'john@example.com', password: 'StrongPass123!'),
       ],
     );
 
@@ -301,14 +335,28 @@ void main() {
         ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
         return RegisterCubit(authService: authService);
       },
-      act: (RegisterCubit cubit) => cubit.register(
-        name: 'Test Doe',
+      seed: () => const RegisterState(
+        firstName: 'Test',
+        lastName: 'Doe',
         email: 'Test@example.com',
         password: 'Marine345@',
       ),
+      act: (RegisterCubit cubit) => cubit.register(),
       expect: () => <RegisterState>[
-        const RegisterState(viewState: ViewState.loading),
-        const RegisterState(viewState: ViewState.loaded),
+        const RegisterState(
+          viewState: ViewState.loading,
+          firstName: 'Test',
+          lastName: 'Doe',
+          email: 'Test@example.com',
+          password: 'Marine345@',
+        ),
+        const RegisterState(
+          viewState: ViewState.loaded,
+          firstName: 'Test',
+          lastName: 'Doe',
+          email: 'Test@example.com',
+          password: 'Marine345@',
+        ),
       ],
     );
 
@@ -326,16 +374,62 @@ void main() {
         );
         return RegisterCubit(authService: authService);
       },
-      act: (RegisterCubit cubit) => cubit.register(
-        name: 'Test Doe',
+      seed: () => const RegisterState(
+        firstName: 'Test',
+        lastName: 'Doe',
         email: 'Test@example.com',
         password: 'Marine345@',
       ),
+      act: (RegisterCubit cubit) => cubit.register(),
       expect: () => <RegisterState>[
-        const RegisterState(viewState: ViewState.loading),
+        const RegisterState(
+          viewState: ViewState.loading,
+          firstName: 'Test',
+          lastName: 'Doe',
+          email: 'Test@example.com',
+          password: 'Marine345@',
+        ),
         const RegisterState(
           viewState: ViewState.error,
+          firstName: 'Test',
+          lastName: 'Doe',
+          email: 'Test@example.com',
+          password: 'Marine345@',
           errorMessage: 'Email exists',
+        ),
+      ],
+    );
+
+    blocTest<RegisterCubit, RegisterState>(
+      'updates register form fields',
+      build: () => RegisterCubit(authService: authService),
+      act: (RegisterCubit cubit) {
+        cubit.firstNameChanged('Test');
+        cubit.lastNameChanged('Doe');
+        cubit.emailChanged('Test@example.com');
+        cubit.passwordChanged('Marine345@');
+        cubit.confirmPasswordChanged('Marine345@');
+      },
+      expect: () => <RegisterState>[
+        const RegisterState(firstName: 'Test'),
+        const RegisterState(firstName: 'Test', lastName: 'Doe'),
+        const RegisterState(
+          firstName: 'Test',
+          lastName: 'Doe',
+          email: 'Test@example.com',
+        ),
+        const RegisterState(
+          firstName: 'Test',
+          lastName: 'Doe',
+          email: 'Test@example.com',
+          password: 'Marine345@',
+        ),
+        const RegisterState(
+          firstName: 'Test',
+          lastName: 'Doe',
+          email: 'Test@example.com',
+          password: 'Marine345@',
+          confirmPassword: 'Marine345@',
         ),
       ],
     );

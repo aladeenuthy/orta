@@ -18,6 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$LoginState {
   ViewState get viewState => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
+  String get password => throw _privateConstructorUsedError;
   AuthSession? get session => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
 
@@ -35,7 +37,13 @@ abstract class $LoginStateCopyWith<$Res> {
     $Res Function(LoginState) then,
   ) = _$LoginStateCopyWithImpl<$Res, LoginState>;
   @useResult
-  $Res call({ViewState viewState, AuthSession? session, String? errorMessage});
+  $Res call({
+    ViewState viewState,
+    String email,
+    String password,
+    AuthSession? session,
+    String? errorMessage,
+  });
 
   $AuthSessionCopyWith<$Res>? get session;
 }
@@ -56,6 +64,8 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
   @override
   $Res call({
     Object? viewState = null,
+    Object? email = null,
+    Object? password = null,
     Object? session = freezed,
     Object? errorMessage = freezed,
   }) {
@@ -65,6 +75,14 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
                 ? _value.viewState
                 : viewState // ignore: cast_nullable_to_non_nullable
                       as ViewState,
+            email: null == email
+                ? _value.email
+                : email // ignore: cast_nullable_to_non_nullable
+                      as String,
+            password: null == password
+                ? _value.password
+                : password // ignore: cast_nullable_to_non_nullable
+                      as String,
             session: freezed == session
                 ? _value.session
                 : session // ignore: cast_nullable_to_non_nullable
@@ -102,7 +120,13 @@ abstract class _$$LoginStateImplCopyWith<$Res>
   ) = __$$LoginStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ViewState viewState, AuthSession? session, String? errorMessage});
+  $Res call({
+    ViewState viewState,
+    String email,
+    String password,
+    AuthSession? session,
+    String? errorMessage,
+  });
 
   @override
   $AuthSessionCopyWith<$Res>? get session;
@@ -123,6 +147,8 @@ class __$$LoginStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? viewState = null,
+    Object? email = null,
+    Object? password = null,
     Object? session = freezed,
     Object? errorMessage = freezed,
   }) {
@@ -132,6 +158,14 @@ class __$$LoginStateImplCopyWithImpl<$Res>
             ? _value.viewState
             : viewState // ignore: cast_nullable_to_non_nullable
                   as ViewState,
+        email: null == email
+            ? _value.email
+            : email // ignore: cast_nullable_to_non_nullable
+                  as String,
+        password: null == password
+            ? _value.password
+            : password // ignore: cast_nullable_to_non_nullable
+                  as String,
         session: freezed == session
             ? _value.session
             : session // ignore: cast_nullable_to_non_nullable
@@ -150,6 +184,8 @@ class __$$LoginStateImplCopyWithImpl<$Res>
 class _$LoginStateImpl extends _LoginState {
   const _$LoginStateImpl({
     this.viewState = ViewState.initial,
+    this.email = '',
+    this.password = '',
     this.session,
     this.errorMessage,
   }) : super._();
@@ -158,13 +194,19 @@ class _$LoginStateImpl extends _LoginState {
   @JsonKey()
   final ViewState viewState;
   @override
+  @JsonKey()
+  final String email;
+  @override
+  @JsonKey()
+  final String password;
+  @override
   final AuthSession? session;
   @override
   final String? errorMessage;
 
   @override
   String toString() {
-    return 'LoginState(viewState: $viewState, session: $session, errorMessage: $errorMessage)';
+    return 'LoginState(viewState: $viewState, email: $email, password: $password, session: $session, errorMessage: $errorMessage)';
   }
 
   @override
@@ -174,14 +216,23 @@ class _$LoginStateImpl extends _LoginState {
             other is _$LoginStateImpl &&
             (identical(other.viewState, viewState) ||
                 other.viewState == viewState) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.password, password) ||
+                other.password == password) &&
             (identical(other.session, session) || other.session == session) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, viewState, session, errorMessage);
+  int get hashCode => Object.hash(
+    runtimeType,
+    viewState,
+    email,
+    password,
+    session,
+    errorMessage,
+  );
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.
@@ -195,6 +246,8 @@ class _$LoginStateImpl extends _LoginState {
 abstract class _LoginState extends LoginState {
   const factory _LoginState({
     final ViewState viewState,
+    final String email,
+    final String password,
     final AuthSession? session,
     final String? errorMessage,
   }) = _$LoginStateImpl;
@@ -202,6 +255,10 @@ abstract class _LoginState extends LoginState {
 
   @override
   ViewState get viewState;
+  @override
+  String get email;
+  @override
+  String get password;
   @override
   AuthSession? get session;
   @override

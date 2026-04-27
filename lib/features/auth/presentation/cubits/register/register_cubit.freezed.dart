@@ -18,6 +18,11 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$RegisterState {
   ViewState get viewState => throw _privateConstructorUsedError;
+  String get firstName => throw _privateConstructorUsedError;
+  String get lastName => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
+  String get password => throw _privateConstructorUsedError;
+  String get confirmPassword => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
 
   /// Create a copy of RegisterState
@@ -34,7 +39,15 @@ abstract class $RegisterStateCopyWith<$Res> {
     $Res Function(RegisterState) then,
   ) = _$RegisterStateCopyWithImpl<$Res, RegisterState>;
   @useResult
-  $Res call({ViewState viewState, String? errorMessage});
+  $Res call({
+    ViewState viewState,
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+    String confirmPassword,
+    String? errorMessage,
+  });
 }
 
 /// @nodoc
@@ -51,13 +64,41 @@ class _$RegisterStateCopyWithImpl<$Res, $Val extends RegisterState>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? viewState = null, Object? errorMessage = freezed}) {
+  $Res call({
+    Object? viewState = null,
+    Object? firstName = null,
+    Object? lastName = null,
+    Object? email = null,
+    Object? password = null,
+    Object? confirmPassword = null,
+    Object? errorMessage = freezed,
+  }) {
     return _then(
       _value.copyWith(
             viewState: null == viewState
                 ? _value.viewState
                 : viewState // ignore: cast_nullable_to_non_nullable
                       as ViewState,
+            firstName: null == firstName
+                ? _value.firstName
+                : firstName // ignore: cast_nullable_to_non_nullable
+                      as String,
+            lastName: null == lastName
+                ? _value.lastName
+                : lastName // ignore: cast_nullable_to_non_nullable
+                      as String,
+            email: null == email
+                ? _value.email
+                : email // ignore: cast_nullable_to_non_nullable
+                      as String,
+            password: null == password
+                ? _value.password
+                : password // ignore: cast_nullable_to_non_nullable
+                      as String,
+            confirmPassword: null == confirmPassword
+                ? _value.confirmPassword
+                : confirmPassword // ignore: cast_nullable_to_non_nullable
+                      as String,
             errorMessage: freezed == errorMessage
                 ? _value.errorMessage
                 : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -77,7 +118,15 @@ abstract class _$$RegisterStateImplCopyWith<$Res>
   ) = __$$RegisterStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ViewState viewState, String? errorMessage});
+  $Res call({
+    ViewState viewState,
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+    String confirmPassword,
+    String? errorMessage,
+  });
 }
 
 /// @nodoc
@@ -93,13 +142,41 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? viewState = null, Object? errorMessage = freezed}) {
+  $Res call({
+    Object? viewState = null,
+    Object? firstName = null,
+    Object? lastName = null,
+    Object? email = null,
+    Object? password = null,
+    Object? confirmPassword = null,
+    Object? errorMessage = freezed,
+  }) {
     return _then(
       _$RegisterStateImpl(
         viewState: null == viewState
             ? _value.viewState
             : viewState // ignore: cast_nullable_to_non_nullable
                   as ViewState,
+        firstName: null == firstName
+            ? _value.firstName
+            : firstName // ignore: cast_nullable_to_non_nullable
+                  as String,
+        lastName: null == lastName
+            ? _value.lastName
+            : lastName // ignore: cast_nullable_to_non_nullable
+                  as String,
+        email: null == email
+            ? _value.email
+            : email // ignore: cast_nullable_to_non_nullable
+                  as String,
+        password: null == password
+            ? _value.password
+            : password // ignore: cast_nullable_to_non_nullable
+                  as String,
+        confirmPassword: null == confirmPassword
+            ? _value.confirmPassword
+            : confirmPassword // ignore: cast_nullable_to_non_nullable
+                  as String,
         errorMessage: freezed == errorMessage
             ? _value.errorMessage
             : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -114,6 +191,11 @@ class __$$RegisterStateImplCopyWithImpl<$Res>
 class _$RegisterStateImpl extends _RegisterState {
   const _$RegisterStateImpl({
     this.viewState = ViewState.initial,
+    this.firstName = '',
+    this.lastName = '',
+    this.email = '',
+    this.password = '',
+    this.confirmPassword = '',
     this.errorMessage,
   }) : super._();
 
@@ -121,11 +203,26 @@ class _$RegisterStateImpl extends _RegisterState {
   @JsonKey()
   final ViewState viewState;
   @override
+  @JsonKey()
+  final String firstName;
+  @override
+  @JsonKey()
+  final String lastName;
+  @override
+  @JsonKey()
+  final String email;
+  @override
+  @JsonKey()
+  final String password;
+  @override
+  @JsonKey()
+  final String confirmPassword;
+  @override
   final String? errorMessage;
 
   @override
   String toString() {
-    return 'RegisterState(viewState: $viewState, errorMessage: $errorMessage)';
+    return 'RegisterState(viewState: $viewState, firstName: $firstName, lastName: $lastName, email: $email, password: $password, confirmPassword: $confirmPassword, errorMessage: $errorMessage)';
   }
 
   @override
@@ -135,12 +232,30 @@ class _$RegisterStateImpl extends _RegisterState {
             other is _$RegisterStateImpl &&
             (identical(other.viewState, viewState) ||
                 other.viewState == viewState) &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.password, password) ||
+                other.password == password) &&
+            (identical(other.confirmPassword, confirmPassword) ||
+                other.confirmPassword == confirmPassword) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, viewState, errorMessage);
+  int get hashCode => Object.hash(
+    runtimeType,
+    viewState,
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+    errorMessage,
+  );
 
   /// Create a copy of RegisterState
   /// with the given fields replaced by the non-null parameter values.
@@ -154,12 +269,27 @@ class _$RegisterStateImpl extends _RegisterState {
 abstract class _RegisterState extends RegisterState {
   const factory _RegisterState({
     final ViewState viewState,
+    final String firstName,
+    final String lastName,
+    final String email,
+    final String password,
+    final String confirmPassword,
     final String? errorMessage,
   }) = _$RegisterStateImpl;
   const _RegisterState._() : super._();
 
   @override
   ViewState get viewState;
+  @override
+  String get firstName;
+  @override
+  String get lastName;
+  @override
+  String get email;
+  @override
+  String get password;
+  @override
+  String get confirmPassword;
   @override
   String? get errorMessage;
 

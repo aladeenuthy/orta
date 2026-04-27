@@ -6,7 +6,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [],
+      providers: [
+        BlocProvider<LoginCubit>(create: (_) => locator<LoginCubit>()),
+        BlocProvider<RegisterCubit>(create: (_) => locator<RegisterCubit>()),
+      ],
       child: ScreenUtilInit(
         designSize: const Size(393, 883),
         minTextAdapt: true,
@@ -14,11 +17,11 @@ class MyApp extends StatelessWidget {
         builder: (context, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            initialRoute: '/',
+            initialRoute: AppRoutes.splash,
             navigatorKey: AppRouter.navigatorKey,
+            onGenerateRoute: AppRouter.onGenerateRoute,
             title: 'Orta',
             theme: appTheme(),
-            home: SplashScreen(),
           );
         },
       ),

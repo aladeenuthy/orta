@@ -4,6 +4,8 @@ part of 'login_cubit.dart';
 class LoginState with _$LoginState {
   const factory LoginState({
     @Default(ViewState.initial) ViewState viewState,
+    @Default('') String email,
+    @Default('') String password,
     AuthSession? session,
     String? errorMessage,
   }) = _LoginState;

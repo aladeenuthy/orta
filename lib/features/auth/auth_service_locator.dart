@@ -21,5 +21,13 @@ class AuthServiceLocator implements ServiceLocator {
     locator.registerLazySingleton<AuthService>(
       () => AuthService(repository: locator<AuthRepository>()),
     );
+
+    locator.registerFactory<LoginCubit>(
+      () => LoginCubit(authService: locator<AuthService>()),
+    );
+
+    locator.registerFactory<RegisterCubit>(
+      () => RegisterCubit(authService: locator<AuthService>()),
+    );
   }
 }
