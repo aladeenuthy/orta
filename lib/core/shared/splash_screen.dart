@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) {
       return;
     }
-    await AppRouter.toReplacementNamed(AppRoutes.register);
+    await context.read<AuthCubit>().checkAuthentication();
   }
 
   void splashTimer() {
@@ -44,17 +44,27 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Center(
-        child: BounceInAnimation(
-          key: _logoKey,
-          duration: const Duration(milliseconds: 1200),
-          child: const OrtaBrand(
-            iconSize: 44,
-            fontSize: 22,
-            centered: true,
-            text: "Orta",
+    return BlocListener<AuthCubit, AuthState>(
+      listenWhen: (AuthState previous, AuthState current) =>
+          previous.viewState != current.viewState ||
+          previous.session != current.session,
+      listener: (BuildContext context, AuthState state) {
+        if (state.isUnauthenticated) {
+          AppRouter.toReplacementNamed(AppRoutes.register);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: Center(
+          child: BounceInAnimation(
+            key: _logoKey,
+            duration: const Duration(milliseconds: 1200),
+            child: const OrtaBrand(
+              iconSize: 44,
+              fontSize: 22,
+              centered: true,
+              text: "Orta",
+            ),
           ),
         ),
       ),
