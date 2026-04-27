@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const AuthHeader(),
                       Padding(
                         padding: AppPaddings.horizontal(16),
-                        child: Column(
+                        child: AppAnimatedColumn(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
@@ -85,7 +85,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             Align(
                               alignment: Alignment.centerRight,
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: state.isLoading
+                                    ? null
+                                    : () => AppRouter.toNamed(
+                                        AppRoutes.forgotPassword,
+                                      ),
                                 style: TextButton.styleFrom(
                                   padding: EdgeInsets.zero,
                                   minimumSize: Size.zero,
@@ -109,9 +113,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(10.0.radius),
                               margin: EdgeInsets.zero,
                               onPressed: _submit,
-                              child: AuthSubmitButtonContent(
-                                label: 'Login',
-                                loading: state.isLoading,
+                              child: Text(
+                                "Login",
+                                style: context.text.titleMedium?.copyWith(
+                                  color: AppColors.white,
+                                  fontSize: 16.0.fontSize,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
                             AppSpacings.vertical(22),

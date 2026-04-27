@@ -4,6 +4,8 @@ class AppRoutes {
   static const String splash = "/";
   static const String login = "/login";
   static const String register = "/register";
+  static const String forgotPassword = "/forgot-password";
+  static const String resetPassword = "/reset-password";
 }
 
 class AppRouter {
@@ -14,6 +16,8 @@ class AppRouter {
     final Widget page = switch (settings.name) {
       AppRoutes.login => const LoginScreen(),
       AppRoutes.register => const RegisterScreen(),
+      AppRoutes.forgotPassword => const ForgotPasswordScreen(),
+      AppRoutes.resetPassword => _resetPasswordScreen(settings.arguments),
       AppRoutes.splash || _ => const SplashScreen(),
     };
 
@@ -25,6 +29,14 @@ class AppRouter {
       reverseCurve: Curves.fastOutSlowIn,
       widget: page,
     );
+  }
+
+  static Widget _resetPasswordScreen(Object? arguments) {
+    if (arguments is ResetPasswordArgs) {
+      return ResetPasswordScreen(args: arguments);
+    }
+
+    return const ForgotPasswordScreen();
   }
 
   static void back() {

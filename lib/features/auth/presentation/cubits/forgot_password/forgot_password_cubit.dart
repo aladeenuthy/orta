@@ -12,13 +12,17 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
 
   final AuthService _authService;
 
-  Future<void> forgotPassword({required String email}) async {
+  void emailChanged(String email) {
+    emit(state.copyWith(email: email, errorMessage: null));
+  }
+
+  Future<void> forgotPassword() async {
     if (state.isLoading) return;
 
     emit(state.toLoading());
 
     final Either<AppError, Unit> result = await _authService.forgotPassword(
-      email: email,
+      email: state.email.trim(),
     );
 
     result.fold(

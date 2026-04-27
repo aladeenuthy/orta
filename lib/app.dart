@@ -9,6 +9,12 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<LoginCubit>(create: (_) => locator<LoginCubit>()),
         BlocProvider<RegisterCubit>(create: (_) => locator<RegisterCubit>()),
+        BlocProvider<ForgotPasswordCubit>(
+          create: (_) => locator<ForgotPasswordCubit>(),
+        ),
+        BlocProvider<ResetPasswordCubit>(
+          create: (_) => locator<ResetPasswordCubit>(),
+        ),
       ],
       child: ScreenUtilInit(
         designSize: const Size(393, 883),

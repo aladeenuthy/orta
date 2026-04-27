@@ -1,7 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:orta/features/features.dart';
 
 class AuthHeader extends StatelessWidget {
-  const AuthHeader({super.key});
+  const AuthHeader({
+    super.key,
+    this.showBackButton = false,
+    this.onBackPressed,
+  });
+
+  final bool showBackButton;
+  final VoidCallback? onBackPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +27,15 @@ class AuthHeader extends StatelessWidget {
             bottom: 60.0.height,
             child: const OrtaBrand(iconSize: 31, fontSize: 20),
           ),
+          if (showBackButton)
+            Positioned(
+              left: 4.0.width,
+              top: 58.0.height,
+              child: CupertinoNavigationBarBackButton(
+                color: AppColors.primary,
+                onPressed: onBackPressed ?? AppRouter.back,
+              ),
+            ),
         ],
       ),
     );

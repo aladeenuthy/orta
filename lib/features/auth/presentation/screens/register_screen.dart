@@ -161,9 +161,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderRadius: BorderRadius.circular(10.0.radius),
                               margin: EdgeInsets.zero,
                               onPressed: _submit,
-                              child: AuthSubmitButtonContent(
-                                label: 'Login',
-                                loading: state.isLoading,
+                              child: Text(
+                                "Register",
+                                style: context.text.titleMedium?.copyWith(
+                                  color: AppColors.white,
+                                  fontSize: 16.0.fontSize,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
                             AppSpacings.vertical(12),

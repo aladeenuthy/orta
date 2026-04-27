@@ -455,11 +455,17 @@ void main() {
         ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
         return ForgotPasswordCubit(authService: authService);
       },
-      act: (ForgotPasswordCubit cubit) =>
-          cubit.forgotPassword(email: 'john@example.com'),
+      seed: () => const ForgotPasswordState(email: 'john@example.com'),
+      act: (ForgotPasswordCubit cubit) => cubit.forgotPassword(),
       expect: () => <ForgotPasswordState>[
-        const ForgotPasswordState(viewState: ViewState.loading),
-        const ForgotPasswordState(viewState: ViewState.loaded),
+        const ForgotPasswordState(
+          viewState: ViewState.loading,
+          email: 'john@example.com',
+        ),
+        const ForgotPasswordState(
+          viewState: ViewState.loaded,
+          email: 'john@example.com',
+        ),
       ],
     );
 
@@ -473,14 +479,28 @@ void main() {
         );
         return ForgotPasswordCubit(authService: authService);
       },
-      act: (ForgotPasswordCubit cubit) =>
-          cubit.forgotPassword(email: 'john@example.com'),
+      seed: () => const ForgotPasswordState(email: 'john@example.com'),
+      act: (ForgotPasswordCubit cubit) => cubit.forgotPassword(),
       expect: () => <ForgotPasswordState>[
-        const ForgotPasswordState(viewState: ViewState.loading),
+        const ForgotPasswordState(
+          viewState: ViewState.loading,
+          email: 'john@example.com',
+        ),
         const ForgotPasswordState(
           viewState: ViewState.error,
+          email: 'john@example.com',
           errorMessage: 'Email not found',
         ),
+      ],
+    );
+
+    blocTest<ForgotPasswordCubit, ForgotPasswordState>(
+      'updates forgot password email field',
+      build: () => ForgotPasswordCubit(authService: authService),
+      act: (ForgotPasswordCubit cubit) =>
+          cubit.emailChanged('john@example.com'),
+      expect: () => <ForgotPasswordState>[
+        const ForgotPasswordState(email: 'john@example.com'),
       ],
     );
 
@@ -510,15 +530,23 @@ void main() {
         ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
         return ResetPasswordCubit(authService: authService);
       },
-      act: (ResetPasswordCubit cubit) => cubit.resetPassword(
-        userId: 'user-id',
-        resetToken: 'reset-token',
-        newPassword: 'NewPass123!',
+      seed: () => const ResetPasswordState(
+        password: 'NewPass123!',
         confirmPassword: 'NewPass123!',
       ),
+      act: (ResetPasswordCubit cubit) =>
+          cubit.resetPassword(userId: 'user-id', resetToken: 'reset-token'),
       expect: () => <ResetPasswordState>[
-        const ResetPasswordState(viewState: ViewState.loading),
-        const ResetPasswordState(viewState: ViewState.loaded),
+        const ResetPasswordState(
+          viewState: ViewState.loading,
+          password: 'NewPass123!',
+          confirmPassword: 'NewPass123!',
+        ),
+        const ResetPasswordState(
+          viewState: ViewState.loaded,
+          password: 'NewPass123!',
+          confirmPassword: 'NewPass123!',
+        ),
       ],
     );
 
@@ -538,17 +566,39 @@ void main() {
         );
         return ResetPasswordCubit(authService: authService);
       },
-      act: (ResetPasswordCubit cubit) => cubit.resetPassword(
-        userId: 'user-id',
-        resetToken: 'reset-token',
-        newPassword: 'NewPass123!',
+      seed: () => const ResetPasswordState(
+        password: 'NewPass123!',
         confirmPassword: 'DifferentPass123!',
       ),
+      act: (ResetPasswordCubit cubit) =>
+          cubit.resetPassword(userId: 'user-id', resetToken: 'reset-token'),
       expect: () => <ResetPasswordState>[
-        const ResetPasswordState(viewState: ViewState.loading),
+        const ResetPasswordState(
+          viewState: ViewState.loading,
+          password: 'NewPass123!',
+          confirmPassword: 'DifferentPass123!',
+        ),
         const ResetPasswordState(
           viewState: ViewState.error,
+          password: 'NewPass123!',
+          confirmPassword: 'DifferentPass123!',
           errorMessage: 'Passwords do not match',
+        ),
+      ],
+    );
+
+    blocTest<ResetPasswordCubit, ResetPasswordState>(
+      'updates reset password form fields',
+      build: () => ResetPasswordCubit(authService: authService),
+      act: (ResetPasswordCubit cubit) {
+        cubit.passwordChanged('NewPass123!');
+        cubit.confirmPasswordChanged('NewPass123!');
+      },
+      expect: () => <ResetPasswordState>[
+        const ResetPasswordState(password: 'NewPass123!'),
+        const ResetPasswordState(
+          password: 'NewPass123!',
+          confirmPassword: 'NewPass123!',
         ),
       ],
     );

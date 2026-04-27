@@ -30,6 +30,39 @@ void main() {
       expect((route as Transitions<dynamic>).widget, isA<RegisterScreen>());
     });
 
+    test(
+      'returns the forgot password screen for the forgot password route',
+      () {
+        final route = AppRouter.onGenerateRoute(
+          const RouteSettings(name: AppRoutes.forgotPassword),
+        );
+
+        expect(route.settings.name, AppRoutes.forgotPassword);
+        expect(
+          (route as Transitions<dynamic>).widget,
+          isA<ForgotPasswordScreen>(),
+        );
+      },
+    );
+
+    test('returns the reset password screen with reset args', () {
+      final route = AppRouter.onGenerateRoute(
+        const RouteSettings(
+          name: AppRoutes.resetPassword,
+          arguments: ResetPasswordArgs(
+            userId: 'user-id',
+            resetToken: 'reset-token',
+          ),
+        ),
+      );
+
+      expect(route.settings.name, AppRoutes.resetPassword);
+      expect(
+        (route as Transitions<dynamic>).widget,
+        isA<ResetPasswordScreen>(),
+      );
+    });
+
     test('falls back to the splash screen for unknown routes', () {
       final route = AppRouter.onGenerateRoute(
         const RouteSettings(name: '/missing'),
