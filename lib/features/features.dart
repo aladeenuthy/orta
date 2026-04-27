@@ -26,6 +26,7 @@ export '../core/resources/app_size.dart';
 export '../core/resources/resources.dart';
 export '../core/resources/app_text_styles.dart';
 export '../core/route/route.dart';
+export '../core/route/deep_link_handler.dart';
 // Core - Route
 export '../core/route/route_transition.dart';
 export '../core/service_locator.dart';
