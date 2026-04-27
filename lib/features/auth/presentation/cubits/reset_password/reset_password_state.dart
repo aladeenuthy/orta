@@ -4,6 +4,8 @@ part of 'reset_password_cubit.dart';
 class ResetPasswordState with _$ResetPasswordState {
   const factory ResetPasswordState({
     @Default(ViewState.initial) ViewState viewState,
+    @Default('') String password,
+    @Default('') String confirmPassword,
     String? errorMessage,
   }) = _ResetPasswordState;
 

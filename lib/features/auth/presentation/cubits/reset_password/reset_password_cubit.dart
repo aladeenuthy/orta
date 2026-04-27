@@ -12,11 +12,17 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
 
   final AuthService _authService;
 
+  void passwordChanged(String password) {
+    emit(state.copyWith(password: password, errorMessage: null));
+  }
+
+  void confirmPasswordChanged(String confirmPassword) {
+    emit(state.copyWith(confirmPassword: confirmPassword, errorMessage: null));
+  }
+
   Future<void> resetPassword({
     required String userId,
     required String resetToken,
-    required String newPassword,
-    required String confirmPassword,
   }) async {
     if (state.isLoading) return;
 
@@ -25,8 +31,8 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
     final Either<AppError, Unit> result = await _authService.resetPassword(
       userId: userId,
       resetToken: resetToken,
-      newPassword: newPassword,
-      confirmPassword: confirmPassword,
+      newPassword: state.password,
+      confirmPassword: state.confirmPassword,
     );
 
     result.fold(

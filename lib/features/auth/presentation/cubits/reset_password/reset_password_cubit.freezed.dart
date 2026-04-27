@@ -18,6 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ResetPasswordState {
   ViewState get viewState => throw _privateConstructorUsedError;
+  String get password => throw _privateConstructorUsedError;
+  String get confirmPassword => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
 
   /// Create a copy of ResetPasswordState
@@ -34,7 +36,12 @@ abstract class $ResetPasswordStateCopyWith<$Res> {
     $Res Function(ResetPasswordState) then,
   ) = _$ResetPasswordStateCopyWithImpl<$Res, ResetPasswordState>;
   @useResult
-  $Res call({ViewState viewState, String? errorMessage});
+  $Res call({
+    ViewState viewState,
+    String password,
+    String confirmPassword,
+    String? errorMessage,
+  });
 }
 
 /// @nodoc
@@ -51,13 +58,26 @@ class _$ResetPasswordStateCopyWithImpl<$Res, $Val extends ResetPasswordState>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? viewState = null, Object? errorMessage = freezed}) {
+  $Res call({
+    Object? viewState = null,
+    Object? password = null,
+    Object? confirmPassword = null,
+    Object? errorMessage = freezed,
+  }) {
     return _then(
       _value.copyWith(
             viewState: null == viewState
                 ? _value.viewState
                 : viewState // ignore: cast_nullable_to_non_nullable
                       as ViewState,
+            password: null == password
+                ? _value.password
+                : password // ignore: cast_nullable_to_non_nullable
+                      as String,
+            confirmPassword: null == confirmPassword
+                ? _value.confirmPassword
+                : confirmPassword // ignore: cast_nullable_to_non_nullable
+                      as String,
             errorMessage: freezed == errorMessage
                 ? _value.errorMessage
                 : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -77,7 +97,12 @@ abstract class _$$ResetPasswordStateImplCopyWith<$Res>
   ) = __$$ResetPasswordStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ViewState viewState, String? errorMessage});
+  $Res call({
+    ViewState viewState,
+    String password,
+    String confirmPassword,
+    String? errorMessage,
+  });
 }
 
 /// @nodoc
@@ -93,13 +118,26 @@ class __$$ResetPasswordStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? viewState = null, Object? errorMessage = freezed}) {
+  $Res call({
+    Object? viewState = null,
+    Object? password = null,
+    Object? confirmPassword = null,
+    Object? errorMessage = freezed,
+  }) {
     return _then(
       _$ResetPasswordStateImpl(
         viewState: null == viewState
             ? _value.viewState
             : viewState // ignore: cast_nullable_to_non_nullable
                   as ViewState,
+        password: null == password
+            ? _value.password
+            : password // ignore: cast_nullable_to_non_nullable
+                  as String,
+        confirmPassword: null == confirmPassword
+            ? _value.confirmPassword
+            : confirmPassword // ignore: cast_nullable_to_non_nullable
+                  as String,
         errorMessage: freezed == errorMessage
             ? _value.errorMessage
             : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -114,6 +152,8 @@ class __$$ResetPasswordStateImplCopyWithImpl<$Res>
 class _$ResetPasswordStateImpl extends _ResetPasswordState {
   const _$ResetPasswordStateImpl({
     this.viewState = ViewState.initial,
+    this.password = '',
+    this.confirmPassword = '',
     this.errorMessage,
   }) : super._();
 
@@ -121,11 +161,17 @@ class _$ResetPasswordStateImpl extends _ResetPasswordState {
   @JsonKey()
   final ViewState viewState;
   @override
+  @JsonKey()
+  final String password;
+  @override
+  @JsonKey()
+  final String confirmPassword;
+  @override
   final String? errorMessage;
 
   @override
   String toString() {
-    return 'ResetPasswordState(viewState: $viewState, errorMessage: $errorMessage)';
+    return 'ResetPasswordState(viewState: $viewState, password: $password, confirmPassword: $confirmPassword, errorMessage: $errorMessage)';
   }
 
   @override
@@ -135,12 +181,22 @@ class _$ResetPasswordStateImpl extends _ResetPasswordState {
             other is _$ResetPasswordStateImpl &&
             (identical(other.viewState, viewState) ||
                 other.viewState == viewState) &&
+            (identical(other.password, password) ||
+                other.password == password) &&
+            (identical(other.confirmPassword, confirmPassword) ||
+                other.confirmPassword == confirmPassword) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, viewState, errorMessage);
+  int get hashCode => Object.hash(
+    runtimeType,
+    viewState,
+    password,
+    confirmPassword,
+    errorMessage,
+  );
 
   /// Create a copy of ResetPasswordState
   /// with the given fields replaced by the non-null parameter values.
@@ -157,12 +213,18 @@ class _$ResetPasswordStateImpl extends _ResetPasswordState {
 abstract class _ResetPasswordState extends ResetPasswordState {
   const factory _ResetPasswordState({
     final ViewState viewState,
+    final String password,
+    final String confirmPassword,
     final String? errorMessage,
   }) = _$ResetPasswordStateImpl;
   const _ResetPasswordState._() : super._();
 
   @override
   ViewState get viewState;
+  @override
+  String get password;
+  @override
+  String get confirmPassword;
   @override
   String? get errorMessage;
 

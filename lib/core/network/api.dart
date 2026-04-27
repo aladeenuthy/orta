@@ -2,6 +2,8 @@ import "dart:async";
 
 import "package:dio/dio.dart";
 
+import "../shared/constants.dart";
+import "../storage/local_storage.dart";
 import "base_api.dart";
 
 /// Custom error to handle token expiration scenarios in Dio.
@@ -10,11 +12,42 @@ class TokenExpiredError extends DioException {
 }
 
 class Api extends BaseApi {
+  Api({LocalStorage? storage, FutureOr<void> Function()? onUnauthorized})
+    : _storage = storage,
+      _onUnauthorized = onUnauthorized;
+
+  final LocalStorage? _storage;
+  final FutureOr<void> Function()? _onUnauthorized;
+  static bool _handlingUnauthorized = false;
+
   /// Creates a new Dio instance with headers and interceptors configured.
   Dio _getInstance({bool enabledDioLogger = true}) {
     final Dio dio = Dio();
 
     dio.options.responseType = ResponseType.json;
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest:
+            (RequestOptions options, RequestInterceptorHandler handler) async {
+              final String token =
+                  await _storage?.getString(key: StorageKeys.authToken) ?? '';
+
+              if (token.isNotEmpty &&
+                  options.headers['Authorization'] == null) {
+                options.headers['Authorization'] = 'Bearer $token';
+              }
+
+              handler.next(options);
+            },
+        onError: (DioException error, ErrorInterceptorHandler handler) async {
+          if (error.response?.statusCode == 401) {
+            await _handleUnauthorized();
+          }
+
+          handler.next(error);
+        },
+      ),
+    );
 
     // Optional logging interceptor
     if (enabledDioLogger) {
@@ -31,6 +64,21 @@ class Api extends BaseApi {
     }
 
     return dio;
+  }
+
+  Future<void> _handleUnauthorized() async {
+    if (_handlingUnauthorized) {
+      return;
+    }
+
+    _handlingUnauthorized = true;
+    try {
+      await _storage?.removeKey(StorageKeys.authToken);
+      await _storage?.removeKey(StorageKeys.authUser);
+      await _onUnauthorized?.call();
+    } finally {
+      _handlingUnauthorized = false;
+    }
   }
 
   /// Performs a GET request with token handling and retry logic.
@@ -137,6 +185,7 @@ class Api extends BaseApi {
     try {
       response = await dio.put(
         effectiveUri,
+        data: data,
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,
@@ -179,6 +228,7 @@ class Api extends BaseApi {
     try {
       response = await dio.patch(
         effectiveUri,
+        data: data,
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,

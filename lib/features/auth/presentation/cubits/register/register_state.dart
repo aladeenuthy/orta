@@ -4,6 +4,11 @@ part of 'register_cubit.dart';
 class RegisterState with _$RegisterState {
   const factory RegisterState({
     @Default(ViewState.initial) ViewState viewState,
+    @Default('') String firstName,
+    @Default('') String lastName,
+    @Default('') String email,
+    @Default('') String password,
+    @Default('') String confirmPassword,
     String? errorMessage,
   }) = _RegisterState;
 
@@ -13,6 +18,7 @@ class RegisterState with _$RegisterState {
   bool get isLoaded => viewState == ViewState.loaded;
   bool get isError => viewState == ViewState.error;
   bool get isInitial => viewState == ViewState.initial;
+  String get fullName => '$firstName $lastName'.trim();
 
   RegisterState toLoading() =>
       copyWith(viewState: ViewState.loading, errorMessage: null);

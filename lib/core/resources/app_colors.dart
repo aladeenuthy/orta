@@ -2,15 +2,17 @@ import "package:flutter/material.dart";
 
 class AppColors {
   static Color white = HexColor.fromHex("#FFFFFF");
-  static Color primary = HexColor.fromHex("#CEB4FE");
-  static Color secondary = HexColor.fromHex("#C8FF00");
-  static Color textColor = HexColor.fromHex("#242424");
-  static Color appBgColor = HexColor.fromHex("#F5F5F5");
-  static Color grey = HexColor.fromHex("#D6D6D6");
-  static Color textSecondary = HexColor.fromHex("#707070");
-  static Color primaryLight = HexColor.fromHex("#E5D7FF");
-  static Color greyDark = HexColor.fromHex("#B2B2B2");
-  static Color alert = HexColor.fromHex("#FF5CDB");
+  static Color primary = HexColor.fromHex("#C93905");
+  static Color secondary = HexColor.fromHex("#C93905");
+  static Color textColor = HexColor.fromHex("#171717");
+  static Color appBgColor = HexColor.fromHex("#FFFFFF");
+  static Color grey = HexColor.fromHex("#D9D9D9");
+  static Color textSecondary = HexColor.fromHex("#6B6B6B");
+  static Color primaryLight = HexColor.fromHex("#F4E8E3");
+  static Color greyDark = HexColor.fromHex("#8A8A8A");
+  static Color alert = HexColor.fromHex("#D92D20");
+  static Color fieldBorder = HexColor.fromHex("#D8D8D8");
+  static Color cardGridLine = HexColor.fromHex("#F1F1F1");
 }
 
 extension HexColor on Color {

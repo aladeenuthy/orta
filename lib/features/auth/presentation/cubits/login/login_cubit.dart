@@ -12,14 +12,22 @@ class LoginCubit extends Cubit<LoginState> {
 
   final AuthService _authService;
 
-  Future<void> login({required String email, required String password}) async {
+  void emailChanged(String email) {
+    emit(state.copyWith(email: email, errorMessage: null));
+  }
+
+  void passwordChanged(String password) {
+    emit(state.copyWith(password: password, errorMessage: null));
+  }
+
+  Future<void> login() async {
     if (state.isLoading) return;
 
     emit(state.toLoading());
 
     final Either<AppError, AuthSession> result = await _authService.login(
-      email: email,
-      password: password,
+      email: state.email.trim(),
+      password: state.password,
     );
 
     result.fold(

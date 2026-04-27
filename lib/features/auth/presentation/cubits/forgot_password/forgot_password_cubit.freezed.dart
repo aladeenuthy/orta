@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ForgotPasswordState {
   ViewState get viewState => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
 
   /// Create a copy of ForgotPasswordState
@@ -34,7 +35,7 @@ abstract class $ForgotPasswordStateCopyWith<$Res> {
     $Res Function(ForgotPasswordState) then,
   ) = _$ForgotPasswordStateCopyWithImpl<$Res, ForgotPasswordState>;
   @useResult
-  $Res call({ViewState viewState, String? errorMessage});
+  $Res call({ViewState viewState, String email, String? errorMessage});
 }
 
 /// @nodoc
@@ -51,13 +52,21 @@ class _$ForgotPasswordStateCopyWithImpl<$Res, $Val extends ForgotPasswordState>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? viewState = null, Object? errorMessage = freezed}) {
+  $Res call({
+    Object? viewState = null,
+    Object? email = null,
+    Object? errorMessage = freezed,
+  }) {
     return _then(
       _value.copyWith(
             viewState: null == viewState
                 ? _value.viewState
                 : viewState // ignore: cast_nullable_to_non_nullable
                       as ViewState,
+            email: null == email
+                ? _value.email
+                : email // ignore: cast_nullable_to_non_nullable
+                      as String,
             errorMessage: freezed == errorMessage
                 ? _value.errorMessage
                 : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -77,7 +86,7 @@ abstract class _$$ForgotPasswordStateImplCopyWith<$Res>
   ) = __$$ForgotPasswordStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ViewState viewState, String? errorMessage});
+  $Res call({ViewState viewState, String email, String? errorMessage});
 }
 
 /// @nodoc
@@ -93,13 +102,21 @@ class __$$ForgotPasswordStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? viewState = null, Object? errorMessage = freezed}) {
+  $Res call({
+    Object? viewState = null,
+    Object? email = null,
+    Object? errorMessage = freezed,
+  }) {
     return _then(
       _$ForgotPasswordStateImpl(
         viewState: null == viewState
             ? _value.viewState
             : viewState // ignore: cast_nullable_to_non_nullable
                   as ViewState,
+        email: null == email
+            ? _value.email
+            : email // ignore: cast_nullable_to_non_nullable
+                  as String,
         errorMessage: freezed == errorMessage
             ? _value.errorMessage
             : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -114,6 +131,7 @@ class __$$ForgotPasswordStateImplCopyWithImpl<$Res>
 class _$ForgotPasswordStateImpl extends _ForgotPasswordState {
   const _$ForgotPasswordStateImpl({
     this.viewState = ViewState.initial,
+    this.email = '',
     this.errorMessage,
   }) : super._();
 
@@ -121,11 +139,14 @@ class _$ForgotPasswordStateImpl extends _ForgotPasswordState {
   @JsonKey()
   final ViewState viewState;
   @override
+  @JsonKey()
+  final String email;
+  @override
   final String? errorMessage;
 
   @override
   String toString() {
-    return 'ForgotPasswordState(viewState: $viewState, errorMessage: $errorMessage)';
+    return 'ForgotPasswordState(viewState: $viewState, email: $email, errorMessage: $errorMessage)';
   }
 
   @override
@@ -135,12 +156,13 @@ class _$ForgotPasswordStateImpl extends _ForgotPasswordState {
             other is _$ForgotPasswordStateImpl &&
             (identical(other.viewState, viewState) ||
                 other.viewState == viewState) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, viewState, errorMessage);
+  int get hashCode => Object.hash(runtimeType, viewState, email, errorMessage);
 
   /// Create a copy of ForgotPasswordState
   /// with the given fields replaced by the non-null parameter values.
@@ -157,12 +179,15 @@ class _$ForgotPasswordStateImpl extends _ForgotPasswordState {
 abstract class _ForgotPasswordState extends ForgotPasswordState {
   const factory _ForgotPasswordState({
     final ViewState viewState,
+    final String email,
     final String? errorMessage,
   }) = _$ForgotPasswordStateImpl;
   const _ForgotPasswordState._() : super._();
 
   @override
   ViewState get viewState;
+  @override
+  String get email;
   @override
   String? get errorMessage;
 

@@ -4,6 +4,7 @@ part of 'forgot_password_cubit.dart';
 class ForgotPasswordState with _$ForgotPasswordState {
   const factory ForgotPasswordState({
     @Default(ViewState.initial) ViewState viewState,
+    @Default('') String email,
     String? errorMessage,
   }) = _ForgotPasswordState;
 

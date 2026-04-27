@@ -12,19 +12,35 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   final AuthService _authService;
 
-  Future<void> register({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
+  void firstNameChanged(String firstName) {
+    emit(state.copyWith(firstName: firstName, errorMessage: null));
+  }
+
+  void lastNameChanged(String lastName) {
+    emit(state.copyWith(lastName: lastName, errorMessage: null));
+  }
+
+  void emailChanged(String email) {
+    emit(state.copyWith(email: email, errorMessage: null));
+  }
+
+  void passwordChanged(String password) {
+    emit(state.copyWith(password: password, errorMessage: null));
+  }
+
+  void confirmPasswordChanged(String confirmPassword) {
+    emit(state.copyWith(confirmPassword: confirmPassword, errorMessage: null));
+  }
+
+  Future<void> register() async {
     if (state.isLoading) return;
 
     emit(state.toLoading());
 
     final Either<AppError, Unit> result = await _authService.register(
-      name: name,
-      email: email,
-      password: password,
+      name: state.fullName,
+      email: state.email.trim(),
+      password: state.password,
     );
 
     result.fold(

@@ -12,16 +12,62 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late Timer timer;
+  final GlobalKey<BounceInAnimationState> _logoKey =
+      GlobalKey<BounceInAnimationState>();
 
-  Future<void> autoNavigate() async {}
+  Future<void> autoNavigate() async {
+    if (!mounted) {
+      return;
+    }
+    await context.read<AuthCubit>().checkAuthentication();
+  }
 
   void splashTimer() {
-    const Duration duration = Duration(seconds: 5);
+    const Duration duration = Duration(milliseconds: 2200);
     timer = Timer(duration, autoNavigate);
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _logoKey.currentState?.bounce();
+    });
+    splashTimer();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: AppColors.primary, body: Center());
+    return BlocListener<AuthCubit, AuthState>(
+      listenWhen: (AuthState previous, AuthState current) =>
+          previous.viewState != current.viewState ||
+          previous.session != current.session,
+      listener: (BuildContext context, AuthState state) {
+        if (state.isUnauthenticated) {
+          AppRouter.toReplacementNamed(AppRoutes.register);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: Center(
+          child: BounceInAnimation(
+            key: _logoKey,
+            duration: const Duration(milliseconds: 1200),
+            child: const OrtaBrand(
+              iconSize: 44,
+              fontSize: 22,
+              centered: true,
+              text: "Orta",
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

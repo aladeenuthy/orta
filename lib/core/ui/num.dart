@@ -4,7 +4,8 @@ import "package:flutter_screenutil/flutter_screenutil.dart";
 extension DoubleExt on double {
   double get width => ScreenUtil().setWidth(this);
   double get height => ScreenUtil().setHeight(this);
-  // double get sp => ScreenUtil().setSp(this);
+  double get fontSize => ScreenUtil().setSp(this);
+  double get radius => ScreenUtil().radius(this);
 
   /// a spacer widget
   Spacer get s => const Spacer();
@@ -16,18 +17,19 @@ extension DoubleExt on double {
   SizedBox get w => SizedBox(width: this);
 
   /// convert a double field to border radius with radius of its value
-  BorderRadius get toBorderRadius => BorderRadius.circular(this);
+  BorderRadius get toBorderRadius => BorderRadius.circular(radius);
 
   /// convert a double field to horizontal padding using its value
-  EdgeInsets get toHorizontalPadding => EdgeInsets.symmetric(horizontal: this);
+  EdgeInsets get toHorizontalPadding => EdgeInsets.symmetric(horizontal: width);
 
   /// convert a double field to vertical padding using its value
-  EdgeInsets get toVerticalPadding => EdgeInsets.symmetric(horizontal: this);
+  EdgeInsets get toVerticalPadding => EdgeInsets.symmetric(vertical: height);
 }
 
 extension IntExt on int {
   /// returns date in milliseconds as current Time + (this represented as seconds)
-  int get secondsToMilliseconds => DateTime.now().add(Duration(seconds: this)).millisecondsSinceEpoch;
+  int get secondsToMilliseconds =>
+      DateTime.now().add(Duration(seconds: this)).millisecondsSinceEpoch;
 
   /// convert an integer to duration in milliseconds
   Duration get toDurationInMilliseconds => Duration(milliseconds: this);
@@ -39,6 +41,4 @@ extension IntExt on int {
 
   /// returns value as duration in seconds
   Duration get inMilliseconds => Duration(milliseconds: this);
-
-  
 }

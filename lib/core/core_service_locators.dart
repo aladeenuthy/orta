@@ -11,6 +11,13 @@ class CoreServiceLocator implements ServiceLocator {
       LocalStorage(storage: locator<FlutterSecureStorage>()),
     );
 
-    locator.registerSingleton<Api>(Api());
+    locator.registerSingleton<Api>(
+      Api(
+        storage: locator<LocalStorage>(),
+        onUnauthorized: () async {
+          await AppRouter.toCloseAllNamed(AppRoutes.login);
+        },
+      ),
+    );
   }
 }
