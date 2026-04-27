@@ -1,4 +1,3 @@
-
 import 'package:orta/features/features.dart';
 
 ThemeData appTheme() {
@@ -10,7 +9,7 @@ ThemeData appTheme() {
 
     splashColor: AppColors.primary.withValues(alpha: .12),
 
-    appBarTheme:  AppBarTheme(
+    appBarTheme: AppBarTheme(
       centerTitle: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -37,10 +36,7 @@ ThemeData appTheme() {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 14,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: AppColors.textColor),
@@ -48,6 +44,7 @@ ThemeData appTheme() {
     ),
   );
 }
+
 extension TextThemeX on BuildContext {
   TextTheme get text => Theme.of(this).textTheme;
 }

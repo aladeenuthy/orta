@@ -12,6 +12,7 @@ class ShiftFilters with _$ShiftFilters {
 }
 
 enum ShiftStatusFilter {
+  scheduled('scheduled'),
   active('active'),
   cancelled('cancelled'),
   completed('completed'),

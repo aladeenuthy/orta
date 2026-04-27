@@ -3,7 +3,7 @@ export 'package:flutter/material.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+export  'package:flutter/cupertino.dart' show CupertinoIcons;
 export '../core/app/app_error.dart';
 export '../core/app/dio_exceptions.dart';
 export '../core/app/endpoints.dart';
@@ -42,6 +42,7 @@ export '../core/shared/app_spinner.dart';
 export '../core/shared/bounce_in_animation.dart';
 export '../core/shared/constants.dart';
 export '../core/shared/get_items_bloc.dart';
+export '../core/shared/list_infinite_scroll_view.dart';
 export '../core/shared/splash_screen.dart';
 export '../core/shared/view_state.dart';
 export '../core/shared/app_network_image.dart';
@@ -55,6 +56,5 @@ export '../core/storage/storage.dart';
 
 // Auth
 export 'auth/auth.dart';
-
-// Shifts
+export 'home/home.dart';
 export 'shifts/shifts.dart';

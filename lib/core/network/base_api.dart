@@ -1,5 +1,3 @@
-
-
 import '../config/environment_config.dart';
 
 abstract class BaseApi {

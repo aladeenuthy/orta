@@ -32,6 +32,7 @@ mixin _$Shift {
   Location get location => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
   String? get status => throw _privateConstructorUsedError;
+  num? get pay => throw _privateConstructorUsedError;
 
   /// Serializes this Shift to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -59,6 +60,7 @@ abstract class $ShiftCopyWith<$Res> {
     Location location,
     DateTime date,
     String? status,
+    num? pay,
   });
 
   $LocationCopyWith<$Res> get location;
@@ -90,6 +92,7 @@ class _$ShiftCopyWithImpl<$Res, $Val extends Shift>
     Object? location = null,
     Object? date = null,
     Object? status = freezed,
+    Object? pay = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -137,6 +140,10 @@ class _$ShiftCopyWithImpl<$Res, $Val extends Shift>
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
                       as String?,
+            pay: freezed == pay
+                ? _value.pay
+                : pay // ignore: cast_nullable_to_non_nullable
+                      as num?,
           )
           as $Val,
     );
@@ -173,6 +180,7 @@ abstract class _$$ShiftImplCopyWith<$Res> implements $ShiftCopyWith<$Res> {
     Location location,
     DateTime date,
     String? status,
+    num? pay,
   });
 
   @override
@@ -204,6 +212,7 @@ class __$$ShiftImplCopyWithImpl<$Res>
     Object? location = null,
     Object? date = null,
     Object? status = freezed,
+    Object? pay = freezed,
   }) {
     return _then(
       _$ShiftImpl(
@@ -251,6 +260,10 @@ class __$$ShiftImplCopyWithImpl<$Res>
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
                   as String?,
+        pay: freezed == pay
+            ? _value.pay
+            : pay // ignore: cast_nullable_to_non_nullable
+                  as num?,
       ),
     );
   }
@@ -272,6 +285,7 @@ class _$ShiftImpl implements _Shift {
     required this.location,
     required this.date,
     this.status,
+    this.pay,
   }) : _typeOfShift = typeOfShift;
 
   factory _$ShiftImpl.fromJson(Map<String, dynamic> json) =>
@@ -305,10 +319,12 @@ class _$ShiftImpl implements _Shift {
   final DateTime date;
   @override
   final String? status;
+  @override
+  final num? pay;
 
   @override
   String toString() {
-    return 'Shift(id: $id, title: $title, role: $role, typeOfShift: $typeOfShift, user: $user, startTime: $startTime, finishTime: $finishTime, numOfShiftsPerDay: $numOfShiftsPerDay, location: $location, date: $date, status: $status)';
+    return 'Shift(id: $id, title: $title, role: $role, typeOfShift: $typeOfShift, user: $user, startTime: $startTime, finishTime: $finishTime, numOfShiftsPerDay: $numOfShiftsPerDay, location: $location, date: $date, status: $status, pay: $pay)';
   }
 
   @override
@@ -333,7 +349,8 @@ class _$ShiftImpl implements _Shift {
             (identical(other.location, location) ||
                 other.location == location) &&
             (identical(other.date, date) || other.date == date) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.pay, pay) || other.pay == pay));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -351,6 +368,7 @@ class _$ShiftImpl implements _Shift {
     location,
     date,
     status,
+    pay,
   );
 
   /// Create a copy of Shift
@@ -380,6 +398,7 @@ abstract class _Shift implements Shift {
     required final Location location,
     required final DateTime date,
     final String? status,
+    final num? pay,
   }) = _$ShiftImpl;
 
   factory _Shift.fromJson(Map<String, dynamic> json) = _$ShiftImpl.fromJson;
@@ -406,6 +425,8 @@ abstract class _Shift implements Shift {
   DateTime get date;
   @override
   String? get status;
+  @override
+  num? get pay;
 
   /// Create a copy of Shift
   /// with the given fields replaced by the non-null parameter values.

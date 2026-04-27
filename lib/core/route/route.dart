@@ -7,6 +7,7 @@ class AppRoutes {
   static const String forgotPassword = "/forgot-password";
   static const String resetPassword = "/reset-password";
   static const String home = "/home";
+  static const String shiftList = "/shift-list";
 }
 
 class AppRouter {
@@ -28,7 +29,8 @@ class AppRouter {
         child: const ForgotPasswordScreen(),
       ),
       AppRoutes.resetPassword => _resetPasswordScreen(settings.arguments),
-      AppRoutes.home => const _TemporaryHomeScreen(),
+      AppRoutes.home => const HomeScreen(),
+      AppRoutes.shiftList => _shiftListScreen(settings.arguments),
       AppRoutes.splash || _ => const SplashScreen(),
     };
 
@@ -54,6 +56,14 @@ class AppRouter {
       create: (_) => locator<ForgotPasswordCubit>(),
       child: const ForgotPasswordScreen(),
     );
+  }
+
+  static Widget _shiftListScreen(Object? arguments) {
+    if (arguments is ShiftListArgs) {
+      return ShiftListScreen(args: arguments);
+    }
+
+    return const HomeScreen();
   }
 
   static void back() {
@@ -129,33 +139,6 @@ class AppRouter {
         widget: p,
       ),
       (Route<dynamic> route) => isFirst ?? false,
-    );
-  }
-}
-
-class _TemporaryHomeScreen extends StatelessWidget {
-  const _TemporaryHomeScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const Text('Home'),
-            AppSpacings.vertical(20),
-            AppButton(
-              label: 'Logout',
-              expanded: false,
-              onPressed: () async {
-                await context.read<AuthCubit>().logout();
-                AppRouter.toCloseAllNamed(AppRoutes.login);
-              },
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

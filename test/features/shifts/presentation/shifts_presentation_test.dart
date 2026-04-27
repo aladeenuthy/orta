@@ -256,6 +256,170 @@ void main() {
     );
   });
 
+  group('PaginatedShiftsBloc', () {
+    blocTest<PaginatedShiftsBloc, GetItemsState<Shift>>(
+      'fetchInitial emits loaded shifts with configured filters and limit',
+      build: () {
+        when(
+          () => shiftsService.getMyShifts(
+            page: 1,
+            limit: 3,
+            status: ShiftStatusFilter.inProgress,
+            sortBy: ShiftSortBy.date,
+            sortOrder: ShiftSortOrder.desc,
+          ),
+        ).thenAnswer(
+          (_) async => Right<AppError, PaginatedResponse<Shift>>(
+            paginatedResponse(
+              shifts: <Shift>[shiftModel(id: 'shift-1')],
+              currentPage: 1,
+              hasNextPage: false,
+              limit: 3,
+            ),
+          ),
+        );
+
+        return PaginatedShiftsBloc(
+          shiftsService: shiftsService,
+          filters: const ShiftFilters(
+            status: ShiftStatusFilter.inProgress,
+            sortBy: ShiftSortBy.date,
+            sortOrder: ShiftSortOrder.desc,
+          ),
+          limit: 3,
+        );
+      },
+      act: (PaginatedShiftsBloc bloc) => bloc.fetchInitial(),
+      expect: () => <Matcher>[
+        isA<GetItemsLoading<Shift>>(),
+        isA<GetItemsSuccess<Shift>>()
+            .having(
+              (GetItemsSuccess<Shift> state) => state.response.data,
+              'shifts',
+              hasLength(1),
+            )
+            .having(
+              (GetItemsSuccess<Shift> state) => state.canLoadMore,
+              'hasNextPage',
+              isFalse,
+            ),
+      ],
+      verify: (_) {
+        verify(
+          () => shiftsService.getMyShifts(
+            page: 1,
+            limit: 3,
+            status: ShiftStatusFilter.inProgress,
+            sortBy: ShiftSortBy.date,
+            sortOrder: ShiftSortOrder.desc,
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<PaginatedShiftsBloc, GetItemsState<Shift>>(
+      'loadMore appends the next page',
+      build: () {
+        when(
+          () => shiftsService.getMyShifts(
+            page: 1,
+            limit: 10,
+            status: ShiftStatusFilter.scheduled,
+            sortBy: null,
+            sortOrder: null,
+          ),
+        ).thenAnswer(
+          (_) async => Right<AppError, PaginatedResponse<Shift>>(
+            paginatedResponse(
+              shifts: <Shift>[shiftModel(id: 'shift-1')],
+              currentPage: 1,
+              hasNextPage: true,
+            ),
+          ),
+        );
+        when(
+          () => shiftsService.getMyShifts(
+            page: 2,
+            limit: 10,
+            status: ShiftStatusFilter.scheduled,
+            sortBy: null,
+            sortOrder: null,
+          ),
+        ).thenAnswer(
+          (_) async => Right<AppError, PaginatedResponse<Shift>>(
+            paginatedResponse(
+              shifts: <Shift>[shiftModel(id: 'shift-2')],
+              currentPage: 2,
+              hasNextPage: false,
+            ),
+          ),
+        );
+
+        return PaginatedShiftsBloc(
+          shiftsService: shiftsService,
+          filters: const ShiftFilters(status: ShiftStatusFilter.scheduled),
+        );
+      },
+      act: (PaginatedShiftsBloc bloc) async {
+        await bloc.fetchInitial();
+        await bloc.loadMoreShifts();
+      },
+      expect: () => <Matcher>[
+        isA<GetItemsLoading<Shift>>(),
+        isA<GetItemsSuccess<Shift>>(),
+        isA<GetItemsLoading<Shift>>().having(
+          (GetItemsLoading<Shift> state) => state.response?.data,
+          'existing shifts',
+          hasLength(1),
+        ),
+        isA<GetItemsSuccess<Shift>>()
+            .having(
+              (GetItemsSuccess<Shift> state) => state.response.data,
+              'appended shifts',
+              hasLength(2),
+            )
+            .having(
+              (GetItemsSuccess<Shift> state) => state.canLoadMore,
+              'hasNextPage',
+              isFalse,
+            ),
+      ],
+    );
+
+    blocTest<PaginatedShiftsBloc, GetItemsState<Shift>>(
+      'fetchInitial emits error when service fails',
+      build: () {
+        when(
+          () => shiftsService.getMyShifts(
+            page: 1,
+            limit: 10,
+            status: null,
+            sortBy: null,
+            sortOrder: null,
+          ),
+        ).thenAnswer(
+          (_) async => const Left<AppError, PaginatedResponse<Shift>>(
+            AppError('Unable to load shifts'),
+          ),
+        );
+
+        return PaginatedShiftsBloc(
+          shiftsService: shiftsService,
+          filters: const ShiftFilters(),
+        );
+      },
+      act: (PaginatedShiftsBloc bloc) => bloc.fetchInitial(),
+      expect: () => <Matcher>[
+        isA<GetItemsLoading<Shift>>(),
+        isA<GetItemsFailure<Shift>>().having(
+          (GetItemsFailure<Shift> state) => state.failure.message,
+          'errorMessage',
+          'Unable to load shifts',
+        ),
+      ],
+    );
+  });
+
   group('ShiftDetailCubit', () {
     blocTest<ShiftDetailCubit, ShiftDetailState>(
       'emits loading and loaded when shift detail succeeds',

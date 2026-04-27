@@ -1,4 +1,3 @@
-
 class Validator {
   static String? password(String? value, {String message = "Enter password"}) {
     if (value == null || value.isEmpty) {

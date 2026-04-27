@@ -20,6 +20,7 @@ class Shift with _$Shift {
     required Location location,
     required DateTime date,
     String? status,
+    num? pay,
   }) = _Shift;
 
   factory Shift.fromJson(Map<String, dynamic> json) => _$ShiftFromJson(json);

@@ -20,6 +20,7 @@ _$ShiftImpl _$$ShiftImplFromJson(Map<String, dynamic> json) => _$ShiftImpl(
   location: Location.fromJson(json['location'] as Map<String, dynamic>),
   date: DateTime.parse(json['date'] as String),
   status: json['status'] as String?,
+  pay: json['pay'] as num?,
 );
 
 Map<String, dynamic> _$$ShiftImplToJson(_$ShiftImpl instance) =>
@@ -35,4 +36,5 @@ Map<String, dynamic> _$$ShiftImplToJson(_$ShiftImpl instance) =>
       'location': instance.location.toJson(),
       'date': instance.date.toIso8601String(),
       'status': instance.status,
+      'pay': instance.pay,
     };
