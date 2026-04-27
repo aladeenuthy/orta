@@ -8,6 +8,7 @@ class AppRoutes {
   static const String resetPassword = "/reset-password";
   static const String home = "/home";
   static const String shiftList = "/shift-list";
+  static const String shiftDetail = "/shift-detail";
 }
 
 class AppRouter {
@@ -31,6 +32,7 @@ class AppRouter {
       AppRoutes.resetPassword => _resetPasswordScreen(settings.arguments),
       AppRoutes.home => const HomeScreen(),
       AppRoutes.shiftList => _shiftListScreen(settings.arguments),
+      AppRoutes.shiftDetail => _shiftDetailScreen(settings.arguments),
       AppRoutes.splash || _ => const SplashScreen(),
     };
 
@@ -61,6 +63,14 @@ class AppRouter {
   static Widget _shiftListScreen(Object? arguments) {
     if (arguments is ShiftListArgs) {
       return ShiftListScreen(args: arguments);
+    }
+
+    return const HomeScreen();
+  }
+
+  static Widget _shiftDetailScreen(Object? arguments) {
+    if (arguments is ShiftDetailArgs) {
+      return ShiftDetailScreen(args: arguments);
     }
 
     return const HomeScreen();

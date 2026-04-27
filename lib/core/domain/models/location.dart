@@ -11,11 +11,17 @@ class Location with _$Location {
   @JsonSerializable(explicitToJson: true)
   const factory Location({
     required String name,
-    required String address,
-    required String postCode,
+    String? postCode,
+    num? distance,
+    String? constituency,
+    String? adminDistrict,
+    String? address,
     @JsonKey(name: 'cordinates') required Coordinates coordinates,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) = _Location;
 
   factory Location.fromJson(Map<String, dynamic> json) =>
       _$LocationFromJson(json);
 }
+

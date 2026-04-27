@@ -26,5 +26,13 @@ class ShiftsServiceLocator implements ServiceLocator {
         limit: limit,
       ),
     );
+
+    locator.registerFactory<ShiftDetailCubit>(
+      () => ShiftDetailCubit(shiftsService: locator<ShiftsService>()),
+    );
+
+    locator.registerFactory<ShiftActionsCubit>(
+      () => ShiftActionsCubit(shiftsService: locator<ShiftsService>()),
+    );
   }
 }

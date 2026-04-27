@@ -20,6 +20,7 @@ class AppColors {
   static Color success = HexColor.fromHex("#00C851");
   static Color warning = HexColor.fromHex("#ffbb33");
   static Color error = HexColor.fromHex("#ff4444");
+  static Color orange = HexColor.fromHex("#f56e13");
 }
 
 extension HexColor on Color {

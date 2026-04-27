@@ -33,11 +33,7 @@ class PaginatedShiftsBloc extends GetItemsBloc<Shift, ShiftFilters> {
 
   @override
   bool itemEquals(Shift item1, Shift item2) {
-    if (item1.id != null && item2.id != null) {
-      return item1.id == item2.id;
-    }
-
-    return item1 == item2;
+    return item1.id == item2.id;
   }
 
   @override

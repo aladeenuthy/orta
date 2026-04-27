@@ -23,6 +23,7 @@ Coordinates _$CoordinatesFromJson(Map<String, dynamic> json) {
 mixin _$Coordinates {
   double get longitude => throw _privateConstructorUsedError;
   double get latitude => throw _privateConstructorUsedError;
+  bool get useRotaCloud => throw _privateConstructorUsedError;
 
   /// Serializes this Coordinates to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -41,7 +42,7 @@ abstract class $CoordinatesCopyWith<$Res> {
     $Res Function(Coordinates) then,
   ) = _$CoordinatesCopyWithImpl<$Res, Coordinates>;
   @useResult
-  $Res call({double longitude, double latitude});
+  $Res call({double longitude, double latitude, bool useRotaCloud});
 }
 
 /// @nodoc
@@ -58,7 +59,11 @@ class _$CoordinatesCopyWithImpl<$Res, $Val extends Coordinates>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? longitude = null, Object? latitude = null}) {
+  $Res call({
+    Object? longitude = null,
+    Object? latitude = null,
+    Object? useRotaCloud = null,
+  }) {
     return _then(
       _value.copyWith(
             longitude: null == longitude
@@ -69,6 +74,10 @@ class _$CoordinatesCopyWithImpl<$Res, $Val extends Coordinates>
                 ? _value.latitude
                 : latitude // ignore: cast_nullable_to_non_nullable
                       as double,
+            useRotaCloud: null == useRotaCloud
+                ? _value.useRotaCloud
+                : useRotaCloud // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -84,7 +93,7 @@ abstract class _$$CoordinatesImplCopyWith<$Res>
   ) = __$$CoordinatesImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({double longitude, double latitude});
+  $Res call({double longitude, double latitude, bool useRotaCloud});
 }
 
 /// @nodoc
@@ -100,7 +109,11 @@ class __$$CoordinatesImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? longitude = null, Object? latitude = null}) {
+  $Res call({
+    Object? longitude = null,
+    Object? latitude = null,
+    Object? useRotaCloud = null,
+  }) {
     return _then(
       _$CoordinatesImpl(
         longitude: null == longitude
@@ -111,6 +124,10 @@ class __$$CoordinatesImplCopyWithImpl<$Res>
             ? _value.latitude
             : latitude // ignore: cast_nullable_to_non_nullable
                   as double,
+        useRotaCloud: null == useRotaCloud
+            ? _value.useRotaCloud
+            : useRotaCloud // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -119,7 +136,11 @@ class __$$CoordinatesImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$CoordinatesImpl implements _Coordinates {
-  const _$CoordinatesImpl({required this.longitude, required this.latitude});
+  const _$CoordinatesImpl({
+    required this.longitude,
+    required this.latitude,
+    this.useRotaCloud = true,
+  });
 
   factory _$CoordinatesImpl.fromJson(Map<String, dynamic> json) =>
       _$$CoordinatesImplFromJson(json);
@@ -128,10 +149,13 @@ class _$CoordinatesImpl implements _Coordinates {
   final double longitude;
   @override
   final double latitude;
+  @override
+  @JsonKey()
+  final bool useRotaCloud;
 
   @override
   String toString() {
-    return 'Coordinates(longitude: $longitude, latitude: $latitude)';
+    return 'Coordinates(longitude: $longitude, latitude: $latitude, useRotaCloud: $useRotaCloud)';
   }
 
   @override
@@ -142,12 +166,15 @@ class _$CoordinatesImpl implements _Coordinates {
             (identical(other.longitude, longitude) ||
                 other.longitude == longitude) &&
             (identical(other.latitude, latitude) ||
-                other.latitude == latitude));
+                other.latitude == latitude) &&
+            (identical(other.useRotaCloud, useRotaCloud) ||
+                other.useRotaCloud == useRotaCloud));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, longitude, latitude);
+  int get hashCode =>
+      Object.hash(runtimeType, longitude, latitude, useRotaCloud);
 
   /// Create a copy of Coordinates
   /// with the given fields replaced by the non-null parameter values.
@@ -167,6 +194,7 @@ abstract class _Coordinates implements Coordinates {
   const factory _Coordinates({
     required final double longitude,
     required final double latitude,
+    final bool useRotaCloud,
   }) = _$CoordinatesImpl;
 
   factory _Coordinates.fromJson(Map<String, dynamic> json) =
@@ -176,6 +204,8 @@ abstract class _Coordinates implements Coordinates {
   double get longitude;
   @override
   double get latitude;
+  @override
+  bool get useRotaCloud;
 
   /// Create a copy of Coordinates
   /// with the given fields replaced by the non-null parameter values.

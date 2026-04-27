@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'shift_detail_cubit.dart';
+part of 'shift_actions_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -16,47 +16,45 @@ final _privateConstructorUsedError = UnsupportedError(
 );
 
 /// @nodoc
-mixin _$ShiftDetailState {
+mixin _$ShiftActionsState {
   ViewState get viewState => throw _privateConstructorUsedError;
-  Shift? get shift => throw _privateConstructorUsedError;
+  ShiftAction? get action => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
 
-  /// Create a copy of ShiftDetailState
+  /// Create a copy of ShiftActionsState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ShiftDetailStateCopyWith<ShiftDetailState> get copyWith =>
+  $ShiftActionsStateCopyWith<ShiftActionsState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ShiftDetailStateCopyWith<$Res> {
-  factory $ShiftDetailStateCopyWith(
-    ShiftDetailState value,
-    $Res Function(ShiftDetailState) then,
-  ) = _$ShiftDetailStateCopyWithImpl<$Res, ShiftDetailState>;
+abstract class $ShiftActionsStateCopyWith<$Res> {
+  factory $ShiftActionsStateCopyWith(
+    ShiftActionsState value,
+    $Res Function(ShiftActionsState) then,
+  ) = _$ShiftActionsStateCopyWithImpl<$Res, ShiftActionsState>;
   @useResult
-  $Res call({ViewState viewState, Shift? shift, String? errorMessage});
-
-  $ShiftCopyWith<$Res>? get shift;
+  $Res call({ViewState viewState, ShiftAction? action, String? errorMessage});
 }
 
 /// @nodoc
-class _$ShiftDetailStateCopyWithImpl<$Res, $Val extends ShiftDetailState>
-    implements $ShiftDetailStateCopyWith<$Res> {
-  _$ShiftDetailStateCopyWithImpl(this._value, this._then);
+class _$ShiftActionsStateCopyWithImpl<$Res, $Val extends ShiftActionsState>
+    implements $ShiftActionsStateCopyWith<$Res> {
+  _$ShiftActionsStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of ShiftDetailState
+  /// Create a copy of ShiftActionsState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? viewState = null,
-    Object? shift = freezed,
+    Object? action = freezed,
     Object? errorMessage = freezed,
   }) {
     return _then(
@@ -65,10 +63,10 @@ class _$ShiftDetailStateCopyWithImpl<$Res, $Val extends ShiftDetailState>
                 ? _value.viewState
                 : viewState // ignore: cast_nullable_to_non_nullable
                       as ViewState,
-            shift: freezed == shift
-                ? _value.shift
-                : shift // ignore: cast_nullable_to_non_nullable
-                      as Shift?,
+            action: freezed == action
+                ? _value.action
+                : action // ignore: cast_nullable_to_non_nullable
+                      as ShiftAction?,
             errorMessage: freezed == errorMessage
                 ? _value.errorMessage
                 : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -77,65 +75,48 @@ class _$ShiftDetailStateCopyWithImpl<$Res, $Val extends ShiftDetailState>
           as $Val,
     );
   }
-
-  /// Create a copy of ShiftDetailState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ShiftCopyWith<$Res>? get shift {
-    if (_value.shift == null) {
-      return null;
-    }
-
-    return $ShiftCopyWith<$Res>(_value.shift!, (value) {
-      return _then(_value.copyWith(shift: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
-abstract class _$$ShiftDetailStateImplCopyWith<$Res>
-    implements $ShiftDetailStateCopyWith<$Res> {
-  factory _$$ShiftDetailStateImplCopyWith(
-    _$ShiftDetailStateImpl value,
-    $Res Function(_$ShiftDetailStateImpl) then,
-  ) = __$$ShiftDetailStateImplCopyWithImpl<$Res>;
+abstract class _$$ShiftActionsStateImplCopyWith<$Res>
+    implements $ShiftActionsStateCopyWith<$Res> {
+  factory _$$ShiftActionsStateImplCopyWith(
+    _$ShiftActionsStateImpl value,
+    $Res Function(_$ShiftActionsStateImpl) then,
+  ) = __$$ShiftActionsStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ViewState viewState, Shift? shift, String? errorMessage});
-
-  @override
-  $ShiftCopyWith<$Res>? get shift;
+  $Res call({ViewState viewState, ShiftAction? action, String? errorMessage});
 }
 
 /// @nodoc
-class __$$ShiftDetailStateImplCopyWithImpl<$Res>
-    extends _$ShiftDetailStateCopyWithImpl<$Res, _$ShiftDetailStateImpl>
-    implements _$$ShiftDetailStateImplCopyWith<$Res> {
-  __$$ShiftDetailStateImplCopyWithImpl(
-    _$ShiftDetailStateImpl _value,
-    $Res Function(_$ShiftDetailStateImpl) _then,
+class __$$ShiftActionsStateImplCopyWithImpl<$Res>
+    extends _$ShiftActionsStateCopyWithImpl<$Res, _$ShiftActionsStateImpl>
+    implements _$$ShiftActionsStateImplCopyWith<$Res> {
+  __$$ShiftActionsStateImplCopyWithImpl(
+    _$ShiftActionsStateImpl _value,
+    $Res Function(_$ShiftActionsStateImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of ShiftDetailState
+  /// Create a copy of ShiftActionsState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? viewState = null,
-    Object? shift = freezed,
+    Object? action = freezed,
     Object? errorMessage = freezed,
   }) {
     return _then(
-      _$ShiftDetailStateImpl(
+      _$ShiftActionsStateImpl(
         viewState: null == viewState
             ? _value.viewState
             : viewState // ignore: cast_nullable_to_non_nullable
                   as ViewState,
-        shift: freezed == shift
-            ? _value.shift
-            : shift // ignore: cast_nullable_to_non_nullable
-                  as Shift?,
+        action: freezed == action
+            ? _value.action
+            : action // ignore: cast_nullable_to_non_nullable
+                  as ShiftAction?,
         errorMessage: freezed == errorMessage
             ? _value.errorMessage
             : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -147,10 +128,10 @@ class __$$ShiftDetailStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ShiftDetailStateImpl extends _ShiftDetailState {
-  const _$ShiftDetailStateImpl({
+class _$ShiftActionsStateImpl extends _ShiftActionsState {
+  const _$ShiftActionsStateImpl({
     this.viewState = ViewState.initial,
-    this.shift,
+    this.action,
     this.errorMessage,
   }) : super._();
 
@@ -158,61 +139,61 @@ class _$ShiftDetailStateImpl extends _ShiftDetailState {
   @JsonKey()
   final ViewState viewState;
   @override
-  final Shift? shift;
+  final ShiftAction? action;
   @override
   final String? errorMessage;
 
   @override
   String toString() {
-    return 'ShiftDetailState(viewState: $viewState, shift: $shift, errorMessage: $errorMessage)';
+    return 'ShiftActionsState(viewState: $viewState, action: $action, errorMessage: $errorMessage)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ShiftDetailStateImpl &&
+            other is _$ShiftActionsStateImpl &&
             (identical(other.viewState, viewState) ||
                 other.viewState == viewState) &&
-            (identical(other.shift, shift) || other.shift == shift) &&
+            (identical(other.action, action) || other.action == action) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, viewState, shift, errorMessage);
+  int get hashCode => Object.hash(runtimeType, viewState, action, errorMessage);
 
-  /// Create a copy of ShiftDetailState
+  /// Create a copy of ShiftActionsState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ShiftDetailStateImplCopyWith<_$ShiftDetailStateImpl> get copyWith =>
-      __$$ShiftDetailStateImplCopyWithImpl<_$ShiftDetailStateImpl>(
+  _$$ShiftActionsStateImplCopyWith<_$ShiftActionsStateImpl> get copyWith =>
+      __$$ShiftActionsStateImplCopyWithImpl<_$ShiftActionsStateImpl>(
         this,
         _$identity,
       );
 }
 
-abstract class _ShiftDetailState extends ShiftDetailState {
-  const factory _ShiftDetailState({
+abstract class _ShiftActionsState extends ShiftActionsState {
+  const factory _ShiftActionsState({
     final ViewState viewState,
-    final Shift? shift,
+    final ShiftAction? action,
     final String? errorMessage,
-  }) = _$ShiftDetailStateImpl;
-  const _ShiftDetailState._() : super._();
+  }) = _$ShiftActionsStateImpl;
+  const _ShiftActionsState._() : super._();
 
   @override
   ViewState get viewState;
   @override
-  Shift? get shift;
+  ShiftAction? get action;
   @override
   String? get errorMessage;
 
-  /// Create a copy of ShiftDetailState
+  /// Create a copy of ShiftActionsState
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ShiftDetailStateImplCopyWith<_$ShiftDetailStateImpl> get copyWith =>
+  _$$ShiftActionsStateImplCopyWith<_$ShiftActionsStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -22,10 +22,15 @@ Location _$LocationFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Location {
   String get name => throw _privateConstructorUsedError;
-  String get address => throw _privateConstructorUsedError;
-  String get postCode => throw _privateConstructorUsedError;
+  String? get postCode => throw _privateConstructorUsedError;
+  num? get distance => throw _privateConstructorUsedError;
+  String? get constituency => throw _privateConstructorUsedError;
+  String? get adminDistrict => throw _privateConstructorUsedError;
+  String? get address => throw _privateConstructorUsedError;
   @JsonKey(name: 'cordinates')
   Coordinates get coordinates => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this Location to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -44,9 +49,14 @@ abstract class $LocationCopyWith<$Res> {
   @useResult
   $Res call({
     String name,
-    String address,
-    String postCode,
+    String? postCode,
+    num? distance,
+    String? constituency,
+    String? adminDistrict,
+    String? address,
     @JsonKey(name: 'cordinates') Coordinates coordinates,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   });
 
   $CoordinatesCopyWith<$Res> get coordinates;
@@ -68,9 +78,14 @@ class _$LocationCopyWithImpl<$Res, $Val extends Location>
   @override
   $Res call({
     Object? name = null,
-    Object? address = null,
-    Object? postCode = null,
+    Object? postCode = freezed,
+    Object? distance = freezed,
+    Object? constituency = freezed,
+    Object? adminDistrict = freezed,
+    Object? address = freezed,
     Object? coordinates = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -78,18 +93,38 @@ class _$LocationCopyWithImpl<$Res, $Val extends Location>
                 ? _value.name
                 : name // ignore: cast_nullable_to_non_nullable
                       as String,
-            address: null == address
-                ? _value.address
-                : address // ignore: cast_nullable_to_non_nullable
-                      as String,
-            postCode: null == postCode
+            postCode: freezed == postCode
                 ? _value.postCode
                 : postCode // ignore: cast_nullable_to_non_nullable
-                      as String,
+                      as String?,
+            distance: freezed == distance
+                ? _value.distance
+                : distance // ignore: cast_nullable_to_non_nullable
+                      as num?,
+            constituency: freezed == constituency
+                ? _value.constituency
+                : constituency // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            adminDistrict: freezed == adminDistrict
+                ? _value.adminDistrict
+                : adminDistrict // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            address: freezed == address
+                ? _value.address
+                : address // ignore: cast_nullable_to_non_nullable
+                      as String?,
             coordinates: null == coordinates
                 ? _value.coordinates
                 : coordinates // ignore: cast_nullable_to_non_nullable
                       as Coordinates,
+            createdAt: freezed == createdAt
+                ? _value.createdAt
+                : createdAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            updatedAt: freezed == updatedAt
+                ? _value.updatedAt
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
           )
           as $Val,
     );
@@ -117,9 +152,14 @@ abstract class _$$LocationImplCopyWith<$Res>
   @useResult
   $Res call({
     String name,
-    String address,
-    String postCode,
+    String? postCode,
+    num? distance,
+    String? constituency,
+    String? adminDistrict,
+    String? address,
     @JsonKey(name: 'cordinates') Coordinates coordinates,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   });
 
   @override
@@ -141,9 +181,14 @@ class __$$LocationImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? name = null,
-    Object? address = null,
-    Object? postCode = null,
+    Object? postCode = freezed,
+    Object? distance = freezed,
+    Object? constituency = freezed,
+    Object? adminDistrict = freezed,
+    Object? address = freezed,
     Object? coordinates = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(
       _$LocationImpl(
@@ -151,18 +196,38 @@ class __$$LocationImplCopyWithImpl<$Res>
             ? _value.name
             : name // ignore: cast_nullable_to_non_nullable
                   as String,
-        address: null == address
-            ? _value.address
-            : address // ignore: cast_nullable_to_non_nullable
-                  as String,
-        postCode: null == postCode
+        postCode: freezed == postCode
             ? _value.postCode
             : postCode // ignore: cast_nullable_to_non_nullable
-                  as String,
+                  as String?,
+        distance: freezed == distance
+            ? _value.distance
+            : distance // ignore: cast_nullable_to_non_nullable
+                  as num?,
+        constituency: freezed == constituency
+            ? _value.constituency
+            : constituency // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        adminDistrict: freezed == adminDistrict
+            ? _value.adminDistrict
+            : adminDistrict // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        address: freezed == address
+            ? _value.address
+            : address // ignore: cast_nullable_to_non_nullable
+                  as String?,
         coordinates: null == coordinates
             ? _value.coordinates
             : coordinates // ignore: cast_nullable_to_non_nullable
                   as Coordinates,
+        createdAt: freezed == createdAt
+            ? _value.createdAt
+            : createdAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        updatedAt: freezed == updatedAt
+            ? _value.updatedAt
+            : updatedAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
       ),
     );
   }
@@ -174,9 +239,14 @@ class __$$LocationImplCopyWithImpl<$Res>
 class _$LocationImpl implements _Location {
   const _$LocationImpl({
     required this.name,
-    required this.address,
-    required this.postCode,
+    this.postCode,
+    this.distance,
+    this.constituency,
+    this.adminDistrict,
+    this.address,
     @JsonKey(name: 'cordinates') required this.coordinates,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory _$LocationImpl.fromJson(Map<String, dynamic> json) =>
@@ -185,16 +255,26 @@ class _$LocationImpl implements _Location {
   @override
   final String name;
   @override
-  final String address;
+  final String? postCode;
   @override
-  final String postCode;
+  final num? distance;
+  @override
+  final String? constituency;
+  @override
+  final String? adminDistrict;
+  @override
+  final String? address;
   @override
   @JsonKey(name: 'cordinates')
   final Coordinates coordinates;
+  @override
+  final DateTime? createdAt;
+  @override
+  final DateTime? updatedAt;
 
   @override
   String toString() {
-    return 'Location(name: $name, address: $address, postCode: $postCode, coordinates: $coordinates)';
+    return 'Location(name: $name, postCode: $postCode, distance: $distance, constituency: $constituency, adminDistrict: $adminDistrict, address: $address, coordinates: $coordinates, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -203,17 +283,37 @@ class _$LocationImpl implements _Location {
         (other.runtimeType == runtimeType &&
             other is _$LocationImpl &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.address, address) || other.address == address) &&
             (identical(other.postCode, postCode) ||
                 other.postCode == postCode) &&
+            (identical(other.distance, distance) ||
+                other.distance == distance) &&
+            (identical(other.constituency, constituency) ||
+                other.constituency == constituency) &&
+            (identical(other.adminDistrict, adminDistrict) ||
+                other.adminDistrict == adminDistrict) &&
+            (identical(other.address, address) || other.address == address) &&
             (identical(other.coordinates, coordinates) ||
-                other.coordinates == coordinates));
+                other.coordinates == coordinates) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, name, address, postCode, coordinates);
+  int get hashCode => Object.hash(
+    runtimeType,
+    name,
+    postCode,
+    distance,
+    constituency,
+    adminDistrict,
+    address,
+    coordinates,
+    createdAt,
+    updatedAt,
+  );
 
   /// Create a copy of Location
   /// with the given fields replaced by the non-null parameter values.
@@ -232,9 +332,14 @@ class _$LocationImpl implements _Location {
 abstract class _Location implements Location {
   const factory _Location({
     required final String name,
-    required final String address,
-    required final String postCode,
+    final String? postCode,
+    final num? distance,
+    final String? constituency,
+    final String? adminDistrict,
+    final String? address,
     @JsonKey(name: 'cordinates') required final Coordinates coordinates,
+    final DateTime? createdAt,
+    final DateTime? updatedAt,
   }) = _$LocationImpl;
 
   factory _Location.fromJson(Map<String, dynamic> json) =
@@ -243,12 +348,22 @@ abstract class _Location implements Location {
   @override
   String get name;
   @override
-  String get address;
+  String? get postCode;
   @override
-  String get postCode;
+  num? get distance;
+  @override
+  String? get constituency;
+  @override
+  String? get adminDistrict;
+  @override
+  String? get address;
   @override
   @JsonKey(name: 'cordinates')
   Coordinates get coordinates;
+  @override
+  DateTime? get createdAt;
+  @override
+  DateTime? get updatedAt;
 
   /// Create a copy of Location
   /// with the given fields replaced by the non-null parameter values.

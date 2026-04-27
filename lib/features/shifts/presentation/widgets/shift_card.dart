@@ -14,81 +14,107 @@ class ShiftCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 18.0.height),
-      padding: EdgeInsets.fromLTRB(
-        14.0.width,
-        18.0.height,
-        14.0.width,
-        16.0.height,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(8.0.radius),
-        border: Border.all(color: AppColors.cardBorder),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: AppColors.textColor.withValues(alpha: .08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const _LocationMark(),
-              AppSpacings.horizontal(10),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 3.0.height),
-                  child: Text(
-                    shift.location.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.text.titleLarge?.copyWith(
-                      color: AppColors.textColor.withValues(alpha: .86),
-                      fontSize: 16.0.fontSize,
-                      fontWeight: FontWeight.w700,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        final String shiftId = shift.id;
+
+        AppRouter.toNamed(
+          AppRoutes.shiftDetail,
+          arguments: ShiftDetailArgs(shiftId: shiftId),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 18.0.height),
+        padding: EdgeInsets.fromLTRB(
+          14.0.width,
+          18.0.height,
+          14.0.width,
+          16.0.height,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(8.0.radius),
+          border: Border.all(color: AppColors.cardBorder),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: AppColors.textColor.withValues(alpha: .08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 3.0.height),
+                    child: Row(
+                      children: [
+                        const LocationMark(),
+                        AppSpacings.horizontal(10),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 3.0.height),
+                            child: Text(
+                              shift.location.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.text.titleLarge?.copyWith(
+                                color: AppColors.textColor.withValues(
+                                  alpha: .86,
+                                ),
+                                fontSize: 16.0.fontSize,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              AppSpacings.horizontal(5),
-              if (showOngoingChip) const _OngoingChip(),
-            ],
-          ),
-          AppSpacings.vertical(17),
-          _ShiftInfoRow(
-            icon: Icons.schedule_outlined,
-            text: _formatShiftDateTime(shift),
-          ),
-          AppSpacings.vertical(11),
-          _ShiftInfoRow(icon: Icons.person_outline, text: shift.user),
-          AppSpacings.vertical(11),
-          _ShiftInfoRow(
-            icon: CupertinoIcons.money_pound,
-            text: _formatPay(shift.pay),
-            iconSize: 28,
-          ),
-          if (showActions) ...<Widget>[
-            AppSpacings.vertical(14),
-            Row(
-              children: <Widget>[
-                _ShiftActionButton(label: 'Accept', filled: true, onTap: () {}),
-                AppSpacings.horizontal(18),
-                _ShiftActionButton(
-                  label: 'Reject',
-                  filled: false,
-                  onTap: () {},
-                ),
+                AppSpacings.horizontal(5),
+                if (showOngoingChip) ShiftStatusChip(status: shift.status),
               ],
             ),
+            AppSpacings.vertical(17),
+            _ShiftInfoRow(
+              icon: Icons.schedule_outlined,
+              text: _formatShiftDateTime(shift),
+            ),
+            AppSpacings.vertical(11),
+            _ShiftInfoRow(icon: Icons.person_outline, text: shift.user),
+            AppSpacings.vertical(11),
+            _ShiftInfoRow(
+              icon: CupertinoIcons.money_pound,
+              text: _formatPay(shift.pay),
+              iconSize: 28,
+            ),
+            if (showActions) ...<Widget>[
+              AppSpacings.vertical(14),
+              Row(
+                children: <Widget>[
+                  _ShiftActionButton(
+                    label: 'Accept',
+                    filled: true,
+                    onTap: () {},
+                  ),
+                  AppSpacings.horizontal(18),
+                  _ShiftActionButton(
+                    label: 'Reject',
+                    filled: false,
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -109,7 +135,7 @@ class ShiftCard extends StatelessWidget {
       'December',
     ];
     final DateTime date = shift.date;
-    return '${months[date.month - 1]} ${date.day}, ${date.year}, ${shift.startTime}';
+    return '${months[date.month - 1]} ${date.day}, ${date.year}, ${_ShiftTimeFormatter.twelveHour(shift.startTime)}';
   }
 
   String _formatPay(num? pay) {
@@ -125,51 +151,15 @@ class ShiftCard extends StatelessWidget {
   }
 }
 
-class _LocationMark extends StatelessWidget {
-  const _LocationMark();
+class _ShiftTimeFormatter {
+  const _ShiftTimeFormatter._();
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 4.0.height),
-      child: Text(
-        'adyen',
-        style: context.text.titleMedium?.copyWith(
-          color: AppColors.brandGreen,
-          fontSize: 17.0.fontSize,
-          fontWeight: FontWeight.w900,
-          height: 1,
-        ),
-      ),
-    );
-  }
-}
-
-class _OngoingChip extends StatelessWidget {
-  const _OngoingChip();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(minWidth: 75.0.width),
-      padding: EdgeInsets.symmetric(
-        horizontal: 15.0.width,
-        vertical: 7.0.height,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.ongoingChipBg,
-        borderRadius: BorderRadius.circular(24.0.radius),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        'Ongoing',
-        style: context.text.bodyMedium?.copyWith(
-          color: AppColors.primary,
-          fontSize: 13.0.fontSize,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
+  static String twelveHour(DateTime time) {
+    final int hourOfPeriod = time.hour % 12;
+    final int hour = hourOfPeriod == 0 ? 12 : hourOfPeriod;
+    final String minute = time.minute.toString().padLeft(2, '0');
+    final String period = time.hour >= 12 ? 'PM' : 'AM';
+    return '$hour:$minute $period';
   }
 }
 

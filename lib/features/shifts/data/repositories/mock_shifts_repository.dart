@@ -32,7 +32,7 @@ class MockShiftsRepository implements ShiftsRepository {
     List<Shift> shifts = _mockShifts;
     if (status != null) {
       shifts = shifts
-          .where((Shift shift) => shift.status == status.value)
+          .where((Shift shift) => shift.status?.matchesFilter(status) ?? false)
           .toList();
     }
 
@@ -74,8 +74,8 @@ class MockShiftsRepository implements ShiftsRepository {
 
   static final Location _warehouseA = Location(
     name: 'Warehouse A',
-    address: '42 Market Road',
-    postCode: 'E1 6AN',
+    address: '14155 Sullyfield Circle',
+    postCode: 'Suite H, Chantilly, VA 20121',
     coordinates: Coordinates(latitude: 51.5202, longitude: -0.0719),
   );
 
@@ -93,12 +93,12 @@ class MockShiftsRepository implements ShiftsRepository {
       role: 'Picker',
       typeOfShift: <String>['day'],
       user: 'Steve abidan',
-      startTime: '10:00 PM',
-      finishTime: '02:00 AM',
+      startTime: DateTime(2026, 4, 25, 22),
+      finishTime: DateTime(2026, 4, 26, 2),
       numOfShiftsPerDay: 1,
       location: _warehouseA,
       date: DateTime(2026, 4, 25),
-      status: ShiftStatusFilter.inProgress.value,
+      status: ShiftStatus.inProgress,
       pay: 120,
     ),
     Shift(
@@ -107,12 +107,12 @@ class MockShiftsRepository implements ShiftsRepository {
       role: 'Loader',
       typeOfShift: <String>['night'],
       user: 'Steve abidan',
-      startTime: '08:30 PM',
-      finishTime: '12:30 AM',
+      startTime: DateTime(2026, 4, 24, 20, 30),
+      finishTime: DateTime(2026, 4, 25, 0, 30),
       numOfShiftsPerDay: 1,
       location: _warehouseB,
       date: DateTime(2026, 4, 24),
-      status: ShiftStatusFilter.inProgress.value,
+      status: ShiftStatus.inProgress,
       pay: 95,
     ),
     Shift(
@@ -121,12 +121,12 @@ class MockShiftsRepository implements ShiftsRepository {
       role: 'Picker',
       typeOfShift: <String>['day'],
       user: 'Steve abidan',
-      startTime: '10:00 PM',
-      finishTime: '02:00 AM',
+      startTime: DateTime(2026, 4, 25, 22),
+      finishTime: DateTime(2026, 4, 26, 2),
       numOfShiftsPerDay: 1,
       location: _warehouseA,
       date: DateTime(2026, 4, 25),
-      status: ShiftStatusFilter.scheduled.value,
+      status: ShiftStatus.scheduled,
       pay: 120,
     ),
     Shift(
@@ -135,12 +135,12 @@ class MockShiftsRepository implements ShiftsRepository {
       role: 'Picker',
       typeOfShift: <String>['day'],
       user: 'Steve abidan',
-      startTime: '10:00 PM',
-      finishTime: '02:00 AM',
+      startTime: DateTime(2026, 4, 24, 22),
+      finishTime: DateTime(2026, 4, 25, 2),
       numOfShiftsPerDay: 1,
       location: _warehouseA,
       date: DateTime(2026, 4, 24),
-      status: ShiftStatusFilter.scheduled.value,
+      status: ShiftStatus.scheduled,
       pay: 120,
     ),
     Shift(
@@ -149,12 +149,12 @@ class MockShiftsRepository implements ShiftsRepository {
       role: 'Picker',
       typeOfShift: <String>['day'],
       user: 'Steve abidan',
-      startTime: '10:00 PM',
-      finishTime: '02:00 AM',
+      startTime: DateTime(2026, 4, 23, 22),
+      finishTime: DateTime(2026, 4, 24, 2),
       numOfShiftsPerDay: 1,
       location: _warehouseA,
       date: DateTime(2026, 4, 23),
-      status: ShiftStatusFilter.scheduled.value,
+      status: ShiftStatus.scheduled,
       pay: 120,
     ),
     Shift(
@@ -163,12 +163,12 @@ class MockShiftsRepository implements ShiftsRepository {
       role: 'Loader',
       typeOfShift: <String>['day'],
       user: 'Steve abidan',
-      startTime: '09:00 AM',
-      finishTime: '05:00 PM',
+      startTime: DateTime(2026, 4, 22, 9),
+      finishTime: DateTime(2026, 4, 22, 17),
       numOfShiftsPerDay: 1,
       location: _warehouseB,
       date: DateTime(2026, 4, 22),
-      status: ShiftStatusFilter.scheduled.value,
+      status: ShiftStatus.scheduled,
       pay: 105,
     ),
   ];

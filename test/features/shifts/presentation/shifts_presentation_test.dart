@@ -464,106 +464,105 @@ void main() {
       act: (ShiftDetailCubit cubit) => cubit.resetErrorMessage(),
       expect: () => <ShiftDetailState>[const ShiftDetailState()],
     );
-    blocTest<ShiftDetailCubit, ShiftDetailState>(
+  });
+
+  group('ShiftActionsCubit', () {
+    blocTest<ShiftActionsCubit, ShiftActionsState>(
       'emits loading and loaded when cancel succeeds',
       build: () {
         when(
           () => shiftsService.cancelShift('shift-id'),
         ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
-        return ShiftDetailCubit(shiftsService: shiftsService);
+        return ShiftActionsCubit(shiftsService: shiftsService);
       },
-      seed: () =>
-          ShiftDetailState(viewState: ViewState.loaded, shift: shiftModel()),
-      act: (ShiftDetailCubit cubit) => cubit.cancelShift('shift-id'),
-      expect: () => <ShiftDetailState>[
-        ShiftDetailState(
+      act: (ShiftActionsCubit cubit) => cubit.cancelShift('shift-id'),
+      expect: () => <ShiftActionsState>[
+        const ShiftActionsState(
           viewState: ViewState.loading,
-          shift: shiftModel(),
-          action: ShiftDetailAction.cancel,
+          action: ShiftAction.cancel,
         ),
-        ShiftDetailState(
+        const ShiftActionsState(
           viewState: ViewState.loaded,
-          shift: shiftModel(),
-          action: ShiftDetailAction.cancel,
+          action: ShiftAction.cancel,
         ),
       ],
     );
 
-    blocTest<ShiftDetailCubit, ShiftDetailState>(
+    blocTest<ShiftActionsCubit, ShiftActionsState>(
       'emits loading and loaded when clock in succeeds',
       build: () {
         when(
           () => shiftsService.clockIn('shift-id'),
         ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
-        return ShiftDetailCubit(shiftsService: shiftsService);
+        return ShiftActionsCubit(shiftsService: shiftsService);
       },
-      act: (ShiftDetailCubit cubit) => cubit.clockIn('shift-id'),
-      expect: () => <ShiftDetailState>[
-        const ShiftDetailState(
+      act: (ShiftActionsCubit cubit) => cubit.clockIn('shift-id'),
+      expect: () => <ShiftActionsState>[
+        const ShiftActionsState(
           viewState: ViewState.loading,
-          action: ShiftDetailAction.clockIn,
+          action: ShiftAction.clockIn,
         ),
-        const ShiftDetailState(
+        const ShiftActionsState(
           viewState: ViewState.loaded,
-          action: ShiftDetailAction.clockIn,
+          action: ShiftAction.clockIn,
         ),
       ],
     );
 
-    blocTest<ShiftDetailCubit, ShiftDetailState>(
+    blocTest<ShiftActionsCubit, ShiftActionsState>(
       'emits loading and loaded when clock out succeeds',
       build: () {
         when(
           () => shiftsService.clockOut('shift-id'),
         ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
-        return ShiftDetailCubit(shiftsService: shiftsService);
+        return ShiftActionsCubit(shiftsService: shiftsService);
       },
-      act: (ShiftDetailCubit cubit) => cubit.clockOut('shift-id'),
-      expect: () => <ShiftDetailState>[
-        const ShiftDetailState(
+      act: (ShiftActionsCubit cubit) => cubit.clockOut('shift-id'),
+      expect: () => <ShiftActionsState>[
+        const ShiftActionsState(
           viewState: ViewState.loading,
-          action: ShiftDetailAction.clockOut,
+          action: ShiftAction.clockOut,
         ),
-        const ShiftDetailState(
+        const ShiftActionsState(
           viewState: ViewState.loaded,
-          action: ShiftDetailAction.clockOut,
+          action: ShiftAction.clockOut,
         ),
       ],
     );
 
-    blocTest<ShiftDetailCubit, ShiftDetailState>(
+    blocTest<ShiftActionsCubit, ShiftActionsState>(
       'emits loading and error when an action fails',
       build: () {
         when(() => shiftsService.clockOut('shift-id')).thenAnswer(
           (_) async => const Left<AppError, Unit>(AppError('Too early')),
         );
-        return ShiftDetailCubit(shiftsService: shiftsService);
+        return ShiftActionsCubit(shiftsService: shiftsService);
       },
-      act: (ShiftDetailCubit cubit) => cubit.clockOut('shift-id'),
-      expect: () => <ShiftDetailState>[
-        const ShiftDetailState(
+      act: (ShiftActionsCubit cubit) => cubit.clockOut('shift-id'),
+      expect: () => <ShiftActionsState>[
+        const ShiftActionsState(
           viewState: ViewState.loading,
-          action: ShiftDetailAction.clockOut,
+          action: ShiftAction.clockOut,
         ),
-        const ShiftDetailState(
+        const ShiftActionsState(
           viewState: ViewState.error,
-          action: ShiftDetailAction.clockOut,
+          action: ShiftAction.clockOut,
           errorMessage: 'Too early',
         ),
       ],
     );
 
-    blocTest<ShiftDetailCubit, ShiftDetailState>(
+    blocTest<ShiftActionsCubit, ShiftActionsState>(
       'resets action error message',
-      build: () => ShiftDetailCubit(shiftsService: shiftsService),
-      seed: () => const ShiftDetailState(
+      build: () => ShiftActionsCubit(shiftsService: shiftsService),
+      seed: () => const ShiftActionsState(
         viewState: ViewState.error,
-        action: ShiftDetailAction.clockOut,
+        action: ShiftAction.clockOut,
         errorMessage: 'Too early',
       ),
-      act: (ShiftDetailCubit cubit) => cubit.resetErrorMessage(),
-      expect: () => <ShiftDetailState>[
-        const ShiftDetailState(action: ShiftDetailAction.clockOut),
+      act: (ShiftActionsCubit cubit) => cubit.resetErrorMessage(),
+      expect: () => <ShiftActionsState>[
+        const ShiftActionsState(action: ShiftAction.clockOut),
       ],
     );
   });

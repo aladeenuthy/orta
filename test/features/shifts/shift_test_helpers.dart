@@ -2,22 +2,27 @@ import 'package:orta/features/features.dart';
 
 Map<String, dynamic> shiftJson({String id = 'shift-id'}) {
   return <String, dynamic>{
-    'id': id,
+    '_id': id,
     'title': 'Morning Care',
     'role': 'Care Worker',
     'typeOfShift': <String>['weekend'],
     'user': '69edb6a277d24da71a004b3e',
-    'startTime': '0:44',
-    'finishTime': '4:17',
+    'startTime': '2026-04-26T00:44:00.000Z',
+    'finishTime': '2026-04-26T04:17:00.000Z',
     'numOfShiftsPerDay': 1,
     'location': <String, dynamic>{
+      '_id': 'location-id',
       'name': 'Main Office',
       'address': '12 Worker Street',
       'postCode': 'SW1A 1AA',
-      'cordinates': <String, dynamic>{'longitude': 180, 'latitude': 90},
+      'cordinates': <String, dynamic>{
+        'longitude': 180,
+        'latitude': 90,
+        'useRotaCloud': true,
+      },
     },
     'date': '2026-04-26T08:10:36.309Z',
-    'status': 'active',
+    'status': 'In Progress',
   };
 }
 

@@ -21,17 +21,22 @@ Shift _$ShiftFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Shift {
-  String? get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
   List<String> get typeOfShift => throw _privateConstructorUsedError;
   String get user => throw _privateConstructorUsedError;
-  String get startTime => throw _privateConstructorUsedError;
-  String get finishTime => throw _privateConstructorUsedError;
+  DateTime get startTime => throw _privateConstructorUsedError;
+  DateTime get finishTime => throw _privateConstructorUsedError;
   int get numOfShiftsPerDay => throw _privateConstructorUsedError;
   Location get location => throw _privateConstructorUsedError;
+  @ShiftStatusConverter()
+  ShiftStatus? get status => throw _privateConstructorUsedError;
+  DateTime? get clockInTime => throw _privateConstructorUsedError;
+  DateTime? get clockOutTime => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
-  String? get status => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
   num? get pay => throw _privateConstructorUsedError;
 
   /// Serializes this Shift to a JSON map.
@@ -49,17 +54,21 @@ abstract class $ShiftCopyWith<$Res> {
       _$ShiftCopyWithImpl<$Res, Shift>;
   @useResult
   $Res call({
-    String? id,
+    String id,
     String title,
     String role,
     List<String> typeOfShift,
     String user,
-    String startTime,
-    String finishTime,
+    DateTime startTime,
+    DateTime finishTime,
     int numOfShiftsPerDay,
     Location location,
+    @ShiftStatusConverter() ShiftStatus? status,
+    DateTime? clockInTime,
+    DateTime? clockOutTime,
     DateTime date,
-    String? status,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     num? pay,
   });
 
@@ -81,7 +90,7 @@ class _$ShiftCopyWithImpl<$Res, $Val extends Shift>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? id = null,
     Object? title = null,
     Object? role = null,
     Object? typeOfShift = null,
@@ -90,16 +99,20 @@ class _$ShiftCopyWithImpl<$Res, $Val extends Shift>
     Object? finishTime = null,
     Object? numOfShiftsPerDay = null,
     Object? location = null,
-    Object? date = null,
     Object? status = freezed,
+    Object? clockInTime = freezed,
+    Object? clockOutTime = freezed,
+    Object? date = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
     Object? pay = freezed,
   }) {
     return _then(
       _value.copyWith(
-            id: freezed == id
+            id: null == id
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
-                      as String?,
+                      as String,
             title: null == title
                 ? _value.title
                 : title // ignore: cast_nullable_to_non_nullable
@@ -119,11 +132,11 @@ class _$ShiftCopyWithImpl<$Res, $Val extends Shift>
             startTime: null == startTime
                 ? _value.startTime
                 : startTime // ignore: cast_nullable_to_non_nullable
-                      as String,
+                      as DateTime,
             finishTime: null == finishTime
                 ? _value.finishTime
                 : finishTime // ignore: cast_nullable_to_non_nullable
-                      as String,
+                      as DateTime,
             numOfShiftsPerDay: null == numOfShiftsPerDay
                 ? _value.numOfShiftsPerDay
                 : numOfShiftsPerDay // ignore: cast_nullable_to_non_nullable
@@ -132,14 +145,30 @@ class _$ShiftCopyWithImpl<$Res, $Val extends Shift>
                 ? _value.location
                 : location // ignore: cast_nullable_to_non_nullable
                       as Location,
+            status: freezed == status
+                ? _value.status
+                : status // ignore: cast_nullable_to_non_nullable
+                      as ShiftStatus?,
+            clockInTime: freezed == clockInTime
+                ? _value.clockInTime
+                : clockInTime // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            clockOutTime: freezed == clockOutTime
+                ? _value.clockOutTime
+                : clockOutTime // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
             date: null == date
                 ? _value.date
                 : date // ignore: cast_nullable_to_non_nullable
                       as DateTime,
-            status: freezed == status
-                ? _value.status
-                : status // ignore: cast_nullable_to_non_nullable
-                      as String?,
+            createdAt: freezed == createdAt
+                ? _value.createdAt
+                : createdAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            updatedAt: freezed == updatedAt
+                ? _value.updatedAt
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
             pay: freezed == pay
                 ? _value.pay
                 : pay // ignore: cast_nullable_to_non_nullable
@@ -169,17 +198,21 @@ abstract class _$$ShiftImplCopyWith<$Res> implements $ShiftCopyWith<$Res> {
   @override
   @useResult
   $Res call({
-    String? id,
+    String id,
     String title,
     String role,
     List<String> typeOfShift,
     String user,
-    String startTime,
-    String finishTime,
+    DateTime startTime,
+    DateTime finishTime,
     int numOfShiftsPerDay,
     Location location,
+    @ShiftStatusConverter() ShiftStatus? status,
+    DateTime? clockInTime,
+    DateTime? clockOutTime,
     DateTime date,
-    String? status,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     num? pay,
   });
 
@@ -201,7 +234,7 @@ class __$$ShiftImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? id = null,
     Object? title = null,
     Object? role = null,
     Object? typeOfShift = null,
@@ -210,16 +243,20 @@ class __$$ShiftImplCopyWithImpl<$Res>
     Object? finishTime = null,
     Object? numOfShiftsPerDay = null,
     Object? location = null,
-    Object? date = null,
     Object? status = freezed,
+    Object? clockInTime = freezed,
+    Object? clockOutTime = freezed,
+    Object? date = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
     Object? pay = freezed,
   }) {
     return _then(
       _$ShiftImpl(
-        id: freezed == id
+        id: null == id
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
-                  as String?,
+                  as String,
         title: null == title
             ? _value.title
             : title // ignore: cast_nullable_to_non_nullable
@@ -239,11 +276,11 @@ class __$$ShiftImplCopyWithImpl<$Res>
         startTime: null == startTime
             ? _value.startTime
             : startTime // ignore: cast_nullable_to_non_nullable
-                  as String,
+                  as DateTime,
         finishTime: null == finishTime
             ? _value.finishTime
             : finishTime // ignore: cast_nullable_to_non_nullable
-                  as String,
+                  as DateTime,
         numOfShiftsPerDay: null == numOfShiftsPerDay
             ? _value.numOfShiftsPerDay
             : numOfShiftsPerDay // ignore: cast_nullable_to_non_nullable
@@ -252,14 +289,30 @@ class __$$ShiftImplCopyWithImpl<$Res>
             ? _value.location
             : location // ignore: cast_nullable_to_non_nullable
                   as Location,
+        status: freezed == status
+            ? _value.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as ShiftStatus?,
+        clockInTime: freezed == clockInTime
+            ? _value.clockInTime
+            : clockInTime // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        clockOutTime: freezed == clockOutTime
+            ? _value.clockOutTime
+            : clockOutTime // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         date: null == date
             ? _value.date
             : date // ignore: cast_nullable_to_non_nullable
                   as DateTime,
-        status: freezed == status
-            ? _value.status
-            : status // ignore: cast_nullable_to_non_nullable
-                  as String?,
+        createdAt: freezed == createdAt
+            ? _value.createdAt
+            : createdAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        updatedAt: freezed == updatedAt
+            ? _value.updatedAt
+            : updatedAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         pay: freezed == pay
             ? _value.pay
             : pay // ignore: cast_nullable_to_non_nullable
@@ -274,7 +327,7 @@ class __$$ShiftImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$ShiftImpl implements _Shift {
   const _$ShiftImpl({
-    this.id,
+    required this.id,
     required this.title,
     required this.role,
     required final List<String> typeOfShift,
@@ -283,8 +336,12 @@ class _$ShiftImpl implements _Shift {
     required this.finishTime,
     required this.numOfShiftsPerDay,
     required this.location,
+    @ShiftStatusConverter() this.status,
+    this.clockInTime,
+    this.clockOutTime,
     required this.date,
-    this.status,
+    this.createdAt,
+    this.updatedAt,
     this.pay,
   }) : _typeOfShift = typeOfShift;
 
@@ -292,7 +349,7 @@ class _$ShiftImpl implements _Shift {
       _$$ShiftImplFromJson(json);
 
   @override
-  final String? id;
+  final String id;
   @override
   final String title;
   @override
@@ -308,23 +365,32 @@ class _$ShiftImpl implements _Shift {
   @override
   final String user;
   @override
-  final String startTime;
+  final DateTime startTime;
   @override
-  final String finishTime;
+  final DateTime finishTime;
   @override
   final int numOfShiftsPerDay;
   @override
   final Location location;
   @override
+  @ShiftStatusConverter()
+  final ShiftStatus? status;
+  @override
+  final DateTime? clockInTime;
+  @override
+  final DateTime? clockOutTime;
+  @override
   final DateTime date;
   @override
-  final String? status;
+  final DateTime? createdAt;
+  @override
+  final DateTime? updatedAt;
   @override
   final num? pay;
 
   @override
   String toString() {
-    return 'Shift(id: $id, title: $title, role: $role, typeOfShift: $typeOfShift, user: $user, startTime: $startTime, finishTime: $finishTime, numOfShiftsPerDay: $numOfShiftsPerDay, location: $location, date: $date, status: $status, pay: $pay)';
+    return 'Shift(id: $id, title: $title, role: $role, typeOfShift: $typeOfShift, user: $user, startTime: $startTime, finishTime: $finishTime, numOfShiftsPerDay: $numOfShiftsPerDay, location: $location, status: $status, clockInTime: $clockInTime, clockOutTime: $clockOutTime, date: $date, createdAt: $createdAt, updatedAt: $updatedAt, pay: $pay)';
   }
 
   @override
@@ -348,8 +414,16 @@ class _$ShiftImpl implements _Shift {
                 other.numOfShiftsPerDay == numOfShiftsPerDay) &&
             (identical(other.location, location) ||
                 other.location == location) &&
-            (identical(other.date, date) || other.date == date) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.clockInTime, clockInTime) ||
+                other.clockInTime == clockInTime) &&
+            (identical(other.clockOutTime, clockOutTime) ||
+                other.clockOutTime == clockOutTime) &&
+            (identical(other.date, date) || other.date == date) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
             (identical(other.pay, pay) || other.pay == pay));
   }
 
@@ -366,8 +440,12 @@ class _$ShiftImpl implements _Shift {
     finishTime,
     numOfShiftsPerDay,
     location,
-    date,
     status,
+    clockInTime,
+    clockOutTime,
+    date,
+    createdAt,
+    updatedAt,
     pay,
   );
 
@@ -387,24 +465,28 @@ class _$ShiftImpl implements _Shift {
 
 abstract class _Shift implements Shift {
   const factory _Shift({
-    final String? id,
+    required final String id,
     required final String title,
     required final String role,
     required final List<String> typeOfShift,
     required final String user,
-    required final String startTime,
-    required final String finishTime,
+    required final DateTime startTime,
+    required final DateTime finishTime,
     required final int numOfShiftsPerDay,
     required final Location location,
+    @ShiftStatusConverter() final ShiftStatus? status,
+    final DateTime? clockInTime,
+    final DateTime? clockOutTime,
     required final DateTime date,
-    final String? status,
+    final DateTime? createdAt,
+    final DateTime? updatedAt,
     final num? pay,
   }) = _$ShiftImpl;
 
   factory _Shift.fromJson(Map<String, dynamic> json) = _$ShiftImpl.fromJson;
 
   @override
-  String? get id;
+  String get id;
   @override
   String get title;
   @override
@@ -414,17 +496,26 @@ abstract class _Shift implements Shift {
   @override
   String get user;
   @override
-  String get startTime;
+  DateTime get startTime;
   @override
-  String get finishTime;
+  DateTime get finishTime;
   @override
   int get numOfShiftsPerDay;
   @override
   Location get location;
   @override
+  @ShiftStatusConverter()
+  ShiftStatus? get status;
+  @override
+  DateTime? get clockInTime;
+  @override
+  DateTime? get clockOutTime;
+  @override
   DateTime get date;
   @override
-  String? get status;
+  DateTime? get createdAt;
+  @override
+  DateTime? get updatedAt;
   @override
   num? get pay;
 
