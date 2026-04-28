@@ -1,7 +1,7 @@
 import 'package:orta/features/features.dart';
 
 class AppTextStyles {
-  static const String fontFamily = FontConstants.openSans;
+  static const String fontFamily = FontConstants.poppins;
 
   // Display / Headings
   static const TextStyle displayLarge = TextStyle(

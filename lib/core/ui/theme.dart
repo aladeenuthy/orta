@@ -3,6 +3,11 @@ import 'package:orta/features/features.dart';
 ThemeData appTheme() {
   final base = ThemeData.light();
 
+  final TextTheme textTheme = AppTextStyles.textTheme.apply(
+    bodyColor: AppColors.textColor,
+    displayColor: AppColors.textColor,
+  );
+
   return base.copyWith(
     scaffoldBackgroundColor: AppColors.appBgColor,
     primaryColor: AppColors.primary,
@@ -28,10 +33,8 @@ ThemeData appTheme() {
       onError: Colors.white,
     ),
 
-    textTheme: AppTextStyles.textTheme.apply(
-      bodyColor: AppColors.textColor,
-      displayColor: AppColors.textColor,
-    ),
+    textTheme: textTheme,
+    primaryTextTheme: textTheme,
 
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
