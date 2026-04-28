@@ -38,5 +38,11 @@ void main() {
 
       expect(formatted, '4.5 hours');
     });
+
+    test('formats weekday labels for compact availability rows', () {
+      expect(app.DateUtils.shortWeekday('Monday'), 'Mon');
+      expect(app.DateUtils.shortWeekday('Tuesday'), 'Tues');
+      expect(app.DateUtils.shortWeekday('Thursday'), 'Thurs');
+    });
   });
 }

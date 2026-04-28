@@ -21,6 +21,7 @@ mixin _$ProfileOnboardingState {
   String get phone => throw _privateConstructorUsedError;
   String get city => throw _privateConstructorUsedError;
   String get jobRole => throw _privateConstructorUsedError;
+  String get profilePicturePath => throw _privateConstructorUsedError;
   String get skillInput => throw _privateConstructorUsedError;
   List<String> get skills => throw _privateConstructorUsedError;
   WorkerProfile? get profile => throw _privateConstructorUsedError;
@@ -46,6 +47,7 @@ abstract class $ProfileOnboardingStateCopyWith<$Res> {
     String phone,
     String city,
     String jobRole,
+    String profilePicturePath,
     String skillInput,
     List<String> skills,
     WorkerProfile? profile,
@@ -78,6 +80,7 @@ class _$ProfileOnboardingStateCopyWithImpl<
     Object? phone = null,
     Object? city = null,
     Object? jobRole = null,
+    Object? profilePicturePath = null,
     Object? skillInput = null,
     Object? skills = null,
     Object? profile = freezed,
@@ -101,6 +104,10 @@ class _$ProfileOnboardingStateCopyWithImpl<
             jobRole: null == jobRole
                 ? _value.jobRole
                 : jobRole // ignore: cast_nullable_to_non_nullable
+                      as String,
+            profilePicturePath: null == profilePicturePath
+                ? _value.profilePicturePath
+                : profilePicturePath // ignore: cast_nullable_to_non_nullable
                       as String,
             skillInput: null == skillInput
                 ? _value.skillInput
@@ -156,6 +163,7 @@ abstract class _$$ProfileOnboardingStateImplCopyWith<$Res>
     String phone,
     String city,
     String jobRole,
+    String profilePicturePath,
     String skillInput,
     List<String> skills,
     WorkerProfile? profile,
@@ -186,6 +194,7 @@ class __$$ProfileOnboardingStateImplCopyWithImpl<$Res>
     Object? phone = null,
     Object? city = null,
     Object? jobRole = null,
+    Object? profilePicturePath = null,
     Object? skillInput = null,
     Object? skills = null,
     Object? profile = freezed,
@@ -209,6 +218,10 @@ class __$$ProfileOnboardingStateImplCopyWithImpl<$Res>
         jobRole: null == jobRole
             ? _value.jobRole
             : jobRole // ignore: cast_nullable_to_non_nullable
+                  as String,
+        profilePicturePath: null == profilePicturePath
+            ? _value.profilePicturePath
+            : profilePicturePath // ignore: cast_nullable_to_non_nullable
                   as String,
         skillInput: null == skillInput
             ? _value.skillInput
@@ -243,6 +256,7 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
     this.phone = '',
     this.city = '',
     this.jobRole = '',
+    this.profilePicturePath = '',
     this.skillInput = '',
     final List<String> skills = const <String>[],
     this.profile,
@@ -265,6 +279,9 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
   final String jobRole;
   @override
   @JsonKey()
+  final String profilePicturePath;
+  @override
+  @JsonKey()
   final String skillInput;
   final List<String> _skills;
   @override
@@ -285,7 +302,7 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
 
   @override
   String toString() {
-    return 'ProfileOnboardingState(viewState: $viewState, phone: $phone, city: $city, jobRole: $jobRole, skillInput: $skillInput, skills: $skills, profile: $profile, savedStep: $savedStep, errorMessage: $errorMessage)';
+    return 'ProfileOnboardingState(viewState: $viewState, phone: $phone, city: $city, jobRole: $jobRole, profilePicturePath: $profilePicturePath, skillInput: $skillInput, skills: $skills, profile: $profile, savedStep: $savedStep, errorMessage: $errorMessage)';
   }
 
   @override
@@ -298,6 +315,8 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.city, city) || other.city == city) &&
             (identical(other.jobRole, jobRole) || other.jobRole == jobRole) &&
+            (identical(other.profilePicturePath, profilePicturePath) ||
+                other.profilePicturePath == profilePicturePath) &&
             (identical(other.skillInput, skillInput) ||
                 other.skillInput == skillInput) &&
             const DeepCollectionEquality().equals(other._skills, _skills) &&
@@ -315,6 +334,7 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
     phone,
     city,
     jobRole,
+    profilePicturePath,
     skillInput,
     const DeepCollectionEquality().hash(_skills),
     profile,
@@ -341,6 +361,7 @@ abstract class _ProfileOnboardingState extends ProfileOnboardingState {
     final String phone,
     final String city,
     final String jobRole,
+    final String profilePicturePath,
     final String skillInput,
     final List<String> skills,
     final WorkerProfile? profile,
@@ -357,6 +378,8 @@ abstract class _ProfileOnboardingState extends ProfileOnboardingState {
   String get city;
   @override
   String get jobRole;
+  @override
+  String get profilePicturePath;
   @override
   String get skillInput;
   @override

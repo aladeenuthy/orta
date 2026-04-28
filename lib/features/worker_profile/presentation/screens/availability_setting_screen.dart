@@ -39,7 +39,7 @@ class AvailabilitySettingScreen extends StatelessWidget {
                       },
                     ),
                   ),
-                  const StepDots(activeIndex: 0, count: 2),
+                  const StepDots(activeIndex: 2, count: 3),
                   AppSpacings.vertical(24),
                   AppButton(
                     color: AppColors.primary,
@@ -119,7 +119,7 @@ class _AvailabilityRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  _shortDay(day.day),
+                  DateUtils.shortWeekday(day.day),
                   style: context.text.titleMedium?.copyWith(
                     color: AppColors.textColor,
                     fontSize: 15.0.fontSize,
@@ -167,13 +167,5 @@ class _AvailabilityRow extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _shortDay(String day) {
-    return switch (day) {
-      'Tuesday' => 'Tues',
-      'Thursday' => 'Thurs',
-      _ => day.substring(0, 3),
-    };
   }
 }

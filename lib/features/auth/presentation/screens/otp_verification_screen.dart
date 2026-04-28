@@ -50,7 +50,7 @@ class OtpVerificationScreen extends StatelessWidget {
                           AppSpacings.vertical(50),
                           Padding(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 183.0.width,
+                              horizontal: 18.0.width,
                             ),
                             child: _OtpInput(
                               value: state.otp,
@@ -152,36 +152,10 @@ class _OtpInput extends StatefulWidget {
 }
 
 class _OtpInputState extends State<_OtpInput> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.value);
-  }
-
-  @override
-  void didUpdateWidget(covariant _OtpInput oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.value != _controller.text) {
-      _controller.text = widget.value;
-      _controller.selection = TextSelection.collapsed(
-        offset: _controller.text.length,
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return PinCodeTextField(
       appContext: context,
-      controller: _controller,
       length: 6,
       autoFocus: true,
       enableActiveFill: false,

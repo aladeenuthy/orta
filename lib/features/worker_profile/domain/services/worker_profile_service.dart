@@ -15,6 +15,7 @@ class WorkerProfileService {
     required String phone,
     required String city,
     required String jobRole,
+    String? profilePictureUrl,
   }) {
     if (phone.trim().isEmpty || city.isEmpty || jobRole.isEmpty) {
       return Future.value(left(const AppError('Complete all fields')));
@@ -24,6 +25,7 @@ class WorkerProfileService {
       phone: phone.trim(),
       city: city,
       jobRole: jobRole,
+      profilePictureUrl: profilePictureUrl,
     );
   }
 

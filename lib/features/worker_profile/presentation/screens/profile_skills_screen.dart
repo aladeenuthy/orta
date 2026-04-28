@@ -105,7 +105,7 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
                       AppSpacings.vertical(16),
                       _SkillChips(skills: state.skills),
                       const Spacer(),
-                      const StepDots(activeIndex: 1, count: 2),
+                      const StepDots(activeIndex: 1, count: 3),
                       AppSpacings.vertical(24),
                       AppButton(
                         color: AppColors.primary,

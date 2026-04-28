@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:orta/features/features.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
@@ -10,6 +12,7 @@ class PersonalInformationScreen extends StatefulWidget {
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AppImagePicker _imagePicker = AppImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   child: Column(
                     children: <Widget>[
                       AppSpacings.vertical(35),
-                      const _AvatarPicker(),
+                      _AvatarPicker(
+                        imagePath: state.profilePicturePath,
+                        onTap: _pickProfilePicture,
+                      ),
                       AppSpacings.vertical(50),
                       _PhoneField(state: state),
                       AppSpacings.vertical(26),
@@ -59,7 +65,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                             .jobRoleChanged,
                       ),
                       const Spacer(),
-                      const StepDots(activeIndex: 0, count: 2),
+                      const StepDots(activeIndex: 0, count: 3),
                       AppSpacings.vertical(24),
                       AppButton(
                         color: AppColors.primary,
@@ -93,44 +99,68 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     if (form == null || !form.validate()) return;
     context.read<ProfileOnboardingCubit>().savePersonalInformation();
   }
+
+  Future<void> _pickProfilePicture() async {
+    try {
+      final String? imagePath = await _imagePicker.pickProfileImagePath();
+
+      if (!mounted || imagePath == null) return;
+
+      context.read<ProfileOnboardingCubit>().profilePictureChanged(imagePath);
+    } catch (_) {
+      if (!mounted) return;
+      AppSnacks.error(context, 'Unable to pick image');
+    }
+  }
 }
 
 class _AvatarPicker extends StatelessWidget {
-  const _AvatarPicker();
+  const _AvatarPicker({required this.imagePath, required this.onTap});
+
+  final String imagePath;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final bool hasImage = imagePath.isNotEmpty;
+
     return Column(
       children: <Widget>[
-        Stack(
-          alignment: Alignment.bottomRight,
-          children: <Widget>[
-            CircleAvatar(
-              radius: 72.0.radius,
-              backgroundColor: AppColors.avatarBlue,
-              child: Text(
-                'AA',
-                style: context.text.displayLarge?.copyWith(
-                  color: AppColors.white,
-                  fontSize: 50.0.fontSize,
-                  fontWeight: FontWeight.w300,
+        GestureDetector(
+          onTap: onTap,
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: <Widget>[
+              CircleAvatar(
+                radius: 72.0.radius,
+                backgroundColor: AppColors.avatarBlue,
+                backgroundImage: hasImage ? FileImage(File(imagePath)) : null,
+                child: hasImage
+                    ? null
+                    : Text(
+                        'AA',
+                        style: context.text.displayLarge?.copyWith(
+                          color: AppColors.white,
+                          fontSize: 50.0.fontSize,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+              ),
+              CircleAvatar(
+                radius: 18.0.radius,
+                backgroundColor: AppColors.white,
+                child: Icon(
+                  Icons.edit,
+                  color: AppColors.textColor,
+                  size: 18.0.radius,
                 ),
               ),
-            ),
-            CircleAvatar(
-              radius: 18.0.radius,
-              backgroundColor: AppColors.white,
-              child: Icon(
-                Icons.edit,
-                color: AppColors.textColor,
-                size: 18.0.radius,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
         AppSpacings.vertical(16),
         Text(
-          'Add Profile Pic',
+          hasImage ? 'Change Profile Pic' : 'Add Profile Pic',
           style: context.text.titleMedium?.copyWith(
             color: AppColors.textColor,
             fontSize: 16.0.fontSize,

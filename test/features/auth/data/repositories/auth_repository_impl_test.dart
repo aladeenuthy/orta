@@ -334,6 +334,70 @@ void main() {
     });
   });
 
+  group('AuthRepositoryImpl.verifyOtp', () {
+    test(
+      'uses cached register session token for mocked OTP verification',
+      () async {
+        const AuthSession verifiedSession = AuthSession(
+          token: 'token',
+          user: User(
+            id: '69edb6a277d24da71a004b3e',
+            name: 'Test Doe',
+            email: 'Test@example.com',
+            role: 'worker',
+            isEmailVerified: true,
+          ),
+        );
+        when(
+          () => localDataSource.getCachedSession(),
+        ).thenAnswer((_) async => session);
+        when(
+          () => localDataSource.cacheSession(verifiedSession),
+        ).thenAnswer((_) async {});
+
+        final Either<AppError, AuthSession> result = await repository.verifyOtp(
+          email: 'Test@example.com',
+          otp: '123456',
+        );
+
+        result.fold((AppError error) => fail(error.message), (
+          AuthSession verifiedSession,
+        ) {
+          expect(verifiedSession.token, session.token);
+          expect(verifiedSession.user.isEmailVerified, isTrue);
+        });
+        verify(() => localDataSource.getCachedSession()).called(1);
+        verify(() => localDataSource.cacheSession(verifiedSession)).called(1);
+        verifyNever(
+          () => remoteDataSource.verifyOtp(
+            email: any(named: 'email'),
+            otp: any(named: 'otp'),
+          ),
+        );
+      },
+    );
+
+    test('returns an error when mocked OTP has no cached session', () async {
+      when(
+        () => localDataSource.getCachedSession(),
+      ).thenAnswer((_) async => null);
+
+      final Either<AppError, AuthSession> result = await repository.verifyOtp(
+        email: 'Test@example.com',
+        otp: '123456',
+      );
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, AuthSession>(
+            AppError('Please register or login first'),
+          ),
+        ),
+      );
+    });
+  });
+
   group('AuthRepositoryImpl.resetPassword', () {
     test('delegates to remote data source', () async {
       when(

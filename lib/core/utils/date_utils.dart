@@ -11,6 +11,14 @@ class DateUtils {
     return DateFormat('MMMM d').format(date);
   }
 
+  static String shortWeekday(String day) {
+    return switch (day) {
+      'Tuesday' => 'Tues',
+      'Thursday' => 'Thurs',
+      _ => day.length <= 3 ? day : day.substring(0, 3),
+    };
+  }
+
   static String twelveHourTime(DateTime time) {
     return DateFormat('h:mm a').format(time);
   }

@@ -135,18 +135,23 @@ class AuthRepositoryImpl implements AuthRepository {
         return left(const AppError('Enter the 6-digit code'));
       }
 
-      final AuthSession session = AuthSession(
-        token: 'mock-otp-token',
-        user: User(
-          id: 'mock-worker',
-          name: 'Worker',
-          email: email,
-          role: 'worker',
-          isEmailVerified: true,
-        ),
-      );
-      await _localDataSource.cacheSession(session);
-      return right(session);
+      try {
+        final AuthSession? cachedSession = await _localDataSource
+            .getCachedSession();
+        if (cachedSession == null) {
+          return left(const AppError('Please register or login first'));
+        }
+
+        final AuthSession verifiedSession = cachedSession.copyWith(
+          user: cachedSession.user.copyWith(isEmailVerified: true),
+        );
+        await _localDataSource.cacheSession(verifiedSession);
+        return right(verifiedSession);
+      } catch (_) {
+        return left<AppError, AuthSession>(
+          const AppError('Something went wront! Please try again later.'),
+        );
+      }
     }
 
     final Either<AppError, AuthSession> result = await _remoteDataSource

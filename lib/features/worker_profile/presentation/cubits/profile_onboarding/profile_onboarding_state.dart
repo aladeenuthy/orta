@@ -7,6 +7,7 @@ class ProfileOnboardingState with _$ProfileOnboardingState {
     @Default('') String phone,
     @Default('') String city,
     @Default('') String jobRole,
+    @Default('') String profilePicturePath,
     @Default('') String skillInput,
     @Default(<String>[]) List<String> skills,
     WorkerProfile? profile,

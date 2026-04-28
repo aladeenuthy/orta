@@ -52,6 +52,44 @@ void main() {
 
       expect(result, const Right<AppError, WorkerProfile>(profile));
     });
+
+    test(
+      'passes profile picture path when saving personal information',
+      () async {
+        const WorkerProfile profile = WorkerProfile(
+          id: 'id',
+          name: 'Worker',
+          email: 'worker@example.com',
+          phone: '+447911123456',
+          city: 'London',
+          jobRole: 'Nurse',
+          profilePictureUrl: '/tmp/profile.png',
+        );
+        when(
+          () => repository.updateProfile(
+            phone: '+447911123456',
+            city: 'London',
+            jobRole: 'Nurse',
+            profilePictureUrl: '/tmp/profile.png',
+          ),
+        ).thenAnswer(
+          (_) async => const Right<AppError, WorkerProfile>(profile),
+        );
+        final WorkerProfileService service = WorkerProfileService(
+          repository: repository,
+        );
+
+        final Either<AppError, WorkerProfile> result = await service
+            .savePersonalInformation(
+              phone: '+447911123456',
+              city: 'London',
+              jobRole: 'Nurse',
+              profilePictureUrl: '/tmp/profile.png',
+            );
+
+        expect(result, const Right<AppError, WorkerProfile>(profile));
+      },
+    );
   });
 
   group('AvailabilityService', () {

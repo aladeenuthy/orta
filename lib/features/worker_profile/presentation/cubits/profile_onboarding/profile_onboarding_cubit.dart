@@ -18,6 +18,8 @@ class ProfileOnboardingCubit extends Cubit<ProfileOnboardingState> {
       emit(state.toEditing().copyWith(city: city ?? ''));
   void jobRoleChanged(String? jobRole) =>
       emit(state.toEditing().copyWith(jobRole: jobRole ?? ''));
+  void profilePictureChanged(String path) =>
+      emit(state.toEditing().copyWith(profilePicturePath: path));
   void skillChanged(String skill) =>
       emit(state.toEditing().copyWith(skillInput: skill));
 
@@ -48,6 +50,9 @@ class ProfileOnboardingCubit extends Cubit<ProfileOnboardingState> {
           phone: '+44${state.phone.trim()}',
           city: state.city,
           jobRole: state.jobRole,
+          profilePictureUrl: state.profilePicturePath.isEmpty
+              ? null
+              : state.profilePicturePath,
         );
 
     result.fold(
