@@ -129,7 +129,7 @@ class ShiftDetailBody extends StatelessWidget {
       child: AppAnimatedColumn(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const _MapPreview(),
+          _MapPreview(coordinates: shift.location.coordinates),
           AppSpacings.vertical(25),
           _ShiftTitleRow(shift: shift),
           AppSpacings.vertical(26),
@@ -220,16 +220,50 @@ class _ShiftDetailRetry extends StatelessWidget {
 }
 
 class _MapPreview extends StatelessWidget {
-  const _MapPreview();
+  const _MapPreview({required this.coordinates});
+
+  final Coordinates coordinates;
+
+  @override
+  Widget build(BuildContext context) {
+    final String imageUrl = GoogleStaticMapUrl.build(
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
+      apiKey: AppConfig.googleMapsApiKey,
+    );
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        AppNetworkImage(
+          imageUrl: imageUrl,
+          height: 150.0.height,
+          width: double.infinity,
+          borderRadius: BorderRadius.circular(2.0.radius),
+          errorWidget: const _MapPreviewFallback(),
+        ),
+        if (imageUrl.isEmpty) const _MapPreviewFallback(),
+      ],
+    );
+  }
+}
+
+class _MapPreviewFallback extends StatelessWidget {
+  const _MapPreviewFallback();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 150.0.height,
       width: double.infinity,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: AppColors.grey,
+        color: AppColors.grey.withValues(alpha: .35),
         borderRadius: BorderRadius.circular(2.0.radius),
+      ),
+      child: Icon(
+        Icons.location_on,
+        color: AppColors.primary,
+        size: 34.0.radius,
       ),
     );
   }
