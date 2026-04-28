@@ -6,6 +6,13 @@ class AppRoutes {
   static const String register = "/register";
   static const String forgotPassword = "/forgot-password";
   static const String resetPassword = "/reset-password";
+  static const String otpVerification = "/otp-verification";
+  static const String profileIntro = "/profile-intro";
+  static const String profilePersonal = "/profile-personal";
+  static const String profileSkills = "/profile-skills";
+  static const String availabilitySetting = "/availability-setting";
+  static const String availabilityConfirm = "/availability-confirm";
+  static const String unavailability = "/unavailability";
   static const String home = "/home";
   static const String shiftList = "/shift-list";
   static const String shiftDetail = "/shift-detail";
@@ -30,6 +37,25 @@ class AppRouter {
         child: const ForgotPasswordScreen(),
       ),
       AppRoutes.resetPassword => _resetPasswordScreen(settings.arguments),
+      AppRoutes.otpVerification => _otpVerificationScreen(settings.arguments),
+      AppRoutes.profileIntro => const ProfileSetupIntroScreen(),
+      AppRoutes.profilePersonal => BlocProvider<ProfileOnboardingCubit>.value(
+        value: locator<ProfileOnboardingCubit>(),
+        child: const PersonalInformationScreen(),
+      ),
+      AppRoutes.profileSkills => BlocProvider<ProfileOnboardingCubit>.value(
+        value: locator<ProfileOnboardingCubit>(),
+        child: const ProfileSkillsScreen(),
+      ),
+      AppRoutes.availabilitySetting => BlocProvider<AvailabilityCubit>.value(
+        value: locator<AvailabilityCubit>(),
+        child: const AvailabilitySettingScreen(),
+      ),
+      AppRoutes.availabilityConfirm => BlocProvider<AvailabilityCubit>.value(
+        value: locator<AvailabilityCubit>(),
+        child: const AvailabilityConfirmScreen(),
+      ),
+      AppRoutes.unavailability => const UnavailabilityManagementScreen(),
       AppRoutes.home => const HomeScreen(),
       AppRoutes.shiftList => _shiftListScreen(settings.arguments),
       AppRoutes.shiftDetail => _shiftDetailScreen(settings.arguments),
@@ -57,6 +83,20 @@ class AppRouter {
     return BlocProvider<ForgotPasswordCubit>(
       create: (_) => locator<ForgotPasswordCubit>(),
       child: const ForgotPasswordScreen(),
+    );
+  }
+
+  static Widget _otpVerificationScreen(Object? arguments) {
+    if (arguments is OtpVerificationArgs) {
+      return BlocProvider<OtpVerificationCubit>(
+        create: (_) => locator<OtpVerificationCubit>(),
+        child: OtpVerificationScreen(args: arguments),
+      );
+    }
+
+    return BlocProvider<RegisterCubit>(
+      create: (_) => locator<RegisterCubit>(),
+      child: const RegisterScreen(),
     );
   }
 

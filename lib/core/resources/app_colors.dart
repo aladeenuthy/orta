@@ -18,9 +18,12 @@ class AppColors {
   static Color fieldBorder = HexColor.fromHex("#D8D8D8");
   static Color cardGridLine = HexColor.fromHex("#F1F1F1");
   static Color success = HexColor.fromHex("#00C851");
+  static Color successLight = HexColor.fromHex("#55D187");
   static Color warning = HexColor.fromHex("#ffbb33");
   static Color error = HexColor.fromHex("#ff4444");
   static Color orange = HexColor.fromHex("#f56e13");
+  static Color pageMutedBackground = HexColor.fromHex("#F5F6F8");
+  static Color avatarBlue = HexColor.fromHex("#8DBAF4");
 }
 
 extension HexColor on Color {

@@ -7,12 +7,20 @@ class DateUtils {
     return DateFormat('MMMM d, y').format(date);
   }
 
+  static String monthDay(DateTime date) {
+    return DateFormat('MMMM d').format(date);
+  }
+
   static String twelveHourTime(DateTime time) {
     return DateFormat('h:mm a').format(time);
   }
 
   static String twentyFourHourTime(DateTime time) {
     return DateFormat('HH:mm').format(time);
+  }
+
+  static String dateOnly(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
   }
 
   static String shiftDateTime(DateTime date, DateTime time) {

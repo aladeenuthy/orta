@@ -15,6 +15,22 @@ class AuthRemoteDataSource extends BaseAppRepository {
     });
   }
 
+  Future<Either<AppError, Unit>> resendOtp({required String email}) {
+    return makeRequest(() async {
+      await post(Endpoints.resendOtp, data: <String, dynamic>{'email': email});
+
+      return right<AppError, Unit>(unit);
+    });
+  }
+
+  Future<Either<AppError, Unit>> sendOtp({required String email}) {
+    return makeRequest(() async {
+      await post(Endpoints.sendOtp, data: <String, dynamic>{'email': email});
+
+      return right<AppError, Unit>(unit);
+    });
+  }
+
   Future<Either<AppError, User>> getUser() {
     return makeRequest(() async {
       final response = await get(Endpoints.getUser);
@@ -47,13 +63,31 @@ class AuthRemoteDataSource extends BaseAppRepository {
     });
   }
 
-  Future<Either<AppError, Unit>> register({
+  Future<Either<AppError, AuthSession>> verifyOtp({
+    required String email,
+    required String otp,
+  }) {
+    return makeRequest(() async {
+      final response = await post(
+        Endpoints.verifyOtp,
+        data: <String, dynamic>{'email': email, 'otp': otp},
+      );
+
+      final AuthSession session = AuthSession.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+
+      return right<AppError, AuthSession>(session);
+    });
+  }
+
+  Future<Either<AppError, AuthSession>> register({
     required String name,
     required String email,
     required String password,
   }) {
     return makeRequest(() async {
-      await post(
+      final response = await post(
         Endpoints.register,
         data: <String, dynamic>{
           'name': name,
@@ -62,7 +96,11 @@ class AuthRemoteDataSource extends BaseAppRepository {
         },
       );
 
-      return right<AppError, Unit>(unit);
+      final AuthSession session = AuthSession.fromJson(
+        Map<String, dynamic>.from(response.data as Map),
+      );
+
+      return right<AppError, AuthSession>(session);
     });
   }
 

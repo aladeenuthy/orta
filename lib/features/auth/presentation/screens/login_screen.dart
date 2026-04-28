@@ -21,7 +21,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
         if (state.isLoaded) {
           AppSnacks.success(context, 'Login successful');
-          AppRouter.toCloseAllNamed(AppRoutes.home);
+          final bool profileComplete =
+              state.session?.user.isProfileComplete ?? true;
+          AppRouter.toCloseAllNamed(
+            profileComplete ? AppRoutes.home : AppRoutes.profileIntro,
+          );
         }
       },
       builder: (BuildContext context, LoginState state) {

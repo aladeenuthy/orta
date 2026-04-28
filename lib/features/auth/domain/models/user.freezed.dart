@@ -25,6 +25,13 @@ mixin _$User {
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  String? get city => throw _privateConstructorUsedError;
+  String? get jobRole => throw _privateConstructorUsedError;
+  List<String> get skills => throw _privateConstructorUsedError;
+  String? get profilePictureUrl => throw _privateConstructorUsedError;
+  bool get isEmailVerified => throw _privateConstructorUsedError;
+  bool get isProfileComplete => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,7 +47,19 @@ abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res, User>;
   @useResult
-  $Res call({String id, String name, String email, String role});
+  $Res call({
+    String id,
+    String name,
+    String email,
+    String role,
+    String? phone,
+    String? city,
+    String? jobRole,
+    List<String> skills,
+    String? profilePictureUrl,
+    bool isEmailVerified,
+    bool isProfileComplete,
+  });
 }
 
 /// @nodoc
@@ -62,6 +81,13 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? name = null,
     Object? email = null,
     Object? role = null,
+    Object? phone = freezed,
+    Object? city = freezed,
+    Object? jobRole = freezed,
+    Object? skills = null,
+    Object? profilePictureUrl = freezed,
+    Object? isEmailVerified = null,
+    Object? isProfileComplete = null,
   }) {
     return _then(
       _value.copyWith(
@@ -81,6 +107,34 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
                 ? _value.role
                 : role // ignore: cast_nullable_to_non_nullable
                       as String,
+            phone: freezed == phone
+                ? _value.phone
+                : phone // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            city: freezed == city
+                ? _value.city
+                : city // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            jobRole: freezed == jobRole
+                ? _value.jobRole
+                : jobRole // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            skills: null == skills
+                ? _value.skills
+                : skills // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            profilePictureUrl: freezed == profilePictureUrl
+                ? _value.profilePictureUrl
+                : profilePictureUrl // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            isEmailVerified: null == isEmailVerified
+                ? _value.isEmailVerified
+                : isEmailVerified // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            isProfileComplete: null == isProfileComplete
+                ? _value.isProfileComplete
+                : isProfileComplete // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -95,7 +149,19 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   ) = __$$UserImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, String email, String role});
+  $Res call({
+    String id,
+    String name,
+    String email,
+    String role,
+    String? phone,
+    String? city,
+    String? jobRole,
+    List<String> skills,
+    String? profilePictureUrl,
+    bool isEmailVerified,
+    bool isProfileComplete,
+  });
 }
 
 /// @nodoc
@@ -114,6 +180,13 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? name = null,
     Object? email = null,
     Object? role = null,
+    Object? phone = freezed,
+    Object? city = freezed,
+    Object? jobRole = freezed,
+    Object? skills = null,
+    Object? profilePictureUrl = freezed,
+    Object? isEmailVerified = null,
+    Object? isProfileComplete = null,
   }) {
     return _then(
       _$UserImpl(
@@ -133,6 +206,34 @@ class __$$UserImplCopyWithImpl<$Res>
             ? _value.role
             : role // ignore: cast_nullable_to_non_nullable
                   as String,
+        phone: freezed == phone
+            ? _value.phone
+            : phone // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        city: freezed == city
+            ? _value.city
+            : city // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        jobRole: freezed == jobRole
+            ? _value.jobRole
+            : jobRole // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        skills: null == skills
+            ? _value._skills
+            : skills // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        profilePictureUrl: freezed == profilePictureUrl
+            ? _value.profilePictureUrl
+            : profilePictureUrl // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        isEmailVerified: null == isEmailVerified
+            ? _value.isEmailVerified
+            : isEmailVerified // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isProfileComplete: null == isProfileComplete
+            ? _value.isProfileComplete
+            : isProfileComplete // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -146,7 +247,14 @@ class _$UserImpl implements _User {
     required this.name,
     required this.email,
     required this.role,
-  });
+    this.phone,
+    this.city,
+    this.jobRole,
+    final List<String> skills = const <String>[],
+    this.profilePictureUrl,
+    this.isEmailVerified = false,
+    this.isProfileComplete = false,
+  }) : _skills = skills;
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
@@ -159,10 +267,33 @@ class _$UserImpl implements _User {
   final String email;
   @override
   final String role;
+  @override
+  final String? phone;
+  @override
+  final String? city;
+  @override
+  final String? jobRole;
+  final List<String> _skills;
+  @override
+  @JsonKey()
+  List<String> get skills {
+    if (_skills is EqualUnmodifiableListView) return _skills;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_skills);
+  }
+
+  @override
+  final String? profilePictureUrl;
+  @override
+  @JsonKey()
+  final bool isEmailVerified;
+  @override
+  @JsonKey()
+  final bool isProfileComplete;
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, email: $email, role: $role)';
+    return 'User(id: $id, name: $name, email: $email, role: $role, phone: $phone, city: $city, jobRole: $jobRole, skills: $skills, profilePictureUrl: $profilePictureUrl, isEmailVerified: $isEmailVerified, isProfileComplete: $isProfileComplete)';
   }
 
   @override
@@ -173,12 +304,35 @@ class _$UserImpl implements _User {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.role, role) || other.role == role));
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.city, city) || other.city == city) &&
+            (identical(other.jobRole, jobRole) || other.jobRole == jobRole) &&
+            const DeepCollectionEquality().equals(other._skills, _skills) &&
+            (identical(other.profilePictureUrl, profilePictureUrl) ||
+                other.profilePictureUrl == profilePictureUrl) &&
+            (identical(other.isEmailVerified, isEmailVerified) ||
+                other.isEmailVerified == isEmailVerified) &&
+            (identical(other.isProfileComplete, isProfileComplete) ||
+                other.isProfileComplete == isProfileComplete));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, email, role);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    name,
+    email,
+    role,
+    phone,
+    city,
+    jobRole,
+    const DeepCollectionEquality().hash(_skills),
+    profilePictureUrl,
+    isEmailVerified,
+    isProfileComplete,
+  );
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
@@ -200,6 +354,13 @@ abstract class _User implements User {
     required final String name,
     required final String email,
     required final String role,
+    final String? phone,
+    final String? city,
+    final String? jobRole,
+    final List<String> skills,
+    final String? profilePictureUrl,
+    final bool isEmailVerified,
+    final bool isProfileComplete,
   }) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
@@ -212,6 +373,20 @@ abstract class _User implements User {
   String get email;
   @override
   String get role;
+  @override
+  String? get phone;
+  @override
+  String? get city;
+  @override
+  String? get jobRole;
+  @override
+  List<String> get skills;
+  @override
+  String? get profilePictureUrl;
+  @override
+  bool get isEmailVerified;
+  @override
+  bool get isProfileComplete;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.

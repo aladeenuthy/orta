@@ -38,7 +38,7 @@ class MyShiftsBloc extends GetItemsBloc<Shift, ShiftFilters> {
 
   @override
   bool itemEquals(Shift item1, Shift item2) {
-     return item1.id == item2.id;
+    return item1.id == item2.id;
   }
 
   @override

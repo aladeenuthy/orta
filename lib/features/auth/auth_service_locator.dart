@@ -41,5 +41,9 @@ class AuthServiceLocator implements ServiceLocator {
     locator.registerFactory<ResetPasswordCubit>(
       () => ResetPasswordCubit(authService: locator<AuthService>()),
     );
+
+    locator.registerFactory<OtpVerificationCubit>(
+      () => OtpVerificationCubit(authService: locator<AuthService>()),
+    );
   }
 }

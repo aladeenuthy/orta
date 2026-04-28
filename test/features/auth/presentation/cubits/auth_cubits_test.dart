@@ -332,7 +332,7 @@ void main() {
             email: 'Test@example.com',
             password: 'Marine345@',
           ),
-        ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+        ).thenAnswer((_) async => const Right<AppError, AuthSession>(session));
         return RegisterCubit(authService: authService);
       },
       seed: () => const RegisterState(
@@ -370,7 +370,8 @@ void main() {
             password: 'Marine345@',
           ),
         ).thenAnswer(
-          (_) async => const Left<AppError, Unit>(AppError('Email exists')),
+          (_) async =>
+              const Left<AppError, AuthSession>(AppError('Email exists')),
         );
         return RegisterCubit(authService: authService);
       },

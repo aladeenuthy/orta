@@ -16,7 +16,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _PlaceholderTab(icon: CupertinoIcons.chart_pie, label: 'Market'),
     _PlaceholderTab(icon: Icons.chat_bubble_outline, label: 'Chat'),
     _PlaceholderTab(icon: Icons.calendar_today_outlined, label: 'Shift'),
-    _PlaceholderTab(icon: Icons.settings_outlined, label: 'Setting'),
   ];
 
   @override
@@ -54,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ..._placeholderTabs.map(
                     (_PlaceholderTab tab) => _EmptyDashboardTab(tab: tab),
                   ),
+                  const _SettingsTab(),
                 ],
               ),
             ),
@@ -249,6 +249,68 @@ class _EmptyDashboardTab extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SettingsTab extends StatelessWidget {
+  const _SettingsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (BuildContext context, AuthState state) {
+        if (state.isError && state.errorMessage != null) {
+          AppSnacks.error(context, state.errorMessage!);
+        }
+
+        if (state.isUnauthenticated) {
+          AppRouter.toCloseAllNamed(AppRoutes.login);
+        }
+      },
+      builder: (BuildContext context, AuthState state) {
+        return SafeArea(
+          child: Padding(
+            padding: AppPaddings.horizontal(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.settings_outlined,
+                  color: AppColors.primary,
+                  size: 56.0.radius,
+                ),
+                AppSpacings.vertical(12),
+                Text(
+                  'Setting',
+                  style: context.text.headlineMedium?.copyWith(
+                    color: AppColors.textColor,
+                    fontSize: 22.0.fontSize,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                AppSpacings.vertical(28),
+                AppButton(
+                  color: AppColors.primary,
+                  enabled: !state.isLoading,
+                  height: 42,
+                  borderRadius: BorderRadius.circular(8.0.radius),
+                  margin: EdgeInsets.zero,
+                  onPressed: context.read<AuthCubit>().logout,
+                  child: Text(
+                    state.isLoading ? 'Logging out...' : 'Logout',
+                    style: context.text.titleMedium?.copyWith(
+                      color: AppColors.white,
+                      fontSize: 16.0.fontSize,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

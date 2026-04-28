@@ -282,15 +282,15 @@ void main() {
           email: 'Test@example.com',
           password: 'Marine345@',
         ),
-      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+      ).thenAnswer((_) async => const Right<AppError, AuthSession>(session));
 
-      final Either<AppError, Unit> result = await service.register(
+      final Either<AppError, AuthSession> result = await service.register(
         name: 'Test Doe',
         email: 'Test@example.com',
         password: 'Marine345@',
       );
 
-      expect(result, equals(const Right<AppError, Unit>(unit)));
+      expect(result, equals(const Right<AppError, AuthSession>(session)));
       verify(
         () => repository.register(
           name: 'Test Doe',
@@ -308,10 +308,11 @@ void main() {
           password: 'Marine345@',
         ),
       ).thenAnswer(
-        (_) async => const Left<AppError, Unit>(AppError('Invalid email')),
+        (_) async =>
+            const Left<AppError, AuthSession>(AppError('Invalid email')),
       );
 
-      final Either<AppError, Unit> result = await service.register(
+      final Either<AppError, AuthSession> result = await service.register(
         name: 'Test Doe',
         email: 'Test@example.com',
         password: 'Marine345@',
@@ -319,7 +320,7 @@ void main() {
 
       expect(
         result,
-        equals(const Left<AppError, Unit>(AppError('Invalid email'))),
+        equals(const Left<AppError, AuthSession>(AppError('Invalid email'))),
       );
     });
   });

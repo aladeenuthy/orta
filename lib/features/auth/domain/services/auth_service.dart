@@ -18,6 +18,14 @@ class AuthService extends BaseAppService {
     return _repository.forgotPassword(email: email);
   }
 
+  Future<Either<AppError, Unit>> resendOtp({required String email}) {
+    return _repository.resendOtp(email: email);
+  }
+
+  Future<Either<AppError, Unit>> sendOtp({required String email}) {
+    return _repository.sendOtp(email: email);
+  }
+
   Future<Either<AppError, AuthSession?>> getCachedSession() {
     return _repository.getCachedSession();
   }
@@ -54,12 +62,20 @@ class AuthService extends BaseAppService {
     });
   }
 
-  Future<Either<AppError, Unit>> register({
+  Future<Either<AppError, AuthSession>> register({
     required String name,
     required String email,
     required String password,
   }) {
-    return _repository.register(name: name, email: email, password: password);
+    return _repository
+        .register(name: name, email: email, password: password)
+        .then((Either<AppError, AuthSession> result) {
+          result.fold((_) {}, (AuthSession session) {
+            publishEvent(AuthSessionUpdated(session));
+          });
+
+          return result;
+        });
   }
 
   Future<Either<AppError, Unit>> resetPassword({
@@ -79,5 +95,26 @@ class AuthService extends BaseAppService {
       resetToken: resetToken,
       newPassword: newPassword,
     );
+  }
+
+  Future<Either<AppError, AuthSession>> verifyOtp({
+    required String email,
+    required String otp,
+  }) {
+    if (otp.length != 6) {
+      return Future<Either<AppError, AuthSession>>.value(
+        left<AppError, AuthSession>(const AppError('Enter the 6-digit code')),
+      );
+    }
+
+    return _repository.verifyOtp(email: email, otp: otp).then((
+      Either<AppError, AuthSession> result,
+    ) {
+      result.fold((_) {}, (AuthSession session) {
+        publishEvent(AuthSessionUpdated(session));
+      });
+
+      return result;
+    });
   }
 }

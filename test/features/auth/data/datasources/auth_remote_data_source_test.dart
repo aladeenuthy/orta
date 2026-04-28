@@ -199,39 +199,51 @@ void main() {
   });
 
   group('AuthRemoteDataSource.register', () {
-    test(
-      'posts register payload and ignores successful response body',
-      () async {
-        when(
-          () => api.post(
-            Endpoints.register,
-            data: <String, dynamic>{
-              'name': 'Test Doe',
-              'email': 'Test@example.com',
-              'password': 'Marine345@',
-            },
-          ),
-        ).thenAnswer((_) async => authResponse(Endpoints.register));
+    test('posts register payload and returns auth session', () async {
+      when(
+        () => api.post(
+          Endpoints.register,
+          data: <String, dynamic>{
+            'name': 'Test Doe',
+            'email': 'Test@example.com',
+            'password': 'Marine345@',
+          },
+        ),
+      ).thenAnswer((_) async => authResponse(Endpoints.register));
 
-        final Either<AppError, Unit> result = await dataSource.register(
-          name: 'Test Doe',
-          email: 'Test@example.com',
-          password: 'Marine345@',
-        );
+      final Either<AppError, AuthSession> result = await dataSource.register(
+        name: 'Test Doe',
+        email: 'Test@example.com',
+        password: 'Marine345@',
+      );
 
-        expect(result, equals(const Right<AppError, Unit>(unit)));
-        verify(
-          () => api.post(
-            Endpoints.register,
-            data: <String, dynamic>{
-              'name': 'Test Doe',
-              'email': 'Test@example.com',
-              'password': 'Marine345@',
-            },
+      expect(
+        result,
+        equals(
+          const Right<AppError, AuthSession>(
+            AuthSession(
+              token: 'token',
+              user: User(
+                id: '69edb6a277d24da71a004b3e',
+                name: 'Test Doe',
+                email: 'Test@example.com',
+                role: 'worker',
+              ),
+            ),
           ),
-        ).called(1);
-      },
-    );
+        ),
+      );
+      verify(
+        () => api.post(
+          Endpoints.register,
+          data: <String, dynamic>{
+            'name': 'Test Doe',
+            'email': 'Test@example.com',
+            'password': 'Marine345@',
+          },
+        ),
+      ).called(1);
+    });
 
     test('returns AppError when the API request fails', () async {
       when(
@@ -250,7 +262,7 @@ void main() {
         ),
       );
 
-      final Either<AppError, Unit> result = await dataSource.register(
+      final Either<AppError, AuthSession> result = await dataSource.register(
         name: 'Test Doe',
         email: 'Test@example.com',
         password: 'Marine345@',
