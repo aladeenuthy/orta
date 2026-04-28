@@ -113,7 +113,7 @@ class MarketplaceFilterChips extends StatelessWidget {
   }
 
   void _cycleRole() {
-    final List<String> roles = WorkerProfileDefaults.roles;
+    final List<String> roles = ProfileDefaults.roles;
     final int currentIndex = roles.indexOf(filters.role ?? '');
     final int nextIndex = currentIndex == -1 ? 0 : currentIndex + 1;
     onChanged(
@@ -189,7 +189,7 @@ class _MarketplaceFilterSheetContent extends StatelessWidget {
             Wrap(
               spacing: 8.0.width,
               runSpacing: 8.0.height,
-              children: WorkerProfileDefaults.roles
+              children: ProfileDefaults.roles
                   .map(
                     (String role) => _FilterChipButton(
                       label: role,

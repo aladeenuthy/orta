@@ -61,7 +61,7 @@ class AppRouter {
         child: const AvailabilityConfirmScreen(),
       ),
       AppRoutes.unavailability => const UnavailabilityManagementScreen(),
-      AppRoutes.profile => const WorkerProfileScreen(),
+      AppRoutes.profile => const ProfileScreen(),
       AppRoutes.home => const HomeScreen(),
       AppRoutes.shiftList => _shiftListScreen(settings.arguments),
       AppRoutes.shiftDetail => _shiftDetailScreen(settings.arguments),

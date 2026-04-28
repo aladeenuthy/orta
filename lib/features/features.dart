@@ -59,4 +59,4 @@ export '../core/storage/storage.dart';
 export 'auth/auth.dart';
 export 'home/home.dart';
 export 'shifts/shifts.dart';
-export 'worker_profile/worker_profile.dart';
+export 'profile/profiles.dart';

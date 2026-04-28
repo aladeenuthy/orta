@@ -6,7 +6,7 @@ class Locators {
       CoreServiceLocator(),
       AuthServiceLocator(),
       ShiftsServiceLocator(),
-      WorkerProfileServiceLocator(),
+      ProfilesServiceLocator(),
     ];
     for (final ServiceLocator item in locators) {
       await Future<void>.delayed(const Duration(milliseconds: 100));

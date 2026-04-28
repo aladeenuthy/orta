@@ -1,0 +1,119 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:orta/features/features.dart';
+
+class MockProfileRepository extends Mock implements ProfileRepository {}
+
+void main() {
+  late MockProfileRepository repository;
+
+  setUp(() {
+    repository = MockProfileRepository();
+  });
+
+  group('ProfileService', () {
+    test('rejects incomplete personal information', () async {
+      final ProfileService service = ProfileService(repository: repository);
+
+      final Either<AppError, Profile> result = await service
+          .savePersonalInformation(phone: '', city: 'London', jobRole: 'Nurse');
+
+      expect(result.isLeft(), isTrue);
+      verifyNever(
+        () => repository.updateProfile(
+          phone: any(named: 'phone'),
+          city: any(named: 'city'),
+          jobRole: any(named: 'jobRole'),
+        ),
+      );
+    });
+
+    test('saves skills when at least one is present', () async {
+      const Profile profile = Profile(
+        id: 'id',
+        name: 'Worker',
+        email: 'worker@example.com',
+        skills: <String>['First Aid'],
+      );
+      when(
+        () => repository.updateProfile(skills: <String>['First Aid']),
+      ).thenAnswer((_) async => const Right<AppError, Profile>(profile));
+      final ProfileService service = ProfileService(repository: repository);
+
+      final Either<AppError, Profile> result = await service.saveSkills(
+        skills: <String>['First Aid'],
+      );
+
+      expect(result, const Right<AppError, Profile>(profile));
+    });
+
+    test(
+      'passes profile picture path when saving personal information',
+      () async {
+        const Profile profile = Profile(
+          id: 'id',
+          name: 'Worker',
+          email: 'worker@example.com',
+          phone: '+447911123456',
+          city: 'London',
+          jobRole: 'Nurse',
+          profilePictureUrl: '/tmp/profile.png',
+        );
+        when(
+          () => repository.updateProfile(
+            phone: '+447911123456',
+            city: 'London',
+            jobRole: 'Nurse',
+            profilePictureUrl: '/tmp/profile.png',
+          ),
+        ).thenAnswer((_) async => const Right<AppError, Profile>(profile));
+        final ProfileService service = ProfileService(repository: repository);
+
+        final Either<AppError, Profile> result = await service
+            .savePersonalInformation(
+              phone: '+447911123456',
+              city: 'London',
+              jobRole: 'Nurse',
+              profilePictureUrl: '/tmp/profile.png',
+            );
+
+        expect(result, const Right<AppError, Profile>(profile));
+      },
+    );
+  });
+
+  group('AvailabilityService', () {
+    test('requires all seven weekdays', () async {
+      final AvailabilityService service = AvailabilityService(
+        repository: repository,
+      );
+
+      final Either<AppError, Unit> result = await service.saveAvailability(
+        weeklySchedule: const <AvailabilityDay>[AvailabilityDay(day: 'Monday')],
+      );
+
+      expect(result.isLeft(), isTrue);
+    });
+  });
+
+  group('UnavailabilityService', () {
+    test('rejects end dates before start dates', () async {
+      final UnavailabilityService service = UnavailabilityService(
+        repository: repository,
+      );
+
+      final Either<AppError, Unit> result = await service.saveUnavailability(
+        unavailableDates: <UnavailabilityPeriod>[
+          UnavailabilityPeriod(
+            id: 'id',
+            startDate: DateTime(2026, 12, 26),
+            endDate: DateTime(2026, 12, 24),
+          ),
+        ],
+      );
+
+      expect(result.isLeft(), isTrue);
+    });
+  });
+}
