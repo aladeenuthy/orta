@@ -247,7 +247,7 @@ void main() {
           requestOptions: RequestOptions(
             path: Endpoints.shiftDetail('shift-id'),
           ),
-          data: <String, dynamic>{'success': true, 'data': shiftJson()},
+          data: <String, dynamic>{'shift': shiftJson()},
         ),
       );
 

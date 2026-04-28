@@ -17,6 +17,8 @@ class ShiftsServiceLocator implements ServiceLocator {
       () => ShiftsService(repository: locator<ShiftsRepository>()),
     );
 
+    locator.registerLazySingleton<ShiftActionRules>(ShiftActionRules.new);
+
     locator.registerFactoryParam<PaginatedShiftsBloc, ShiftFilters, int>(
       (ShiftFilters filters, int limit) => PaginatedShiftsBloc(
         shiftsService: locator<ShiftsService>(),
@@ -31,6 +33,13 @@ class ShiftsServiceLocator implements ServiceLocator {
 
     locator.registerFactory<ShiftActionsCubit>(
       () => ShiftActionsCubit(shiftsService: locator<ShiftsService>()),
+    );
+
+    locator.registerFactory<ShiftActionEligibilityCubit>(
+      () => ShiftActionEligibilityCubit(
+        locationService: locator<LocationService>(),
+        shiftActionRules: locator<ShiftActionRules>(),
+      ),
     );
   }
 }

@@ -31,6 +31,8 @@
 	</array>
 	<key>FlutterDeepLinkingEnabled</key>
 <true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Orta needs your location to verify that you are within the shift work location before clocking in or out.</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>

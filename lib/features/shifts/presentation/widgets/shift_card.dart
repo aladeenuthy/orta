@@ -89,7 +89,7 @@ class ShiftCard extends StatelessWidget {
             AppSpacings.vertical(17),
             _ShiftInfoRow(
               icon: Icons.schedule_outlined,
-              text: _formatShiftDateTime(shift),
+              text: DateUtils.shiftDateTime(shift.date, shift.startTime),
             ),
             AppSpacings.vertical(11),
             _ShiftInfoRow(icon: Icons.person_outline, text: shift.user),
@@ -111,25 +111,6 @@ class ShiftCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatShiftDateTime(Shift shift) {
-    const List<String> months = <String>[
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    final DateTime date = shift.date;
-    return '${months[date.month - 1]} ${date.day}, ${date.year}, ${_ShiftTimeFormatter.twelveHour(shift.startTime)}';
   }
 
   String _formatPay(num? pay) {
@@ -189,18 +170,6 @@ class _ShiftActions extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class _ShiftTimeFormatter {
-  const _ShiftTimeFormatter._();
-
-  static String twelveHour(DateTime time) {
-    final int hourOfPeriod = time.hour % 12;
-    final int hour = hourOfPeriod == 0 ? 12 : hourOfPeriod;
-    final String minute = time.minute.toString().padLeft(2, '0');
-    final String period = time.hour >= 12 ? 'PM' : 'AM';
-    return '$hour:$minute $period';
   }
 }
 

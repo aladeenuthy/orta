@@ -81,8 +81,8 @@ class ShiftDecisionDialog extends StatelessWidget {
             AppSpacings.vertical(22),
             _ShiftDecisionConfirmButton(
               onPressed: () {
-                onConfirmed?.call();
                 Navigator.of(context).pop(true);
+                onConfirmed?.call();
               },
             ),
             AppSpacings.vertical(22),

@@ -9,6 +9,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  final GlobalKey<_DashboardHomeBodyState> _dashboardKey =
+      GlobalKey<_DashboardHomeBodyState>();
 
   static const List<_PlaceholderTab> _placeholderTabs = <_PlaceholderTab>[
     _PlaceholderTab(icon: CupertinoIcons.chart_pie, label: 'Market'),
@@ -19,31 +21,79 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      bottomNavigationBar: DashboardBottomNav(
-        selectedIndex: _selectedIndex,
-        onItemSelected: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+    return BlocProvider<ShiftActionsCubit>(
+      create: (_) => locator<ShiftActionsCubit>(),
+      child: BlocConsumer<ShiftActionsCubit, ShiftActionsState>(
+        listener: (BuildContext context, ShiftActionsState state) {
+          if (state.isError && state.errorMessage != null) {
+            AppSnacks.error(context, state.errorMessage!);
+          }
+
+          if (state.isLoaded) {
+            AppSnacks.success(context, _ShiftActionMessage.from(state.action));
+            _dashboardKey.currentState?.refreshDashboard();
+          }
         },
-      ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: <Widget>[
-          const _DashboardHomeBody(),
-          ..._placeholderTabs.map(
-            (_PlaceholderTab tab) => _EmptyDashboardTab(tab: tab),
-          ),
-        ],
+        builder: (BuildContext context, ShiftActionsState state) {
+          return AppLoadingOverlay(
+            loading: state.isLoading,
+            child: Scaffold(
+              backgroundColor: AppColors.white,
+              bottomNavigationBar: DashboardBottomNav(
+                selectedIndex: _selectedIndex,
+                onItemSelected: (int index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+              ),
+              body: IndexedStack(
+                index: _selectedIndex,
+                children: <Widget>[
+                  _DashboardHomeBody(key: _dashboardKey),
+                  ..._placeholderTabs.map(
+                    (_PlaceholderTab tab) => _EmptyDashboardTab(tab: tab),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
+class _ShiftActionMessage {
+  const _ShiftActionMessage._();
+
+  static String from(ShiftAction? action) {
+    return switch (action) {
+      ShiftAction.cancel => 'Shift rejected',
+      ShiftAction.clockIn => 'Clocked in successfully',
+      ShiftAction.clockOut => 'Clocked out successfully',
+      null => 'Shift updated',
+    };
+  }
+}
+
+class _DashboardShiftAction {
+  const _DashboardShiftAction._();
+
+  static void accept(BuildContext context, Shift shift) {
+    AppRouter.toNamed(
+      AppRoutes.shiftDetail,
+      arguments: ShiftDetailArgs(shiftId: shift.id),
+    );
+  }
+
+  static void reject(BuildContext context, Shift shift) {
+    context.read<ShiftActionsCubit>().cancelShift(shift.id);
+  }
+}
+
 class _DashboardHomeBody extends StatefulWidget {
-  const _DashboardHomeBody();
+  const _DashboardHomeBody({super.key});
 
   @override
   State<_DashboardHomeBody> createState() => _DashboardHomeBodyState();
@@ -55,7 +105,7 @@ class _DashboardHomeBodyState extends State<_DashboardHomeBody> {
   final GlobalKey<DashboardShiftSectionState> _assignedSectionKey =
       GlobalKey<DashboardShiftSectionState>();
 
-  Future<void> _refreshDashboard() async {
+  Future<void> refreshDashboard() async {
     await Future.wait(<Future<void>>[
       _ongoingSectionKey.currentState?.refresh() ?? Future<void>.value(),
       _assignedSectionKey.currentState?.refresh() ?? Future<void>.value(),
@@ -77,7 +127,7 @@ class _DashboardHomeBodyState extends State<_DashboardHomeBody> {
     return SafeArea(
       child: RefreshIndicator(
         color: AppColors.primary,
-        onRefresh: _refreshDashboard,
+        onRefresh: refreshDashboard,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics(),
@@ -161,6 +211,10 @@ class _DashboardHomeBodyState extends State<_DashboardHomeBody> {
                 ),
                 showOngoingChip: false,
                 showActions: true,
+                onAcceptShift: (Shift shift) =>
+                    _DashboardShiftAction.accept(context, shift),
+                onRejectShift: (Shift shift) =>
+                    _DashboardShiftAction.reject(context, shift),
               ),
             ],
           ),

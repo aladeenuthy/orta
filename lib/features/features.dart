@@ -1,9 +1,9 @@
 // Core - App
-export 'package:flutter/material.dart';
+export 'package:flutter/material.dart' hide DateUtils;
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';
-export  'package:flutter/cupertino.dart' show CupertinoIcons;
+export 'package:flutter/cupertino.dart' show CupertinoIcons;
 export '../core/app/app_error.dart';
 export '../core/app/dio_exceptions.dart';
 export '../core/app/endpoints.dart';
@@ -31,6 +31,7 @@ export '../core/route/route.dart';
 export '../core/route/deep_link_handler.dart';
 // Core - Route
 export '../core/route/route_transition.dart';
+export '../core/services/location_service.dart';
 export '../core/service_locator.dart';
 // Core - Shared
 export '../core/shared/app_animated_column.dart';

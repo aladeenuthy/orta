@@ -33,14 +33,16 @@ class AppLoadingOverlay extends StatelessWidget {
             Positioned.fill(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
-                child: DecoratedBox(
-                  key: ValueKey<bool>(loading),
-                  decoration: BoxDecoration(
-                    color: overlayColor ?? Colors.white.withValues(alpha: .50),
-                  ),
-                  child: !loading
-                      ? const SizedBox.shrink()
-                      : SizedBox.expand(
+                child: !loading
+                    ? const SizedBox.shrink()
+                    : DecoratedBox(
+                        key: ValueKey<bool>(loading),
+                        decoration: BoxDecoration(
+                          color:
+                              overlayColor ??
+                              Colors.white.withValues(alpha: .50),
+                        ),
+                        child: SizedBox.expand(
                           child: Center(
                             child: SizedBox(
                               width: loaderSize ?? 30,
@@ -49,7 +51,7 @@ class AppLoadingOverlay extends StatelessWidget {
                             ),
                           ),
                         ),
-                ),
+                      ),
               ),
             ),
           ],

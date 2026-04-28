@@ -69,8 +69,9 @@ class ShiftsRemoteDataSource extends BaseAppRepository {
         response.data as Map,
       );
 
+      final Object? shiftData = responseData['shift'] ?? responseData['data'];
       final Shift shift = Shift.fromJson(
-        Map<String, dynamic>.from(responseData['data'] as Map),
+        Map<String, dynamic>.from(shiftData as Map),
       );
 
       return right<AppError, Shift>(shift);

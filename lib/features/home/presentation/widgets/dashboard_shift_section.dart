@@ -7,12 +7,16 @@ class DashboardShiftSection extends StatefulWidget {
     required this.filters,
     required this.showOngoingChip,
     required this.showActions,
+    this.onAcceptShift,
+    this.onRejectShift,
   });
 
   final String title;
   final ShiftFilters filters;
   final bool showOngoingChip;
   final bool showActions;
+  final ValueChanged<Shift>? onAcceptShift;
+  final ValueChanged<Shift>? onRejectShift;
 
   @override
   DashboardShiftSectionState createState() => DashboardShiftSectionState();
@@ -140,6 +144,8 @@ class DashboardShiftSectionState extends State<DashboardShiftSection> {
               shift: shift,
               showOngoingChip: widget.showOngoingChip,
               showActions: widget.showActions,
+              onAccept: widget.onAcceptShift,
+              onReject: widget.onRejectShift,
             ),
           )
           .toList(),
