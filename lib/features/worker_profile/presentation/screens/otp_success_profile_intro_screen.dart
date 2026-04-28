@@ -13,7 +13,11 @@ class ProfileSetupIntroScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               AppSpacings.vertical(65),
-              const OnboardingIllustration(icon: Icons.badge_outlined),
+              Image.asset(
+                AppAssets.profileHeader,
+                height: 230.0.height,
+                fit: BoxFit.contain,
+              ),
               AppSpacings.vertical(46),
               Text(
                 'Profile Set Up',

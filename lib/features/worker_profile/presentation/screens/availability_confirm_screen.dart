@@ -34,8 +34,10 @@ class AvailabilityConfirmScreen extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     AppSpacings.vertical(70),
-                    const OnboardingIllustration(
-                      icon: Icons.assignment_turned_in,
+                    Image.asset(
+                      AppAssets.confirmHeader,
+                      height: 230.0.height,
+                      fit: BoxFit.contain,
                     ),
                     AppSpacings.vertical(50),
                     Text(
