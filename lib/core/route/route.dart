@@ -13,6 +13,7 @@ class AppRoutes {
   static const String availabilitySetting = "/availability-setting";
   static const String availabilityConfirm = "/availability-confirm";
   static const String unavailability = "/unavailability";
+  static const String profile = "/profile";
   static const String home = "/home";
   static const String shiftList = "/shift-list";
   static const String shiftDetail = "/shift-detail";
@@ -41,21 +42,26 @@ class AppRouter {
       AppRoutes.profileIntro => const ProfileSetupIntroScreen(),
       AppRoutes.profilePersonal => BlocProvider<ProfileOnboardingCubit>.value(
         value: locator<ProfileOnboardingCubit>(),
-        child: const PersonalInformationScreen(),
+        child: PersonalInformationScreen(
+          args: _profileFlowArgs(settings.arguments),
+        ),
       ),
       AppRoutes.profileSkills => BlocProvider<ProfileOnboardingCubit>.value(
         value: locator<ProfileOnboardingCubit>(),
-        child: const ProfileSkillsScreen(),
+        child: ProfileSkillsScreen(args: _profileFlowArgs(settings.arguments)),
       ),
       AppRoutes.availabilitySetting => BlocProvider<AvailabilityCubit>.value(
         value: locator<AvailabilityCubit>(),
-        child: const AvailabilitySettingScreen(),
+        child: AvailabilitySettingScreen(
+          args: _profileFlowArgs(settings.arguments),
+        ),
       ),
       AppRoutes.availabilityConfirm => BlocProvider<AvailabilityCubit>.value(
         value: locator<AvailabilityCubit>(),
         child: const AvailabilityConfirmScreen(),
       ),
       AppRoutes.unavailability => const UnavailabilityManagementScreen(),
+      AppRoutes.profile => const WorkerProfileScreen(),
       AppRoutes.home => const HomeScreen(),
       AppRoutes.shiftList => _shiftListScreen(settings.arguments),
       AppRoutes.shiftDetail => _shiftDetailScreen(settings.arguments),
@@ -84,6 +90,14 @@ class AppRouter {
       create: (_) => locator<ForgotPasswordCubit>(),
       child: const ForgotPasswordScreen(),
     );
+  }
+
+  static ProfileFlowArgs _profileFlowArgs(Object? arguments) {
+    if (arguments is ProfileFlowArgs) {
+      return arguments;
+    }
+
+    return const ProfileFlowArgs();
   }
 
   static Widget _otpVerificationScreen(Object? arguments) {

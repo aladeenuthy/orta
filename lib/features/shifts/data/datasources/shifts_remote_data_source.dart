@@ -28,6 +28,57 @@ class ShiftsRemoteDataSource extends BaseAppRepository {
     });
   }
 
+  Future<Either<AppError, Shift>> claimShift(String id) {
+    return makeRequest(() async {
+      final response = await patch(Endpoints.claimShift(id));
+      final Map<String, dynamic> body = Map<String, dynamic>.from(
+        response.data as Map,
+      );
+      final Object? data = body['data'];
+      final Object? shiftData = data is Map ? data['shift'] : body['shift'];
+
+      return right<AppError, Shift>(
+        Shift.fromJson(Map<String, dynamic>.from(shiftData as Map)),
+      );
+    });
+  }
+
+  Future<Either<AppError, PaginatedResponse<Shift>>> getMarketplaceShifts({
+    required int page,
+    required int limit,
+    String? role,
+    DateTime? date,
+    String? typeOfShift,
+    ShiftSortOrder? sortOrder,
+  }) {
+    return makeRequest(() async {
+      final response = await get(
+        Endpoints.shiftMarketplace,
+        queryParameters: <String, dynamic>{
+          'page': page,
+          'limit': limit,
+          if (role != null && role.isNotEmpty) 'role': role,
+          if (date != null) 'date': DateUtils.dateOnly(date),
+          if (typeOfShift != null && typeOfShift.isNotEmpty)
+            'typeOfShift': typeOfShift,
+          if (sortOrder != null) 'sortOrder': sortOrder.value,
+        },
+      );
+      final Map<String, dynamic> responseData = Map<String, dynamic>.from(
+        response.data as Map,
+      );
+
+      return right<AppError, PaginatedResponse<Shift>>(
+        PaginatedResponse<Shift>.fromJson(
+          json: responseData,
+          dataKey: 'shifts',
+          fromJson: (dynamic json) =>
+              Shift.fromJson(Map<String, dynamic>.from(json as Map)),
+        ),
+      );
+    });
+  }
+
   Future<Either<AppError, PaginatedResponse<Shift>>> getMyShifts({
     required int page,
     required int limit,
@@ -75,6 +126,28 @@ class ShiftsRemoteDataSource extends BaseAppRepository {
       );
 
       return right<AppError, Shift>(shift);
+    });
+  }
+
+  Future<Either<AppError, LocationVerificationResult>> verifyLocation({
+    required String id,
+    required double latitude,
+    required double longitude,
+  }) {
+    return makeRequest(() async {
+      final response = await post(
+        Endpoints.verifyShiftLocation(id),
+        data: <String, dynamic>{'latitude': latitude, 'longitude': longitude},
+      );
+      final Map<String, dynamic> body = Map<String, dynamic>.from(
+        response.data as Map,
+      );
+
+      return right<AppError, LocationVerificationResult>(
+        LocationVerificationResult.fromJson(
+          Map<String, dynamic>.from(body['data'] as Map),
+        ),
+      );
     });
   }
 }

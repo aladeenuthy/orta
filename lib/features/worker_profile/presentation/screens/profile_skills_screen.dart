@@ -1,7 +1,9 @@
 import 'package:orta/features/features.dart';
 
 class ProfileSkillsScreen extends StatefulWidget {
-  const ProfileSkillsScreen({super.key});
+  const ProfileSkillsScreen({super.key, this.args = const ProfileFlowArgs()});
+
+  final ProfileFlowArgs args;
 
   @override
   State<ProfileSkillsScreen> createState() => _ProfileSkillsScreenState();
@@ -45,6 +47,11 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
           AppSnacks.error(context, state.errorMessage!);
         }
         if (state.isLoaded && state.savedStep == ProfileOnboardingStep.skills) {
+          if (widget.args.editMode) {
+            AppSnacks.success(context, 'Skills updated');
+            AppRouter.back();
+            return;
+          }
           AppRouter.toNamed(AppRoutes.availabilitySetting);
         }
       },
@@ -105,7 +112,8 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
                       AppSpacings.vertical(16),
                       _SkillChips(skills: state.skills),
                       const Spacer(),
-                      const StepDots(activeIndex: 1, count: 3),
+                      if (!widget.args.editMode)
+                        const StepDots(activeIndex: 1, count: 3),
                       AppSpacings.vertical(24),
                       AppButton(
                         color: AppColors.primary,
@@ -116,7 +124,7 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
                             .read<ProfileOnboardingCubit>()
                             .saveSkills,
                         child: Text(
-                          'Continue',
+                          widget.args.editMode ? 'Save' : 'Continue',
                           style: context.text.titleMedium?.copyWith(
                             color: AppColors.white,
                             fontSize: 18.0.fontSize,

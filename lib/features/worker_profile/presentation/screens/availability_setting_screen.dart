@@ -1,64 +1,85 @@
 import 'package:orta/features/features.dart';
 
 class AvailabilitySettingScreen extends StatelessWidget {
-  const AvailabilitySettingScreen({super.key});
+  const AvailabilitySettingScreen({
+    super.key,
+    this.args = const ProfileFlowArgs(),
+  });
+
+  final ProfileFlowArgs args;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AvailabilityCubit, AvailabilityState>(
+    return BlocConsumer<AvailabilityCubit, AvailabilityState>(
+      listener: (BuildContext context, AvailabilityState state) {
+        if (state.isError) {
+          AppSnacks.error(context, state.errorMessage);
+        }
+        if (args.editMode && state.isLoaded) {
+          AppSnacks.success(context, 'Availability updated');
+          AppRouter.back();
+        }
+      },
       builder: (BuildContext context, AvailabilityState state) {
-        return Scaffold(
-          backgroundColor: AppColors.pageMutedBackground,
-          appBar: const OnboardingAppBar(title: 'Availability Setting'),
-          body: SafeArea(
-            child: Padding(
-              padding: AppPaddings.horizontal(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  AppSpacings.vertical(28),
-                  Text(
-                    'When are you available to work?',
-                    style: context.text.titleLarge?.copyWith(
-                      color: AppColors.textColor,
-                      fontSize: 16.0.fontSize,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  AppSpacings.vertical(28),
-                  _WeekNavigator(state: state),
-                  AppSpacings.vertical(10),
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: state.weeklySchedule.length,
-                      separatorBuilder: (_, _) => AppSpacings.vertical(12),
-                      itemBuilder: (BuildContext context, int index) {
-                        return _AvailabilityRow(
-                          day: state.weeklySchedule[index],
-                        );
-                      },
-                    ),
-                  ),
-                  const StepDots(activeIndex: 2, count: 3),
-                  AppSpacings.vertical(24),
-                  AppButton(
-                    color: AppColors.primary,
-                    height: 42,
-                    borderRadius: BorderRadius.circular(10.0.radius),
-                    margin: EdgeInsets.zero,
-                    onPressed: () =>
-                        AppRouter.toNamed(AppRoutes.availabilityConfirm),
-                    child: Text(
-                      'Continue',
-                      style: context.text.titleMedium?.copyWith(
-                        color: AppColors.white,
-                        fontSize: 18.0.fontSize,
-                        fontWeight: FontWeight.w800,
+        return AppLoadingOverlay(
+          loading: state.isLoading,
+          child: Scaffold(
+            backgroundColor: AppColors.pageMutedBackground,
+            appBar: const OnboardingAppBar(title: 'Availability Setting'),
+            body: SafeArea(
+              child: Padding(
+                padding: AppPaddings.horizontal(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    AppSpacings.vertical(28),
+                    Text(
+                      'When are you available to work?',
+                      style: context.text.titleLarge?.copyWith(
+                        color: AppColors.textColor,
+                        fontSize: 16.0.fontSize,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
-                  AppSpacings.vertical(42),
-                ],
+                    AppSpacings.vertical(28),
+                    _WeekNavigator(state: state),
+                    AppSpacings.vertical(10),
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: state.weeklySchedule.length,
+                        separatorBuilder: (_, _) => AppSpacings.vertical(12),
+                        itemBuilder: (BuildContext context, int index) {
+                          return _AvailabilityRow(
+                            day: state.weeklySchedule[index],
+                          );
+                        },
+                      ),
+                    ),
+                    if (!args.editMode)
+                      const StepDots(activeIndex: 2, count: 3),
+                    AppSpacings.vertical(24),
+                    AppButton(
+                      color: AppColors.primary,
+                      height: 42,
+                      borderRadius: BorderRadius.circular(10.0.radius),
+                      margin: EdgeInsets.zero,
+                      onPressed: args.editMode
+                          ? context.read<AvailabilityCubit>().saveAvailability
+                          : () => AppRouter.toNamed(
+                              AppRoutes.availabilityConfirm,
+                            ),
+                      child: Text(
+                        args.editMode ? 'Save' : 'Continue',
+                        style: context.text.titleMedium?.copyWith(
+                          color: AppColors.white,
+                          fontSize: 18.0.fontSize,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                    AppSpacings.vertical(42),
+                  ],
+                ),
               ),
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:orta/features/features.dart';
 enum ShiftDecisionAction {
   accept,
   reject,
+  claim,
   clockIn,
   clockOut;
 
@@ -12,6 +13,8 @@ enum ShiftDecisionAction {
         'Please confirm that you want to accept this shift',
       ShiftDecisionAction.reject =>
         'Please confirm that you want to reject this shift as it wont appear in your feed',
+      ShiftDecisionAction.claim =>
+        'Please confirm that you want to claim this shift',
       ShiftDecisionAction.clockIn =>
         'Please confirm that you want to clock in for this shift',
       ShiftDecisionAction.clockOut =>
@@ -23,6 +26,7 @@ enum ShiftDecisionAction {
     return switch (this) {
       ShiftDecisionAction.accept => 'Shift accepted',
       ShiftDecisionAction.reject => 'Shift rejected',
+      ShiftDecisionAction.claim => 'Shift claimed',
       ShiftDecisionAction.clockIn => 'Clocked in successfully',
       ShiftDecisionAction.clockOut => 'Clocked out successfully',
     };

@@ -9,12 +9,15 @@ class ShiftActionEligibilityCubit extends Cubit<ShiftActionEligibilityState> {
   ShiftActionEligibilityCubit({
     required LocationService locationService,
     required ShiftActionRules shiftActionRules,
+    ShiftsService? shiftsService,
   }) : _locationService = locationService,
        _shiftActionRules = shiftActionRules,
+       _shiftsService = shiftsService,
        super(const ShiftActionEligibilityState());
 
   final LocationService _locationService;
   final ShiftActionRules _shiftActionRules;
+  final ShiftsService? _shiftsService;
 
   Future<void> evaluate(Shift shift) async {
     emit(state.toLoading());
@@ -34,13 +37,19 @@ class ShiftActionEligibilityCubit extends Cubit<ShiftActionEligibilityState> {
       (_) => null,
     );
 
+    final _VerifiedLocation verifiedLocation = await _verifyLocation(
+      shift: shift,
+      workerCoordinates: workerCoordinates,
+      fallbackWarning: locationWarning,
+    );
+
     emit(
       state.toLoaded(
         _shiftActionRules.evaluate(
           shift: shift,
           now: DateTime.now(),
-          workerCoordinates: workerCoordinates,
-          locationWarning: locationWarning,
+          workerCoordinates: verifiedLocation.coordinates,
+          locationWarning: verifiedLocation.warning ?? locationWarning,
           locationAction: locationAction,
         ),
       ),
@@ -68,4 +77,42 @@ class ShiftActionEligibilityCubit extends Cubit<ShiftActionEligibilityState> {
       _ => ShiftLocationAction.requestPermission,
     };
   }
+
+  Future<_VerifiedLocation> _verifyLocation({
+    required Shift shift,
+    required Coordinates? workerCoordinates,
+    required String? fallbackWarning,
+  }) async {
+    final ShiftsService? shiftsService = _shiftsService;
+    if (shiftsService == null || workerCoordinates == null) {
+      return _VerifiedLocation(workerCoordinates, fallbackWarning);
+    }
+
+    final Either<AppError, LocationVerificationResult> result =
+        await shiftsService.verifyLocation(
+          id: shift.id,
+          latitude: workerCoordinates.latitude,
+          longitude: workerCoordinates.longitude,
+        );
+
+    return result.fold(
+      (AppError error) => _VerifiedLocation(null, error.message),
+      (LocationVerificationResult verification) {
+        if (verification.withinRange) {
+          return _VerifiedLocation(workerCoordinates, null);
+        }
+        return const _VerifiedLocation(
+          null,
+          'You must be within 200m of the work location',
+        );
+      },
+    );
+  }
+}
+
+class _VerifiedLocation {
+  const _VerifiedLocation(this.coordinates, this.warning);
+
+  final Coordinates? coordinates;
+  final String? warning;
 }

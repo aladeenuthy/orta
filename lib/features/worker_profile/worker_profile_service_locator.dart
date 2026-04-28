@@ -39,6 +39,12 @@ class WorkerProfileServiceLocator implements ServiceLocator {
       ),
     );
 
+    locator.registerFactory<WorkerProfileCubit>(
+      () => WorkerProfileCubit(
+        workerProfileService: locator<WorkerProfileService>(),
+      ),
+    );
+
     locator.registerFactory<UnavailabilityCubit>(
       () => UnavailabilityCubit(
         unavailabilityService: locator<UnavailabilityService>(),

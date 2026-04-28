@@ -11,6 +11,10 @@ class DateUtils {
     return DateFormat('MMMM d').format(date);
   }
 
+  static String monthYear(DateTime date) {
+    return DateFormat('MMMM y').format(date);
+  }
+
   static String shortWeekday(String day) {
     return switch (day) {
       'Tuesday' => 'Tues',

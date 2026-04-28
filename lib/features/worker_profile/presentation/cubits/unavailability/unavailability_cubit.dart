@@ -43,6 +43,29 @@ class UnavailabilityCubit extends Cubit<UnavailabilityState> {
     );
   }
 
+  Future<void> addDates({required List<DateTime> dates, String? reason}) async {
+    if (dates.isEmpty) return;
+
+    final List<UnavailabilityPeriod> items = dates.map((DateTime date) {
+      return UnavailabilityPeriod(
+        id: '${date.millisecondsSinceEpoch}',
+        startDate: date,
+        endDate: date,
+        reason: reason,
+      );
+    }).toList();
+
+    final Either<AppError, Unit> result = await _unavailabilityService
+        .saveUnavailability(unavailableDates: items);
+
+    result.fold(
+      (AppError error) => emit(state.toError(error.message)),
+      (_) => emit(
+        state.toLoaded(<UnavailabilityPeriod>[...state.items, ...items]),
+      ),
+    );
+  }
+
   Future<void> remove(String id) async {
     final Either<AppError, Unit> result = await _unavailabilityService
         .deleteUnavailability(id);

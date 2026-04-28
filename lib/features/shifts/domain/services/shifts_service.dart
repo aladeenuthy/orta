@@ -19,6 +19,28 @@ class ShiftsService {
     return _repository.clockOut(id);
   }
 
+  Future<Either<AppError, Shift>> claimShift(String id) {
+    return _repository.claimShift(id);
+  }
+
+  Future<Either<AppError, PaginatedResponse<Shift>>> getMarketplaceShifts({
+    required int page,
+    required int limit,
+    String? role,
+    DateTime? date,
+    String? typeOfShift,
+    ShiftSortOrder? sortOrder,
+  }) {
+    return _repository.getMarketplaceShifts(
+      page: page,
+      limit: limit,
+      role: role,
+      date: date,
+      typeOfShift: typeOfShift,
+      sortOrder: sortOrder,
+    );
+  }
+
   Future<Either<AppError, PaginatedResponse<Shift>>> getMyShifts({
     required int page,
     required int limit,
@@ -37,5 +59,17 @@ class ShiftsService {
 
   Future<Either<AppError, Shift>> getShiftDetail(String id) {
     return _repository.getShiftDetail(id);
+  }
+
+  Future<Either<AppError, LocationVerificationResult>> verifyLocation({
+    required String id,
+    required double latitude,
+    required double longitude,
+  }) {
+    return _repository.verifyLocation(
+      id: id,
+      latitude: latitude,
+      longitude: longitude,
+    );
   }
 }

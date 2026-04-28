@@ -3,7 +3,12 @@ import 'dart:io';
 import 'package:orta/features/features.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
-  const PersonalInformationScreen({super.key});
+  const PersonalInformationScreen({
+    super.key,
+    this.args = const ProfileFlowArgs(),
+  });
+
+  final ProfileFlowArgs args;
 
   @override
   State<PersonalInformationScreen> createState() =>
@@ -23,6 +28,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         }
         if (state.isLoaded &&
             state.savedStep == ProfileOnboardingStep.personal) {
+          if (widget.args.editMode) {
+            AppSnacks.success(context, 'Profile updated');
+            AppRouter.back();
+            return;
+          }
           AppRouter.toNamed(AppRoutes.profileSkills);
         }
       },

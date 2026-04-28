@@ -8,6 +8,9 @@ class ShiftFilters with _$ShiftFilters {
     ShiftStatusFilter? status,
     ShiftSortBy? sortBy,
     ShiftSortOrder? sortOrder,
+    String? role,
+    DateTime? date,
+    String? typeOfShift,
   }) = _ShiftFilters;
 }
 

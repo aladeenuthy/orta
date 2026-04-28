@@ -20,6 +20,9 @@ mixin _$ShiftFilters {
   ShiftStatusFilter? get status => throw _privateConstructorUsedError;
   ShiftSortBy? get sortBy => throw _privateConstructorUsedError;
   ShiftSortOrder? get sortOrder => throw _privateConstructorUsedError;
+  String? get role => throw _privateConstructorUsedError;
+  DateTime? get date => throw _privateConstructorUsedError;
+  String? get typeOfShift => throw _privateConstructorUsedError;
 
   /// Create a copy of ShiftFilters
   /// with the given fields replaced by the non-null parameter values.
@@ -39,6 +42,9 @@ abstract class $ShiftFiltersCopyWith<$Res> {
     ShiftStatusFilter? status,
     ShiftSortBy? sortBy,
     ShiftSortOrder? sortOrder,
+    String? role,
+    DateTime? date,
+    String? typeOfShift,
   });
 }
 
@@ -60,6 +66,9 @@ class _$ShiftFiltersCopyWithImpl<$Res, $Val extends ShiftFilters>
     Object? status = freezed,
     Object? sortBy = freezed,
     Object? sortOrder = freezed,
+    Object? role = freezed,
+    Object? date = freezed,
+    Object? typeOfShift = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -75,6 +84,18 @@ class _$ShiftFiltersCopyWithImpl<$Res, $Val extends ShiftFilters>
                 ? _value.sortOrder
                 : sortOrder // ignore: cast_nullable_to_non_nullable
                       as ShiftSortOrder?,
+            role: freezed == role
+                ? _value.role
+                : role // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            date: freezed == date
+                ? _value.date
+                : date // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            typeOfShift: freezed == typeOfShift
+                ? _value.typeOfShift
+                : typeOfShift // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -94,6 +115,9 @@ abstract class _$$ShiftFiltersImplCopyWith<$Res>
     ShiftStatusFilter? status,
     ShiftSortBy? sortBy,
     ShiftSortOrder? sortOrder,
+    String? role,
+    DateTime? date,
+    String? typeOfShift,
   });
 }
 
@@ -114,6 +138,9 @@ class __$$ShiftFiltersImplCopyWithImpl<$Res>
     Object? status = freezed,
     Object? sortBy = freezed,
     Object? sortOrder = freezed,
+    Object? role = freezed,
+    Object? date = freezed,
+    Object? typeOfShift = freezed,
   }) {
     return _then(
       _$ShiftFiltersImpl(
@@ -129,6 +156,18 @@ class __$$ShiftFiltersImplCopyWithImpl<$Res>
             ? _value.sortOrder
             : sortOrder // ignore: cast_nullable_to_non_nullable
                   as ShiftSortOrder?,
+        role: freezed == role
+            ? _value.role
+            : role // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        date: freezed == date
+            ? _value.date
+            : date // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        typeOfShift: freezed == typeOfShift
+            ? _value.typeOfShift
+            : typeOfShift // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -137,7 +176,14 @@ class __$$ShiftFiltersImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ShiftFiltersImpl implements _ShiftFilters {
-  const _$ShiftFiltersImpl({this.status, this.sortBy, this.sortOrder});
+  const _$ShiftFiltersImpl({
+    this.status,
+    this.sortBy,
+    this.sortOrder,
+    this.role,
+    this.date,
+    this.typeOfShift,
+  });
 
   @override
   final ShiftStatusFilter? status;
@@ -145,10 +191,16 @@ class _$ShiftFiltersImpl implements _ShiftFilters {
   final ShiftSortBy? sortBy;
   @override
   final ShiftSortOrder? sortOrder;
+  @override
+  final String? role;
+  @override
+  final DateTime? date;
+  @override
+  final String? typeOfShift;
 
   @override
   String toString() {
-    return 'ShiftFilters(status: $status, sortBy: $sortBy, sortOrder: $sortOrder)';
+    return 'ShiftFilters(status: $status, sortBy: $sortBy, sortOrder: $sortOrder, role: $role, date: $date, typeOfShift: $typeOfShift)';
   }
 
   @override
@@ -159,11 +211,23 @@ class _$ShiftFiltersImpl implements _ShiftFilters {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.sortBy, sortBy) || other.sortBy == sortBy) &&
             (identical(other.sortOrder, sortOrder) ||
-                other.sortOrder == sortOrder));
+                other.sortOrder == sortOrder) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.date, date) || other.date == date) &&
+            (identical(other.typeOfShift, typeOfShift) ||
+                other.typeOfShift == typeOfShift));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status, sortBy, sortOrder);
+  int get hashCode => Object.hash(
+    runtimeType,
+    status,
+    sortBy,
+    sortOrder,
+    role,
+    date,
+    typeOfShift,
+  );
 
   /// Create a copy of ShiftFilters
   /// with the given fields replaced by the non-null parameter values.
@@ -179,6 +243,9 @@ abstract class _ShiftFilters implements ShiftFilters {
     final ShiftStatusFilter? status,
     final ShiftSortBy? sortBy,
     final ShiftSortOrder? sortOrder,
+    final String? role,
+    final DateTime? date,
+    final String? typeOfShift,
   }) = _$ShiftFiltersImpl;
 
   @override
@@ -187,6 +254,12 @@ abstract class _ShiftFilters implements ShiftFilters {
   ShiftSortBy? get sortBy;
   @override
   ShiftSortOrder? get sortOrder;
+  @override
+  String? get role;
+  @override
+  DateTime? get date;
+  @override
+  String? get typeOfShift;
 
   /// Create a copy of ShiftFilters
   /// with the given fields replaced by the non-null parameter values.

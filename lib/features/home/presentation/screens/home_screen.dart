@@ -13,7 +13,6 @@ class _HomeScreenState extends State<HomeScreen> {
       GlobalKey<_DashboardHomeBodyState>();
 
   static const List<_PlaceholderTab> _placeholderTabs = <_PlaceholderTab>[
-    _PlaceholderTab(icon: CupertinoIcons.chart_pie, label: 'Market'),
     _PlaceholderTab(icon: Icons.chat_bubble_outline, label: 'Chat'),
     _PlaceholderTab(icon: Icons.calendar_today_outlined, label: 'Shift'),
   ];
@@ -34,27 +33,38 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         builder: (BuildContext context, ShiftActionsState state) {
-          return AppLoadingOverlay(
-            loading: state.isLoading,
-            child: Scaffold(
-              backgroundColor: AppColors.white,
-              bottomNavigationBar: DashboardBottomNav(
-                selectedIndex: _selectedIndex,
-                onItemSelected: (int index) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                },
-              ),
-              body: IndexedStack(
-                index: _selectedIndex,
-                children: <Widget>[
-                  _DashboardHomeBody(key: _dashboardKey),
-                  ..._placeholderTabs.map(
-                    (_PlaceholderTab tab) => _EmptyDashboardTab(tab: tab),
-                  ),
-                  const _SettingsTab(),
-                ],
+          return BlocListener<AuthCubit, AuthState>(
+            listener: (BuildContext context, AuthState authState) {
+              if (authState.isError && authState.errorMessage != null) {
+                AppSnacks.error(context, authState.errorMessage!);
+              }
+              if (authState.isUnauthenticated) {
+                AppRouter.toCloseAllNamed(AppRoutes.login);
+              }
+            },
+            child: AppLoadingOverlay(
+              loading: state.isLoading,
+              child: Scaffold(
+                backgroundColor: AppColors.white,
+                bottomNavigationBar: DashboardBottomNav(
+                  selectedIndex: _selectedIndex,
+                  onItemSelected: (int index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                ),
+                body: IndexedStack(
+                  index: _selectedIndex,
+                  children: <Widget>[
+                    _DashboardHomeBody(key: _dashboardKey),
+                    const MarketplaceScreen(),
+                    ..._placeholderTabs.map(
+                      (_PlaceholderTab tab) => _EmptyDashboardTab(tab: tab),
+                    ),
+                    const _SettingsTab(),
+                  ],
+                ),
               ),
             ),
           );
@@ -177,13 +187,16 @@ class _DashboardHomeBodyState extends State<_DashboardHomeBody> {
                     size: 30.0.radius,
                   ),
                   AppSpacings.horizontal(18),
-                  CircleAvatar(
-                    radius: 20.0.radius,
-                    backgroundColor: AppColors.primaryLight,
-                    child: Icon(
-                      Icons.person,
-                      color: AppColors.primary,
-                      size: 20.0.radius,
+                  GestureDetector(
+                    onTap: () => AppRouter.toNamed(AppRoutes.profile),
+                    child: CircleAvatar(
+                      radius: 20.0.radius,
+                      backgroundColor: AppColors.primaryLight,
+                      child: Icon(
+                        Icons.person,
+                        color: AppColors.primary,
+                        size: 20.0.radius,
+                      ),
                     ),
                   ),
                 ],
@@ -258,39 +271,30 @@ class _SettingsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
-      listener: (BuildContext context, AuthState state) {
-        if (state.isError && state.errorMessage != null) {
-          AppSnacks.error(context, state.errorMessage!);
-        }
-
-        if (state.isUnauthenticated) {
-          AppRouter.toCloseAllNamed(AppRoutes.login);
-        }
-      },
-      builder: (BuildContext context, AuthState state) {
-        return SafeArea(
-          child: Padding(
-            padding: AppPaddings.horizontal(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.settings_outlined,
-                  color: AppColors.primary,
-                  size: 56.0.radius,
-                ),
-                AppSpacings.vertical(12),
-                Text(
-                  'Setting',
-                  style: context.text.headlineMedium?.copyWith(
-                    color: AppColors.textColor,
-                    fontSize: 22.0.fontSize,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                AppSpacings.vertical(28),
-                AppButton(
+    return SafeArea(
+      child: Padding(
+        padding: AppPaddings.horizontal(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.settings_outlined,
+              color: AppColors.primary,
+              size: 56.0.radius,
+            ),
+            AppSpacings.vertical(12),
+            Text(
+              'Setting',
+              style: context.text.headlineMedium?.copyWith(
+                color: AppColors.textColor,
+                fontSize: 22.0.fontSize,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            AppSpacings.vertical(28),
+            BlocBuilder<AuthCubit, AuthState>(
+              builder: (BuildContext context, AuthState state) {
+                return AppButton(
                   color: AppColors.primary,
                   enabled: !state.isLoading,
                   height: 42,
@@ -305,12 +309,12 @@ class _SettingsTab extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                ),
-              ],
+                );
+              },
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 }
