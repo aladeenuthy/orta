@@ -2,17 +2,34 @@ import 'dart:io';
 
 import 'package:orta/features/features.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late final ProfileCubit _profileCubit;
+  late final AvailabilityCubit _availabilityCubit;
+  late final UnavailabilityCubit _unavailabilityCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileCubit = locator<ProfileCubit>()..loadProfile();
+    _availabilityCubit = locator<AvailabilityCubit>()
+      ..initialize(loadSavedTemplate: true);
+    _unavailabilityCubit = locator<UnavailabilityCubit>()..load();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: <BlocProvider<dynamic>>[
-        BlocProvider<ProfileCubit>(
-          create: (_) => locator<ProfileCubit>()..loadProfile(),
-        ),
-        BlocProvider<AuthCubit>.value(value: context.read<AuthCubit>()),
+        BlocProvider<ProfileCubit>(create: (_) => _profileCubit),
+        BlocProvider<AvailabilityCubit>.value(value: _availabilityCubit),
+        BlocProvider<UnavailabilityCubit>(create: (_) => _unavailabilityCubit),
       ],
       child: const ProfileView(),
     );
@@ -31,13 +48,22 @@ class ProfileView extends StatelessWidget {
           appBar: const _ProfileAppBar(),
           body: AppLoadingOverlay(
             loading: state.isLoading || state.isInitial,
-            child: state.profile == null
-                ? AppRetryWidget(
+            child: Builder(
+              builder: (context) {
+                if (state.isLoading || state.isInitial) {
+                  return const SizedBox.expand();
+                }
+
+                if (state.profile == null) {
+                  return AppRetryWidget(
                     errorMessage:
                         state.errorMessage ?? 'Unable to load profile',
                     onRetry: context.read<ProfileCubit>().loadProfile,
-                  )
-                : _ProfileBody(profile: state.profile!),
+                  );
+                }
+                return _ProfileBody(profile: state.profile!);
+              },
+            ),
           ),
         );
       },
@@ -75,7 +101,7 @@ class _ProfileBody extends StatelessWidget {
               ),
               AppSpacings.horizontal(8),
               Text(
-                profile.city ?? 'Milan Italy',
+                profile.city ?? '-- --',
                 style: context.text.bodyLarge?.copyWith(
                   color: AppColors.greyDark,
                   fontSize: 16.0.fontSize,
@@ -85,7 +111,7 @@ class _ProfileBody extends StatelessWidget {
           ),
           AppSpacings.vertical(22),
           Text(
-            profile.jobRole ?? 'Warehouse Operative',
+            profile.jobRole ?? '-- --',
             style: context.text.titleLarge?.copyWith(
               color: AppColors.textColor,
               fontSize: 18.0.fontSize,
@@ -93,39 +119,11 @@ class _ProfileBody extends StatelessWidget {
             ),
           ),
           AppSpacings.vertical(24),
-          _ProfileSection(
-            icon: Icons.calendar_month_outlined,
-            title: 'Availability',
-            body: 'Mon- Fri: 09:00-17:00',
-            onEdit: () => _ProfileNavigation.openAndRefresh(
-              context,
-              AppRoutes.availabilitySetting,
-              arguments: ProfileFlowArgs(editMode: true, profile: profile),
-            ),
-          ),
-          _ProfileSection(
-            icon: Icons.error_outline,
-            iconColor: AppColors.alert,
-            title: 'Unavailable Dates',
-            body: _ProfileDisplay.list(const <String>[
-              '12 April',
-              '24 April',
-              '30 April',
-              '4 May',
-            ], bullet: '•'),
-            onEdit: () => _ProfileNavigation.openAndRefresh(
-              context,
-              AppRoutes.unavailability,
-            ),
-          ),
+          _AvailabilityProfileSection(profile: profile),
+          const _UnavailabilityProfileSection(),
           _ProfileSection(
             title: 'Skill',
-            body: _ProfileDisplay.list(
-              profile.skills.isEmpty
-                  ? const <String>['Forklift', 'Packing']
-                  : profile.skills,
-              bullet: '-',
-            ),
+            body: _ProfileDisplay.list(profile.skills, bullet: '-'),
             onEdit: () => _ProfileNavigation.openAndRefresh(
               context,
               AppRoutes.profileSkills,
@@ -244,6 +242,101 @@ class _ProfileDisplay {
     }
 
     return lines.join('\n');
+  }
+}
+
+class _AvailabilityProfileSection extends StatelessWidget {
+  const _AvailabilityProfileSection({required this.profile});
+
+  final Profile profile;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AvailabilityCubit, AvailabilityState>(
+      builder: (BuildContext context, AvailabilityState state) {
+        return _ProfileSection(
+          icon: Icons.calendar_month_outlined,
+          title: 'Availability',
+          body: _AvailabilityDisplay.from(state),
+          onEdit: () async {
+            await AppRouter.toNamed(
+              AppRoutes.availabilitySetting,
+              arguments: ProfileFlowArgs(editMode: true, profile: profile),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _AvailabilityDisplay {
+  const _AvailabilityDisplay._();
+
+  static String from(AvailabilityState state) {
+    if (state.isLoading) return 'Loading availability...';
+    if (state.isError) return 'Unable to load availability';
+
+    final List<AvailabilityDay> availableDays = state.weeklySchedule
+        .where((AvailabilityDay day) => day.isAvailable)
+        .toList();
+    if (availableDays.isEmpty) return 'No availability set';
+
+    return _ProfileDisplay.list(
+      availableDays
+          .map(
+            (AvailabilityDay day) =>
+                '${DateUtils.shortWeekday(day.day)}: ${day.startTime}-${day.endTime}',
+          )
+          .toList(),
+      bullet: '-',
+    );
+  }
+}
+
+class _UnavailabilityProfileSection extends StatelessWidget {
+  const _UnavailabilityProfileSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UnavailabilityCubit, UnavailabilityState>(
+      builder: (BuildContext context, UnavailabilityState state) {
+        return _ProfileSection(
+          icon: Icons.error_outline,
+          iconColor: AppColors.alert,
+          title: 'Unavailable Dates',
+          body: _UnavailabilityDisplay.from(state),
+          onEdit: () async {
+            await AppRouter.toNamed(
+              AppRoutes.unavailability,
+              arguments: UnavailabilityManagementArgs(
+                cubit: context.read<UnavailabilityCubit>(),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _UnavailabilityDisplay {
+  const _UnavailabilityDisplay._();
+
+  static String from(UnavailabilityState state) {
+    if (state.isLoading) return 'Loading unavailable dates...';
+    if (state.isError) return 'Unable to load unavailable dates';
+    if (state.items.isEmpty) return 'No unavailable dates';
+
+    return _ProfileDisplay.list(
+      state.items
+          .map(
+            (UnavailabilityPeriod item) =>
+                DateUtils.dateRange(item.startDate, item.endDate),
+          )
+          .toList(),
+      bullet: '•',
+    );
   }
 }
 

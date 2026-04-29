@@ -11,7 +11,7 @@ class AvailabilityService {
     return _repository.getAvailability();
   }
 
-  Future<Either<AppError, Unit>> saveAvailability({
+  Future<Either<AppError, List<AvailabilityDay>>> saveAvailability({
     required List<AvailabilityDay> weeklySchedule,
   }) {
     if (weeklySchedule.length != 7) {

@@ -12,6 +12,40 @@ class AvailabilityCubit extends Cubit<AvailabilityState> {
 
   final AvailabilityService _availabilityService;
 
+  void initialize({required bool loadSavedTemplate}) {
+    emit(
+      AvailabilityState(
+        weeklySchedule: ProfileDefaults.availability,
+        referenceWeekStart: AvailabilityState.currentWeekStart(),
+      ),
+    );
+
+    if (loadSavedTemplate) {
+      loadAvailability();
+    }
+  }
+
+  Future<void> loadAvailability() async {
+    emit(state.toLoading());
+
+    final Either<AppError, List<AvailabilityDay>> result =
+        await _availabilityService.getAvailability();
+
+    result.fold(
+      (AppError error) => emit(state.toError(error.message)),
+      (List<AvailabilityDay> schedule) => emit(
+        state.copyWith(
+          viewState: ViewState.loaded,
+          weeklySchedule: schedule.isEmpty
+              ? ProfileDefaults.availability
+              : schedule,
+          errorMessage: '',
+          saveSucceeded: false,
+        ),
+      ),
+    );
+  }
+
   void toggleDay(String day) {
     emit(
       state.copyWith(
@@ -43,12 +77,21 @@ class AvailabilityCubit extends Cubit<AvailabilityState> {
     if (state.isLoading) return;
     emit(state.toLoading());
 
-    final Either<AppError, Unit> result = await _availabilityService
-        .saveAvailability(weeklySchedule: state.weeklySchedule);
+    final Either<AppError, List<AvailabilityDay>> result =
+        await _availabilityService.saveAvailability(
+          weeklySchedule: state.weeklySchedule,
+        );
 
     result.fold(
       (AppError error) => emit(state.toError(error.message)),
-      (_) => emit(state.toLoaded()),
+      (List<AvailabilityDay> schedule) => emit(
+        state.copyWith(
+          viewState: ViewState.loaded,
+          weeklySchedule: schedule,
+          errorMessage: '',
+          saveSucceeded: true,
+        ),
+      ),
     );
   }
 }

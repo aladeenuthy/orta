@@ -15,7 +15,7 @@ abstract class ProfileRepository {
 
   Future<Either<AppError, List<AvailabilityDay>>> getAvailability();
 
-  Future<Either<AppError, Unit>> saveAvailability({
+  Future<Either<AppError, List<AvailabilityDay>>> saveAvailability({
     required List<AvailabilityDay> weeklySchedule,
   });
 
@@ -23,7 +23,7 @@ abstract class ProfileRepository {
     String? month,
   });
 
-  Future<Either<AppError, Unit>> saveUnavailability({
+  Future<Either<AppError, List<UnavailabilityPeriod>>> saveUnavailability({
     required List<UnavailabilityPeriod> unavailableDates,
   });
 

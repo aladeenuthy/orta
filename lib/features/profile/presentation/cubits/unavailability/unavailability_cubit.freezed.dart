@@ -20,6 +20,7 @@ mixin _$UnavailabilityState {
   ViewState get viewState => throw _privateConstructorUsedError;
   List<UnavailabilityPeriod> get items => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
+  DateTime? get visibleMonth => throw _privateConstructorUsedError;
 
   /// Create a copy of UnavailabilityState
   /// with the given fields replaced by the non-null parameter values.
@@ -39,6 +40,7 @@ abstract class $UnavailabilityStateCopyWith<$Res> {
     ViewState viewState,
     List<UnavailabilityPeriod> items,
     String? errorMessage,
+    DateTime? visibleMonth,
   });
 }
 
@@ -60,6 +62,7 @@ class _$UnavailabilityStateCopyWithImpl<$Res, $Val extends UnavailabilityState>
     Object? viewState = null,
     Object? items = null,
     Object? errorMessage = freezed,
+    Object? visibleMonth = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -75,6 +78,10 @@ class _$UnavailabilityStateCopyWithImpl<$Res, $Val extends UnavailabilityState>
                 ? _value.errorMessage
                 : errorMessage // ignore: cast_nullable_to_non_nullable
                       as String?,
+            visibleMonth: freezed == visibleMonth
+                ? _value.visibleMonth
+                : visibleMonth // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
           )
           as $Val,
     );
@@ -94,6 +101,7 @@ abstract class _$$UnavailabilityStateImplCopyWith<$Res>
     ViewState viewState,
     List<UnavailabilityPeriod> items,
     String? errorMessage,
+    DateTime? visibleMonth,
   });
 }
 
@@ -114,6 +122,7 @@ class __$$UnavailabilityStateImplCopyWithImpl<$Res>
     Object? viewState = null,
     Object? items = null,
     Object? errorMessage = freezed,
+    Object? visibleMonth = freezed,
   }) {
     return _then(
       _$UnavailabilityStateImpl(
@@ -129,6 +138,10 @@ class __$$UnavailabilityStateImplCopyWithImpl<$Res>
             ? _value.errorMessage
             : errorMessage // ignore: cast_nullable_to_non_nullable
                   as String?,
+        visibleMonth: freezed == visibleMonth
+            ? _value.visibleMonth
+            : visibleMonth // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
       ),
     );
   }
@@ -141,6 +154,7 @@ class _$UnavailabilityStateImpl extends _UnavailabilityState {
     this.viewState = ViewState.initial,
     final List<UnavailabilityPeriod> items = const <UnavailabilityPeriod>[],
     this.errorMessage,
+    this.visibleMonth,
   }) : _items = items,
        super._();
 
@@ -158,10 +172,12 @@ class _$UnavailabilityStateImpl extends _UnavailabilityState {
 
   @override
   final String? errorMessage;
+  @override
+  final DateTime? visibleMonth;
 
   @override
   String toString() {
-    return 'UnavailabilityState(viewState: $viewState, items: $items, errorMessage: $errorMessage)';
+    return 'UnavailabilityState(viewState: $viewState, items: $items, errorMessage: $errorMessage, visibleMonth: $visibleMonth)';
   }
 
   @override
@@ -173,7 +189,9 @@ class _$UnavailabilityStateImpl extends _UnavailabilityState {
                 other.viewState == viewState) &&
             const DeepCollectionEquality().equals(other._items, _items) &&
             (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+                other.errorMessage == errorMessage) &&
+            (identical(other.visibleMonth, visibleMonth) ||
+                other.visibleMonth == visibleMonth));
   }
 
   @override
@@ -182,6 +200,7 @@ class _$UnavailabilityStateImpl extends _UnavailabilityState {
     viewState,
     const DeepCollectionEquality().hash(_items),
     errorMessage,
+    visibleMonth,
   );
 
   /// Create a copy of UnavailabilityState
@@ -201,6 +220,7 @@ abstract class _UnavailabilityState extends UnavailabilityState {
     final ViewState viewState,
     final List<UnavailabilityPeriod> items,
     final String? errorMessage,
+    final DateTime? visibleMonth,
   }) = _$UnavailabilityStateImpl;
   const _UnavailabilityState._() : super._();
 
@@ -210,6 +230,8 @@ abstract class _UnavailabilityState extends UnavailabilityState {
   List<UnavailabilityPeriod> get items;
   @override
   String? get errorMessage;
+  @override
+  DateTime? get visibleMonth;
 
   /// Create a copy of UnavailabilityState
   /// with the given fields replaced by the non-null parameter values.

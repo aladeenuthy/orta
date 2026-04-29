@@ -57,7 +57,7 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
             AppRouter.back();
             return;
           }
-          AppRouter.toCloseAllNamed(AppRoutes.home);
+          AppRouter.toNamed(AppRoutes.availabilitySetting);
         }
       },
       builder: (BuildContext context, ProfileOnboardingState state) {

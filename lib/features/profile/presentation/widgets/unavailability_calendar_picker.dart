@@ -4,17 +4,15 @@ class UnavailabilityCalendarPicker extends StatelessWidget {
   const UnavailabilityCalendarPicker({
     super.key,
     required this.visibleMonth,
-    required this.selectedDates,
+    required this.unavailablePeriods,
     required this.onPreviousMonth,
     required this.onNextMonth,
-    required this.onSelected,
   });
 
   final DateTime visibleMonth;
-  final List<DateTime> selectedDates;
+  final List<UnavailabilityPeriod> unavailablePeriods;
   final VoidCallback onPreviousMonth;
   final VoidCallback onNextMonth;
-  final ValueChanged<DateTime> onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +28,7 @@ class UnavailabilityCalendarPicker extends StatelessWidget {
         AppSpacings.vertical(20),
         _CalendarDaysGrid(
           visibleMonth: visibleMonth,
-          selectedDates: selectedDates,
-          onSelected: onSelected,
+          unavailablePeriods: unavailablePeriods,
         ),
       ],
     );
@@ -98,13 +95,11 @@ class _WeekdayRow extends StatelessWidget {
 class _CalendarDaysGrid extends StatelessWidget {
   const _CalendarDaysGrid({
     required this.visibleMonth,
-    required this.selectedDates,
-    required this.onSelected,
+    required this.unavailablePeriods,
   });
 
   final DateTime visibleMonth;
-  final List<DateTime> selectedDates;
-  final ValueChanged<DateTime> onSelected;
+  final List<UnavailabilityPeriod> unavailablePeriods;
 
   @override
   Widget build(BuildContext context) {
@@ -124,17 +119,15 @@ class _CalendarDaysGrid extends StatelessWidget {
         final DateTime? date = dates[index];
         if (date == null) return const SizedBox.shrink();
 
-        final bool selected = selectedDates.any(
-          (DateTime item) =>
-              DateUtils.dateOnly(item) == DateUtils.dateOnly(date),
+        final bool unavailable = unavailablePeriods.any(
+          (UnavailabilityPeriod item) => _isWithinPeriod(date, item),
         );
         final bool disabled = date.isBefore(today);
 
         return _CalendarDayButton(
           date: date,
-          selected: selected,
+          unavailable: unavailable,
           disabled: disabled,
-          onTap: disabled ? null : () => onSelected(date),
         );
       },
     );
@@ -162,43 +155,46 @@ class _CalendarDaysGrid extends StatelessWidget {
   DateTime _normalize(DateTime date) {
     return DateTime(date.year, date.month, date.day);
   }
+
+  bool _isWithinPeriod(DateTime date, UnavailabilityPeriod period) {
+    final DateTime current = _normalize(date);
+    final DateTime start = _normalize(period.startDate);
+    final DateTime end = _normalize(period.endDate);
+
+    return !current.isBefore(start) && !current.isAfter(end);
+  }
 }
 
 class _CalendarDayButton extends StatelessWidget {
   const _CalendarDayButton({
     required this.date,
-    required this.selected,
+    required this.unavailable,
     required this.disabled,
-    required this.onTap,
   });
 
   final DateTime date;
-  final bool selected;
+  final bool unavailable;
   final bool disabled;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primary : AppColors.white,
-          shape: BoxShape.circle,
-          border: selected
-              ? null
-              : Border.all(
-                  color: _isToday() ? AppColors.primary : AppColors.white,
-                ),
-        ),
-        child: Text(
-          date.day.toString(),
-          style: context.text.bodyLarge?.copyWith(
-            color: _textColor(),
-            fontSize: 14.0.fontSize,
-            fontWeight: FontWeight.w600,
-          ),
+    return Container(
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: unavailable ? AppColors.alert : AppColors.white,
+        shape: BoxShape.circle,
+        border: unavailable
+            ? null
+            : Border.all(
+                color: _isToday() ? AppColors.primary : AppColors.white,
+              ),
+      ),
+      child: Text(
+        date.day.toString(),
+        style: context.text.bodyLarge?.copyWith(
+          color: _textColor(),
+          fontSize: 14.0.fontSize,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -209,7 +205,7 @@ class _CalendarDayButton extends StatelessWidget {
   }
 
   Color _textColor() {
-    if (selected) return AppColors.white;
+    if (unavailable) return AppColors.white;
     if (disabled) return AppColors.grey;
     return AppColors.textColor;
   }

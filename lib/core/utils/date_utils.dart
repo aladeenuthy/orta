@@ -15,6 +15,10 @@ class DateUtils {
     return DateFormat('MMMM y').format(date);
   }
 
+  static String monthQuery(DateTime date) {
+    return DateFormat('yyyy-MM').format(date);
+  }
+
   static String shortWeekday(String day) {
     return switch (day) {
       'Tuesday' => 'Tues',
@@ -33,6 +37,30 @@ class DateUtils {
 
   static String dateOnly(DateTime date) {
     return DateFormat('yyyy-MM-dd').format(date);
+  }
+
+  static String dateRange(DateTime start, DateTime end) {
+    final DateTime normalizedStart = DateTime(
+      start.year,
+      start.month,
+      start.day,
+    );
+    final DateTime normalizedEnd = DateTime(end.year, end.month, end.day);
+    if (normalizedStart == normalizedEnd) {
+      return monthDayYear(normalizedStart);
+    }
+
+    if (normalizedStart.year == normalizedEnd.year) {
+      return '${DateFormat('MMMM d').format(normalizedStart)} - ${monthDayYear(normalizedEnd)}';
+    }
+
+    return '${monthDayYear(normalizedStart)} - ${monthDayYear(normalizedEnd)}';
+  }
+
+  static bool isSameDate(DateTime first, DateTime second) {
+    return first.year == second.year &&
+        first.month == second.month &&
+        first.day == second.day;
   }
 
   static String shiftDateTime(DateTime date, DateTime time) {

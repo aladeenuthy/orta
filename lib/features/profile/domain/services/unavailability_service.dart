@@ -13,7 +13,7 @@ class UnavailabilityService {
     return _repository.getUnavailability(month: month);
   }
 
-  Future<Either<AppError, Unit>> saveUnavailability({
+  Future<Either<AppError, List<UnavailabilityPeriod>>> saveUnavailability({
     required List<UnavailabilityPeriod> unavailableDates,
   }) {
     final DateTime today = DateTime.now();

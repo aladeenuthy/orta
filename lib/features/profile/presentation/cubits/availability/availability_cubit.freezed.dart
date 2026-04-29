@@ -22,6 +22,7 @@ mixin _$AvailabilityState {
       throw _privateConstructorUsedError;
   String get errorMessage => throw _privateConstructorUsedError;
   DateTime? get referenceWeekStart => throw _privateConstructorUsedError;
+  bool get saveSucceeded => throw _privateConstructorUsedError;
 
   /// Create a copy of AvailabilityState
   /// with the given fields replaced by the non-null parameter values.
@@ -42,6 +43,7 @@ abstract class $AvailabilityStateCopyWith<$Res> {
     List<AvailabilityDay> weeklySchedule,
     String errorMessage,
     DateTime? referenceWeekStart,
+    bool saveSucceeded,
   });
 }
 
@@ -64,6 +66,7 @@ class _$AvailabilityStateCopyWithImpl<$Res, $Val extends AvailabilityState>
     Object? weeklySchedule = null,
     Object? errorMessage = null,
     Object? referenceWeekStart = freezed,
+    Object? saveSucceeded = null,
   }) {
     return _then(
       _value.copyWith(
@@ -83,6 +86,10 @@ class _$AvailabilityStateCopyWithImpl<$Res, $Val extends AvailabilityState>
                 ? _value.referenceWeekStart
                 : referenceWeekStart // ignore: cast_nullable_to_non_nullable
                       as DateTime?,
+            saveSucceeded: null == saveSucceeded
+                ? _value.saveSucceeded
+                : saveSucceeded // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -103,6 +110,7 @@ abstract class _$$AvailabilityStateImplCopyWith<$Res>
     List<AvailabilityDay> weeklySchedule,
     String errorMessage,
     DateTime? referenceWeekStart,
+    bool saveSucceeded,
   });
 }
 
@@ -124,6 +132,7 @@ class __$$AvailabilityStateImplCopyWithImpl<$Res>
     Object? weeklySchedule = null,
     Object? errorMessage = null,
     Object? referenceWeekStart = freezed,
+    Object? saveSucceeded = null,
   }) {
     return _then(
       _$AvailabilityStateImpl(
@@ -143,6 +152,10 @@ class __$$AvailabilityStateImplCopyWithImpl<$Res>
             ? _value.referenceWeekStart
             : referenceWeekStart // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
+        saveSucceeded: null == saveSucceeded
+            ? _value.saveSucceeded
+            : saveSucceeded // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -156,6 +169,7 @@ class _$AvailabilityStateImpl extends _AvailabilityState {
     required final List<AvailabilityDay> weeklySchedule,
     this.errorMessage = '',
     this.referenceWeekStart,
+    this.saveSucceeded = false,
   }) : _weeklySchedule = weeklySchedule,
        super._();
 
@@ -175,10 +189,13 @@ class _$AvailabilityStateImpl extends _AvailabilityState {
   final String errorMessage;
   @override
   final DateTime? referenceWeekStart;
+  @override
+  @JsonKey()
+  final bool saveSucceeded;
 
   @override
   String toString() {
-    return 'AvailabilityState(viewState: $viewState, weeklySchedule: $weeklySchedule, errorMessage: $errorMessage, referenceWeekStart: $referenceWeekStart)';
+    return 'AvailabilityState(viewState: $viewState, weeklySchedule: $weeklySchedule, errorMessage: $errorMessage, referenceWeekStart: $referenceWeekStart, saveSucceeded: $saveSucceeded)';
   }
 
   @override
@@ -195,7 +212,9 @@ class _$AvailabilityStateImpl extends _AvailabilityState {
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
             (identical(other.referenceWeekStart, referenceWeekStart) ||
-                other.referenceWeekStart == referenceWeekStart));
+                other.referenceWeekStart == referenceWeekStart) &&
+            (identical(other.saveSucceeded, saveSucceeded) ||
+                other.saveSucceeded == saveSucceeded));
   }
 
   @override
@@ -205,6 +224,7 @@ class _$AvailabilityStateImpl extends _AvailabilityState {
     const DeepCollectionEquality().hash(_weeklySchedule),
     errorMessage,
     referenceWeekStart,
+    saveSucceeded,
   );
 
   /// Create a copy of AvailabilityState
@@ -225,6 +245,7 @@ abstract class _AvailabilityState extends AvailabilityState {
     required final List<AvailabilityDay> weeklySchedule,
     final String errorMessage,
     final DateTime? referenceWeekStart,
+    final bool saveSucceeded,
   }) = _$AvailabilityStateImpl;
   const _AvailabilityState._() : super._();
 
@@ -236,6 +257,8 @@ abstract class _AvailabilityState extends AvailabilityState {
   String get errorMessage;
   @override
   DateTime? get referenceWeekStart;
+  @override
+  bool get saveSucceeded;
 
   /// Create a copy of AvailabilityState
   /// with the given fields replaced by the non-null parameter values.

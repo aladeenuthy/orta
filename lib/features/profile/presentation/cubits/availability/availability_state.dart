@@ -7,6 +7,7 @@ class AvailabilityState with _$AvailabilityState {
     required List<AvailabilityDay> weeklySchedule,
     @Default('') String errorMessage,
     DateTime? referenceWeekStart,
+    @Default(false) bool saveSucceeded,
   }) = _AvailabilityState;
 
   const AvailabilityState._();
@@ -14,9 +15,9 @@ class AvailabilityState with _$AvailabilityState {
   bool get isLoading => viewState == ViewState.loading;
   bool get isLoaded => viewState == ViewState.loaded;
   bool get isError => viewState == ViewState.error;
-  DateTime get weekStart => referenceWeekStart ?? _currentWeekStart;
+  DateTime get weekStart => referenceWeekStart ?? currentWeekStart();
 
-  DateTime get _currentWeekStart {
+  static DateTime currentWeekStart() {
     final DateTime now = DateTime.now();
     final DateTime today = DateTime(now.year, now.month, now.day);
     return today.subtract(Duration(days: today.weekday - DateTime.monday));
@@ -30,11 +31,18 @@ class AvailabilityState with _$AvailabilityState {
     return '${DateUtils.monthDay(weekStart)}-${DateUtils.monthDay(end)}, ${end.year}';
   }
 
-  AvailabilityState toLoading() =>
-      copyWith(viewState: ViewState.loading, errorMessage: '');
+  AvailabilityState toLoading() => copyWith(
+    viewState: ViewState.loading,
+    errorMessage: '',
+    saveSucceeded: false,
+  );
 
-  AvailabilityState toLoaded() => copyWith(viewState: ViewState.loaded);
+  AvailabilityState toLoaded({bool saveSucceeded = false}) =>
+      copyWith(viewState: ViewState.loaded, saveSucceeded: saveSucceeded);
 
-  AvailabilityState toError(String message) =>
-      copyWith(viewState: ViewState.error, errorMessage: message);
+  AvailabilityState toError(String message) => copyWith(
+    viewState: ViewState.error,
+    errorMessage: message,
+    saveSucceeded: false,
+  );
 }

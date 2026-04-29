@@ -44,5 +44,34 @@ void main() {
       expect(app.DateUtils.shortWeekday('Tuesday'), 'Tues');
       expect(app.DateUtils.shortWeekday('Thursday'), 'Thurs');
     });
+
+    test('formats month query for unavailability requests', () {
+      expect(app.DateUtils.monthQuery(DateTime(2026, 4, 29)), '2026-04');
+    });
+
+    test('formats single-day and ranged unavailable dates', () {
+      expect(
+        app.DateUtils.dateRange(DateTime(2026, 4, 29), DateTime(2026, 4, 29)),
+        'April 29, 2026',
+      );
+      expect(
+        app.DateUtils.dateRange(DateTime(2026, 4, 29), DateTime(2026, 5, 2)),
+        'April 29 - May 2, 2026',
+      );
+    });
+
+    test('compares dates without time components', () {
+      expect(
+        app.DateUtils.isSameDate(
+          DateTime(2026, 4, 29, 9),
+          DateTime(2026, 4, 29, 22),
+        ),
+        isTrue,
+      );
+      expect(
+        app.DateUtils.isSameDate(DateTime(2026, 4, 29), DateTime(2026, 4, 30)),
+        isFalse,
+      );
+    });
   });
 }

@@ -12,73 +12,71 @@ class UnavailabilityCubit extends Cubit<UnavailabilityState> {
 
   final UnavailabilityService _unavailabilityService;
 
-  Future<void> load() async {
-    emit(state.toLoading());
+  Future<void> load({DateTime? requestedVisibleMonth}) async {
+    final DateTime visibleMonth =
+        requestedVisibleMonth ??
+        state.visibleMonth ??
+        DateTime(DateTime.now().year, DateTime.now().month);
+    emit(state.toLoading().copyWith(visibleMonth: visibleMonth));
     final Either<AppError, List<UnavailabilityPeriod>> result =
         await _unavailabilityService.getUnavailability();
 
     result.fold(
       (AppError error) => emit(state.toError(error.message)),
-      (List<UnavailabilityPeriod> items) => emit(state.toLoaded(items)),
+      (List<UnavailabilityPeriod> items) =>
+          emit(state.toLoaded(items, visibleMonth: visibleMonth)),
     );
   }
 
-  Future<void> add({
+  void changeVisibleMonth(DateTime month) {
+    emit(state.copyWith(visibleMonth: DateTime(month.year, month.month)));
+  }
+
+  Future<bool> add({
     required DateTime startDate,
     required DateTime endDate,
     String? reason,
   }) async {
+    emit(state.toLoading());
     final UnavailabilityPeriod item = UnavailabilityPeriod(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       startDate: startDate,
       endDate: endDate,
       reason: reason,
     );
-    final Either<AppError, Unit> result = await _unavailabilityService
-        .saveUnavailability(unavailableDates: <UnavailabilityPeriod>[item]);
+    final Either<AppError, List<UnavailabilityPeriod>> result =
+        await _unavailabilityService.saveUnavailability(
+          unavailableDates: <UnavailabilityPeriod>[item],
+        );
 
-    result.fold(
-      (AppError error) => emit(state.toError(error.message)),
-      (_) => emit(state.toLoaded(<UnavailabilityPeriod>[...state.items, item])),
+    bool saved = false;
+    await result.fold(
+      (AppError error) async {
+        emit(state.toError(error.message));
+      },
+      (List<UnavailabilityPeriod> items) async {
+        emit(state.toLoaded(items));
+        saved = true;
+      },
     );
+    return saved;
   }
 
-  Future<void> addDates({required List<DateTime> dates, String? reason}) async {
-    if (dates.isEmpty) return;
-
-    final List<UnavailabilityPeriod> items = dates.map((DateTime date) {
-      return UnavailabilityPeriod(
-        id: '${date.millisecondsSinceEpoch}',
-        startDate: date,
-        endDate: date,
-        reason: reason,
-      );
-    }).toList();
-
-    final Either<AppError, Unit> result = await _unavailabilityService
-        .saveUnavailability(unavailableDates: items);
-
-    result.fold(
-      (AppError error) => emit(state.toError(error.message)),
-      (_) => emit(
-        state.toLoaded(<UnavailabilityPeriod>[...state.items, ...items]),
-      ),
-    );
-  }
-
-  Future<void> remove(String id) async {
+  Future<bool> remove(String id) async {
+    emit(state.toLoading());
     final Either<AppError, Unit> result = await _unavailabilityService
         .deleteUnavailability(id);
 
-    result.fold(
-      (AppError error) => emit(state.toError(error.message)),
-      (_) => emit(
-        state.toLoaded(
-          state.items
-              .where((UnavailabilityPeriod item) => item.id != id)
-              .toList(),
-        ),
-      ),
+    bool removed = false;
+    await result.fold(
+      (AppError error) async {
+        emit(state.toError(error.message));
+      },
+      (_) async {
+        await load();
+        removed = true;
+      },
     );
+    return removed;
   }
 }

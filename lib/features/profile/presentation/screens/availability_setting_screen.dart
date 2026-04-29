@@ -1,6 +1,6 @@
 import 'package:orta/features/features.dart';
 
-class AvailabilitySettingScreen extends StatelessWidget {
+class AvailabilitySettingScreen extends StatefulWidget {
   const AvailabilitySettingScreen({
     super.key,
     this.args = const ProfileFlowArgs(),
@@ -9,13 +9,19 @@ class AvailabilitySettingScreen extends StatelessWidget {
   final ProfileFlowArgs args;
 
   @override
+  State<AvailabilitySettingScreen> createState() =>
+      _AvailabilitySettingScreenState();
+}
+
+class _AvailabilitySettingScreenState extends State<AvailabilitySettingScreen> {
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<AvailabilityCubit, AvailabilityState>(
       listener: (BuildContext context, AvailabilityState state) {
         if (state.isError) {
           AppSnacks.error(context, state.errorMessage);
         }
-        if (args.editMode && state.isLoaded) {
+        if (widget.args.editMode && state.saveSucceeded) {
           AppSnacks.success(context, 'Availability updated');
           AppRouter.back();
         }
@@ -55,7 +61,7 @@ class AvailabilitySettingScreen extends StatelessWidget {
                         },
                       ),
                     ),
-                    if (!args.editMode)
+                    if (!widget.args.editMode)
                       const StepDots(activeIndex: 2, count: 3),
                     AppSpacings.vertical(24),
                     AppButton(
@@ -63,13 +69,13 @@ class AvailabilitySettingScreen extends StatelessWidget {
                       height: 42,
                       borderRadius: BorderRadius.circular(10.0.radius),
                       margin: EdgeInsets.zero,
-                      onPressed: args.editMode
+                      onPressed: widget.args.editMode
                           ? context.read<AvailabilityCubit>().saveAvailability
                           : () => AppRouter.toNamed(
                               AppRoutes.availabilityConfirm,
                             ),
                       child: Text(
-                        args.editMode ? 'Save' : 'Continue',
+                        'Continue',
                         style: context.text.titleMedium?.copyWith(
                           color: AppColors.white,
                           fontSize: 18.0.fontSize,

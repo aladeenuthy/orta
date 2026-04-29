@@ -49,7 +49,7 @@ class ProfileRemoteDataSource extends BaseAppRepository {
       final Map<String, dynamic> body = Map<String, dynamic>.from(
         response.data as Map,
       );
-      final List<dynamic> schedule = body['weeklySchedule'] as List<dynamic>;
+      final List<dynamic> schedule = _readAvailabilityJson(body);
 
       return right<AppError, List<AvailabilityDay>>(
         schedule
@@ -63,20 +63,33 @@ class ProfileRemoteDataSource extends BaseAppRepository {
     });
   }
 
-  Future<Either<AppError, Unit>> saveAvailability({
+  Future<Either<AppError, List<AvailabilityDay>>> saveAvailability({
     required List<AvailabilityDay> weeklySchedule,
   }) {
     return makeRequest(() async {
-      await post(
+      final response = await post(
         Endpoints.profileAvailability,
         data: <String, dynamic>{
           'weeklySchedule': weeklySchedule
-              .map((AvailabilityDay day) => day.toJson())
+              .map(_availabilityDayPayload)
               .toList(),
         },
       );
+      final Map<String, dynamic> body = Map<String, dynamic>.from(
+        response.data as Map,
+      );
+      final List<dynamic> schedule = _readAvailabilityJson(body);
+      final List<AvailabilityDay> updatedSchedule = schedule.isEmpty
+          ? weeklySchedule
+          : schedule
+                .map(
+                  (dynamic json) => AvailabilityDay.fromJson(
+                    Map<String, dynamic>.from(json as Map),
+                  ),
+                )
+                .toList();
 
-      return right<AppError, Unit>(unit);
+      return right<AppError, List<AvailabilityDay>>(updatedSchedule);
     });
   }
 
@@ -91,8 +104,7 @@ class ProfileRemoteDataSource extends BaseAppRepository {
       final Map<String, dynamic> body = Map<String, dynamic>.from(
         response.data as Map,
       );
-      final List<dynamic> items =
-          (body['data'] ?? body['unavailableDates']) as List<dynamic>;
+      final List<dynamic> items = _readUnavailabilityJson(body);
 
       return right<AppError, List<UnavailabilityPeriod>>(
         items
@@ -106,11 +118,11 @@ class ProfileRemoteDataSource extends BaseAppRepository {
     });
   }
 
-  Future<Either<AppError, Unit>> saveUnavailability({
+  Future<Either<AppError, List<UnavailabilityPeriod>>> saveUnavailability({
     required List<UnavailabilityPeriod> unavailableDates,
   }) {
     return makeRequest(() async {
-      await post(
+      final response = await post(
         Endpoints.profileUnavailability,
         data: <String, dynamic>{
           'unavailableDates': unavailableDates
@@ -124,8 +136,21 @@ class ProfileRemoteDataSource extends BaseAppRepository {
               .toList(),
         },
       );
+      final Map<String, dynamic> body = Map<String, dynamic>.from(
+        response.data as Map,
+      );
+      final List<dynamic> items = _readUnavailabilityJson(body);
+      final List<UnavailabilityPeriod> updatedItems = items.isEmpty
+          ? unavailableDates
+          : items
+                .map(
+                  (dynamic json) => UnavailabilityPeriod.fromJson(
+                    Map<String, dynamic>.from(json as Map),
+                  ),
+                )
+                .toList();
 
-      return right<AppError, Unit>(unit);
+      return right<AppError, List<UnavailabilityPeriod>>(updatedItems);
     });
   }
 
@@ -149,5 +174,42 @@ class ProfileRemoteDataSource extends BaseAppRepository {
     }
 
     return body;
+  }
+
+  List<dynamic> _readAvailabilityJson(Map<String, dynamic> body) {
+    final Object? data = body['data'];
+    if (data is List) return data;
+    if (data is Map) {
+      final Object? schedule = data['weeklySchedule'] ?? data['availability'];
+      if (schedule is List) return schedule;
+    }
+
+    final Object? schedule = body['weeklySchedule'] ?? body['availability'];
+    if (schedule is List) return schedule;
+
+    return const <dynamic>[];
+  }
+
+  List<dynamic> _readUnavailabilityJson(Map<String, dynamic> body) {
+    final Object? data = body['data'];
+    if (data is Map) {
+      final Object? items = data['unavailableDates'] ?? data['items'];
+      if (items is List) return items;
+    }
+    if (data is List) return data;
+
+    final Object? items = body['unavailableDates'] ?? body['items'];
+    if (items is List) return items;
+
+    return const <dynamic>[];
+  }
+
+  Map<String, dynamic> _availabilityDayPayload(AvailabilityDay day) {
+    return <String, dynamic>{
+      'day': day.day,
+      'isAvailable': day.isAvailable,
+      if (day.isAvailable) 'startTime': day.startTime,
+      if (day.isAvailable) 'endTime': day.endTime,
+    };
   }
 }

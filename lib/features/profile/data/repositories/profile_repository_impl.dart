@@ -6,8 +6,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
     : _remote = remote;
 
   final ProfileRemoteDataSource _remote;
-  List<AvailabilityDay> _availability = ProfileDefaults.availability;
-  final List<UnavailabilityPeriod> _unavailability = <UnavailabilityPeriod>[];
 
   @override
   Future<Either<AppError, Profile>> getProfile() {
@@ -35,36 +33,33 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
   @override
   Future<Either<AppError, List<AvailabilityDay>>> getAvailability() {
-    return Future.value(right(_availability));
+    return _remote.getAvailability();
   }
 
   @override
-  Future<Either<AppError, Unit>> saveAvailability({
+  Future<Either<AppError, List<AvailabilityDay>>> saveAvailability({
     required List<AvailabilityDay> weeklySchedule,
   }) {
-    _availability = weeklySchedule;
-    return Future.value(right(unit));
+    return _remote.saveAvailability(weeklySchedule: weeklySchedule);
   }
 
   @override
   Future<Either<AppError, List<UnavailabilityPeriod>>> getUnavailability({
     String? month,
   }) {
-    return Future.value(right(_unavailability));
+    return _remote.getUnavailability(month: month);
   }
 
   @override
-  Future<Either<AppError, Unit>> saveUnavailability({
+  Future<Either<AppError, List<UnavailabilityPeriod>>> saveUnavailability({
     required List<UnavailabilityPeriod> unavailableDates,
   }) {
-    _unavailability.addAll(unavailableDates);
-    return Future.value(right(unit));
+    return _remote.saveUnavailability(unavailableDates: unavailableDates);
   }
 
   @override
   Future<Either<AppError, Unit>> deleteUnavailability(String id) {
-    _unavailability.removeWhere((UnavailabilityPeriod item) => item.id == id);
-    return Future.value(right(unit));
+    return _remote.deleteUnavailability(id);
   }
 }
 

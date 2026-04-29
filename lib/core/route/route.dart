@@ -60,7 +60,7 @@ class AppRouter {
         value: locator<AvailabilityCubit>(),
         child: const AvailabilityConfirmScreen(),
       ),
-      AppRoutes.unavailability => const UnavailabilityManagementScreen(),
+      AppRoutes.unavailability => _unavailabilityScreen(settings.arguments),
       AppRoutes.profile => const ProfileScreen(),
       AppRoutes.home => const HomeScreen(),
       AppRoutes.shiftList => _shiftListScreen(settings.arguments),
@@ -133,6 +133,20 @@ class AppRouter {
     }
 
     return const HomeScreen();
+  }
+
+  static Widget _unavailabilityScreen(Object? arguments) {
+    if (arguments is UnavailabilityManagementArgs) {
+      return BlocProvider<UnavailabilityCubit>.value(
+        value: arguments.cubit,
+        child: const UnavailabilityManagementScreen(),
+      );
+    }
+
+    return BlocProvider<UnavailabilityCubit>(
+      create: (_) => locator<UnavailabilityCubit>()..load(),
+      child: const UnavailabilityManagementScreen(),
+    );
   }
 
   static void back() {
