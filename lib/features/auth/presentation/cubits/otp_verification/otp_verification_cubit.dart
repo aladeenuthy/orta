@@ -38,6 +38,14 @@ class OtpVerificationCubit extends Cubit<OtpVerificationState> {
     });
   }
 
+  Future<void> sendOtp(String email) async {
+    final Either<AppError, Unit> result = await _authService.sendOtp(
+      email: email,
+    );
+
+    result.fold((AppError error) => emit(state.toError(error.message)), (_) {});
+  }
+
   Future<void> resendOtp(String email) async {
     if (!state.canResend || state.isLoading) return;
 
@@ -65,6 +73,10 @@ class OtpVerificationCubit extends Cubit<OtpVerificationState> {
       (AppError error) => emit(state.toError(error.message)),
       (_) => emit(state.toLoaded()),
     );
+  }
+
+  void resetValues() {
+    emit(state.copyWith(errorMessage: null, otpResent: false));
   }
 
   @override

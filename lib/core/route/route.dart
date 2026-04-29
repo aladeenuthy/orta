@@ -102,8 +102,13 @@ class AppRouter {
 
   static Widget _otpVerificationScreen(Object? arguments) {
     if (arguments is OtpVerificationArgs) {
+      final OtpVerificationCubit cubit = locator<OtpVerificationCubit>();
+      if (arguments.autoSendOtp) {
+        cubit.sendOtp(arguments.email);
+      }
+
       return BlocProvider<OtpVerificationCubit>(
-        create: (_) => locator<OtpVerificationCubit>(),
+        create: (_) => cubit,
         child: OtpVerificationScreen(args: arguments),
       );
     }

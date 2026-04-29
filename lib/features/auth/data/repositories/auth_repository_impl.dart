@@ -10,7 +10,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
   final AuthRemoteDataSource _remoteDataSource;
   final AuthLocalDataSource _localDataSource;
-  bool get _useMockOtp => true;
 
   @override
   Future<Either<AppError, Unit>> clearSession() async {
@@ -31,13 +30,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<AppError, Unit>> resendOtp({required String email}) {
-    if (_useMockOtp) return Future.value(right(unit));
     return _remoteDataSource.resendOtp(email: email);
   }
 
   @override
   Future<Either<AppError, Unit>> sendOtp({required String email}) {
-    if (_useMockOtp) return Future.value(right(unit));
     return _remoteDataSource.sendOtp(email: email);
   }
 
@@ -130,30 +127,6 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String otp,
   }) async {
-    if (_useMockOtp) {
-      if (otp.length != 6) {
-        return left(const AppError('Enter the 6-digit code'));
-      }
-
-      try {
-        final AuthSession? cachedSession = await _localDataSource
-            .getCachedSession();
-        if (cachedSession == null) {
-          return left(const AppError('Please register or login first'));
-        }
-
-        final AuthSession verifiedSession = cachedSession.copyWith(
-          user: cachedSession.user.copyWith(isEmailVerified: true),
-        );
-        await _localDataSource.cacheSession(verifiedSession);
-        return right(verifiedSession);
-      } catch (_) {
-        return left<AppError, AuthSession>(
-          const AppError('Something went wront! Please try again later.'),
-        );
-      }
-    }
-
     final Either<AppError, AuthSession> result = await _remoteDataSource
         .verifyOtp(email: email, otp: otp);
 

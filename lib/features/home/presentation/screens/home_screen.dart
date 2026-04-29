@@ -18,6 +18,15 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _EmailVerificationGate.openIfRequired(context.read<AuthCubit>().state);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider<ShiftActionsCubit>(
       create: (_) => locator<ShiftActionsCubit>(),
@@ -40,7 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               if (authState.isUnauthenticated) {
                 AppRouter.toCloseAllNamed(AppRoutes.login);
+                return;
               }
+
+              _EmailVerificationGate.openIfRequired(authState);
             },
             child: AppLoadingOverlay(
               loading: state.isLoading,
@@ -69,6 +81,25 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _EmailVerificationGate {
+  const _EmailVerificationGate._();
+
+  static void openIfRequired(AuthState state) {
+    final User? user = state.user;
+    if (!state.requiresEmailVerification || user == null) return;
+
+    AppRouter.toCloseAllNamed(
+      AppRoutes.otpVerification,
+      arguments: OtpVerificationArgs(
+        email: user.email,
+        successRoute: AppRoutes.home,
+        preventBack: true,
+        autoSendOtp: true,
       ),
     );
   }

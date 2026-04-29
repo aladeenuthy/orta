@@ -9,102 +9,114 @@ class OtpVerificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.watch<OtpVerificationCubit>();
     return BlocConsumer<OtpVerificationCubit, OtpVerificationState>(
       listener: (BuildContext context, OtpVerificationState state) {
         if (state.isError && state.errorMessage != null) {
           AppSnacks.error(context, state.errorMessage!);
+          cubit.resetValues();
         }
         if (state.isResent) {
+          cubit.resetValues();
           AppSnacks.success(context, 'OTP resent');
         }
         if (state.isLoaded) {
-          AppRouter.toReplacementNamed(AppRoutes.profileIntro);
+          final String routeName = args.successRoute ?? AppRoutes.profileIntro;
+          if (args.preventBack) {
+            AppRouter.toCloseAllNamed(routeName);
+            return;
+          }
+
+          AppRouter.toReplacementNamed(routeName);
         }
       },
       builder: (BuildContext context, OtpVerificationState state) {
-        return AppLoadingOverlay(
-          loading: state.isLoading,
-          child: Scaffold(
-            backgroundColor: AppColors.white,
-            body: SafeArea(
-              top: false,
-              child: Column(
-                children: <Widget>[
-                  const AuthHeader(),
-                  Expanded(
-                    child: Padding(
-                      padding: AppPaddings.horizontal(16),
-                      child: AppAnimatedColumn(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Email verification code',
-                            style: context.text.headlineMedium?.copyWith(
-                              color: AppColors.textColor,
-                              fontSize: 20.0.fontSize,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          AppSpacings.vertical(14),
-                          _OtpSubtitle(email: args.email),
-                          AppSpacings.vertical(50),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 18.0.width,
-                            ),
-                            child: _OtpInput(
-                              value: state.otp,
-                              onChanged: context
-                                  .read<OtpVerificationCubit>()
-                                  .otpChanged,
-                            ),
-                          ),
-                          if (state.secondsRemaining > 0)
-                            AppSpacings.vertical(48),
-                          if (state.secondsRemaining > 0)
-                            Center(
-                              child: Text(
-                                'Resend after ${state.secondsRemaining}s.',
-                                style: context.text.bodyLarge?.copyWith(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 14.0.fontSize,
-                                ),
-                              ),
-                            ),
-                          AppSpacings.vertical(22),
-                          Center(
-                            child: _ResendOtpText(
-                              enabled: state.canResend,
-                              onPressed: () => context
-                                  .read<OtpVerificationCubit>()
-                                  .resendOtp(args.email),
-                            ),
-                          ),
-                          const Spacer(),
-                          AppButton(
-                            color: AppColors.primary,
-                            enabled: state.canSubmit,
-                            height: 42,
-                            borderRadius: BorderRadius.circular(10.0.radius),
-                            margin: EdgeInsets.zero,
-                            onPressed: () => context
-                                .read<OtpVerificationCubit>()
-                                .verifyOtp(args.email),
-                            child: Text(
-                              'Confirm OTP',
-                              style: context.text.titleMedium?.copyWith(
-                                color: AppColors.white,
-                                fontSize: 18.0.fontSize,
+        return PopScope(
+          canPop: !args.preventBack,
+          child: AppLoadingOverlay(
+            loading: state.isLoading,
+            child: Scaffold(
+              backgroundColor: AppColors.white,
+              body: SafeArea(
+                top: false,
+                child: Column(
+                  children: <Widget>[
+                    const AuthHeader(),
+                    Expanded(
+                      child: Padding(
+                        padding: AppPaddings.horizontal(16),
+                        child: AppAnimatedColumn(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Email verification code',
+                              style: context.text.headlineMedium?.copyWith(
+                                color: AppColors.textColor,
+                                fontSize: 20.0.fontSize,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                          ),
-                          AppSpacings.vertical(42),
-                        ],
+                            AppSpacings.vertical(14),
+                            _OtpSubtitle(email: args.email),
+                            AppSpacings.vertical(50),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 18.0.width,
+                              ),
+                              child: _OtpInput(
+                                value: state.otp,
+                                onChanged: context
+                                    .read<OtpVerificationCubit>()
+                                    .otpChanged,
+                              ),
+                            ),
+                            if (state.secondsRemaining > 0)
+                              AppSpacings.vertical(48),
+                            if (state.secondsRemaining > 0)
+                              Center(
+                                child: Text(
+                                  'Resend after ${state.secondsRemaining}s.',
+                                  style: context.text.bodyLarge?.copyWith(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 14.0.fontSize,
+                                  ),
+                                ),
+                              ),
+                            AppSpacings.vertical(22),
+                            Center(
+                              child: _ResendOtpText(
+                                enabled: state.canResend,
+                                onPressed: () => context
+                                    .read<OtpVerificationCubit>()
+                                    .resendOtp(args.email),
+                              ),
+                            ),
+                            const Spacer(),
+                            AppButton(
+                              color: AppColors.primary,
+                              enabled: state.canSubmit,
+                              height: 42,
+                              borderRadius: BorderRadius.circular(10.0.radius),
+                              margin: EdgeInsets.zero,
+                              onPressed: () => context
+                                  .read<OtpVerificationCubit>()
+                                  .verifyOtp(args.email),
+                              child: Text(
+                                'Confirm OTP',
+                                style: context.text.titleMedium?.copyWith(
+                                  color: AppColors.white,
+                                  fontSize: 18.0.fontSize,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                            AppSpacings.vertical(42),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

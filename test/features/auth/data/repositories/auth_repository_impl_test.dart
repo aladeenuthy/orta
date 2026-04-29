@@ -197,6 +197,40 @@ void main() {
     });
   });
 
+  group('AuthRepositoryImpl.sendOtp', () {
+    test('delegates to remote data source', () async {
+      when(
+        () => remoteDataSource.sendOtp(email: 'john@example.com'),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await repository.sendOtp(
+        email: 'john@example.com',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(
+        () => remoteDataSource.sendOtp(email: 'john@example.com'),
+      ).called(1);
+    });
+  });
+
+  group('AuthRepositoryImpl.resendOtp', () {
+    test('delegates to remote data source', () async {
+      when(
+        () => remoteDataSource.resendOtp(email: 'john@example.com'),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await repository.resendOtp(
+        email: 'john@example.com',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(
+        () => remoteDataSource.resendOtp(email: 'john@example.com'),
+      ).called(1);
+    });
+  });
+
   group('AuthRepositoryImpl.login', () {
     test('delegates to remote data source and caches session', () async {
       when(
@@ -336,10 +370,10 @@ void main() {
 
   group('AuthRepositoryImpl.verifyOtp', () {
     test(
-      'uses cached register session token for mocked OTP verification',
+      'delegates to remote data source and caches returned session',
       () async {
         const AuthSession verifiedSession = AuthSession(
-          token: 'token',
+          token: 'verified-token',
           user: User(
             id: '69edb6a277d24da71a004b3e',
             name: 'Test Doe',
@@ -349,8 +383,13 @@ void main() {
           ),
         );
         when(
-          () => localDataSource.getCachedSession(),
-        ).thenAnswer((_) async => session);
+          () => remoteDataSource.verifyOtp(
+            email: 'Test@example.com',
+            otp: '123456',
+          ),
+        ).thenAnswer(
+          (_) async => const Right<AppError, AuthSession>(verifiedSession),
+        );
         when(
           () => localDataSource.cacheSession(verifiedSession),
         ).thenAnswer((_) async {});
@@ -360,27 +399,29 @@ void main() {
           otp: '123456',
         );
 
-        result.fold((AppError error) => fail(error.message), (
-          AuthSession verifiedSession,
-        ) {
-          expect(verifiedSession.token, session.token);
-          expect(verifiedSession.user.isEmailVerified, isTrue);
-        });
-        verify(() => localDataSource.getCachedSession()).called(1);
-        verify(() => localDataSource.cacheSession(verifiedSession)).called(1);
-        verifyNever(
-          () => remoteDataSource.verifyOtp(
-            email: any(named: 'email'),
-            otp: any(named: 'otp'),
-          ),
+        expect(
+          result,
+          equals(const Right<AppError, AuthSession>(verifiedSession)),
         );
+        verify(
+          () => remoteDataSource.verifyOtp(
+            email: 'Test@example.com',
+            otp: '123456',
+          ),
+        ).called(1);
+        verify(() => localDataSource.cacheSession(verifiedSession)).called(1);
       },
     );
 
-    test('returns an error when mocked OTP has no cached session', () async {
+    test('returns remote data source errors without caching', () async {
       when(
-        () => localDataSource.getCachedSession(),
-      ).thenAnswer((_) async => null);
+        () => remoteDataSource.verifyOtp(
+          email: 'Test@example.com',
+          otp: '123456',
+        ),
+      ).thenAnswer(
+        (_) async => const Left<AppError, AuthSession>(AppError('Invalid OTP')),
+      );
 
       final Either<AppError, AuthSession> result = await repository.verifyOtp(
         email: 'Test@example.com',
@@ -389,12 +430,9 @@ void main() {
 
       expect(
         result,
-        equals(
-          const Left<AppError, AuthSession>(
-            AppError('Please register or login first'),
-          ),
-        ),
+        equals(const Left<AppError, AuthSession>(AppError('Invalid OTP'))),
       );
+      verifyNever(() => localDataSource.cacheSession(session));
     });
   });
 

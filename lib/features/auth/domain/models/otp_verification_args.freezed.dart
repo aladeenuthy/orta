@@ -18,6 +18,9 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$OtpVerificationArgs {
   String get email => throw _privateConstructorUsedError;
+  String? get successRoute => throw _privateConstructorUsedError;
+  bool get preventBack => throw _privateConstructorUsedError;
+  bool get autoSendOtp => throw _privateConstructorUsedError;
 
   /// Create a copy of OtpVerificationArgs
   /// with the given fields replaced by the non-null parameter values.
@@ -33,7 +36,12 @@ abstract class $OtpVerificationArgsCopyWith<$Res> {
     $Res Function(OtpVerificationArgs) then,
   ) = _$OtpVerificationArgsCopyWithImpl<$Res, OtpVerificationArgs>;
   @useResult
-  $Res call({String email});
+  $Res call({
+    String email,
+    String? successRoute,
+    bool preventBack,
+    bool autoSendOtp,
+  });
 }
 
 /// @nodoc
@@ -50,13 +58,30 @@ class _$OtpVerificationArgsCopyWithImpl<$Res, $Val extends OtpVerificationArgs>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? email = null}) {
+  $Res call({
+    Object? email = null,
+    Object? successRoute = freezed,
+    Object? preventBack = null,
+    Object? autoSendOtp = null,
+  }) {
     return _then(
       _value.copyWith(
             email: null == email
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
                       as String,
+            successRoute: freezed == successRoute
+                ? _value.successRoute
+                : successRoute // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            preventBack: null == preventBack
+                ? _value.preventBack
+                : preventBack // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            autoSendOtp: null == autoSendOtp
+                ? _value.autoSendOtp
+                : autoSendOtp // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -72,7 +97,12 @@ abstract class _$$OtpVerificationArgsImplCopyWith<$Res>
   ) = __$$OtpVerificationArgsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String email});
+  $Res call({
+    String email,
+    String? successRoute,
+    bool preventBack,
+    bool autoSendOtp,
+  });
 }
 
 /// @nodoc
@@ -88,13 +118,30 @@ class __$$OtpVerificationArgsImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? email = null}) {
+  $Res call({
+    Object? email = null,
+    Object? successRoute = freezed,
+    Object? preventBack = null,
+    Object? autoSendOtp = null,
+  }) {
     return _then(
       _$OtpVerificationArgsImpl(
         email: null == email
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
                   as String,
+        successRoute: freezed == successRoute
+            ? _value.successRoute
+            : successRoute // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        preventBack: null == preventBack
+            ? _value.preventBack
+            : preventBack // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        autoSendOtp: null == autoSendOtp
+            ? _value.autoSendOtp
+            : autoSendOtp // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -103,14 +150,27 @@ class __$$OtpVerificationArgsImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OtpVerificationArgsImpl implements _OtpVerificationArgs {
-  const _$OtpVerificationArgsImpl({required this.email});
+  const _$OtpVerificationArgsImpl({
+    required this.email,
+    this.successRoute,
+    this.preventBack = false,
+    this.autoSendOtp = false,
+  });
 
   @override
   final String email;
+  @override
+  final String? successRoute;
+  @override
+  @JsonKey()
+  final bool preventBack;
+  @override
+  @JsonKey()
+  final bool autoSendOtp;
 
   @override
   String toString() {
-    return 'OtpVerificationArgs(email: $email)';
+    return 'OtpVerificationArgs(email: $email, successRoute: $successRoute, preventBack: $preventBack, autoSendOtp: $autoSendOtp)';
   }
 
   @override
@@ -118,11 +178,18 @@ class _$OtpVerificationArgsImpl implements _OtpVerificationArgs {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OtpVerificationArgsImpl &&
-            (identical(other.email, email) || other.email == email));
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.successRoute, successRoute) ||
+                other.successRoute == successRoute) &&
+            (identical(other.preventBack, preventBack) ||
+                other.preventBack == preventBack) &&
+            (identical(other.autoSendOtp, autoSendOtp) ||
+                other.autoSendOtp == autoSendOtp));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, email);
+  int get hashCode =>
+      Object.hash(runtimeType, email, successRoute, preventBack, autoSendOtp);
 
   /// Create a copy of OtpVerificationArgs
   /// with the given fields replaced by the non-null parameter values.
@@ -137,11 +204,21 @@ class _$OtpVerificationArgsImpl implements _OtpVerificationArgs {
 }
 
 abstract class _OtpVerificationArgs implements OtpVerificationArgs {
-  const factory _OtpVerificationArgs({required final String email}) =
-      _$OtpVerificationArgsImpl;
+  const factory _OtpVerificationArgs({
+    required final String email,
+    final String? successRoute,
+    final bool preventBack,
+    final bool autoSendOtp,
+  }) = _$OtpVerificationArgsImpl;
 
   @override
   String get email;
+  @override
+  String? get successRoute;
+  @override
+  bool get preventBack;
+  @override
+  bool get autoSendOtp;
 
   /// Create a copy of OtpVerificationArgs
   /// with the given fields replaced by the non-null parameter values.

@@ -17,6 +17,8 @@ class AuthState with _$AuthState {
 
   bool get isAuthenticated => isLoaded && session != null;
   bool get isUnauthenticated => isLoaded && session == null;
+  bool get requiresEmailVerification =>
+      isAuthenticated && !(session?.user.isEmailVerified ?? false);
 
   User? get user => session?.user;
   String? get token => session?.token;
