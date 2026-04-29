@@ -29,11 +29,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           loading: state.isLoading,
           child: Scaffold(
             backgroundColor: AppColors.white,
-            body: SafeArea(
-              top: false,
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
+            body: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: AppPaddings.horizontal(16),
                   child: AppAnimatedColumn(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -44,54 +44,46 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             : () =>
                                   AppRouter.toReplacementNamed(AppRoutes.login),
                       ),
-                      Padding(
-                        padding: AppPaddings.horizontal(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Forgot Password?',
-                              style: context.text.displayLarge?.copyWith(
-                                color: AppColors.textColor,
-                                fontSize: 27.0.fontSize,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            AppSpacings.vertical(12),
-                            Text(
-                              'Enter your email to reset your password.',
-                              style: context.text.bodyLarge?.copyWith(
-                                color: AppColors.textSecondary,
-                                fontSize: 18.0.fontSize,
-                              ),
-                            ),
-                            AppSpacings.vertical(42),
-                            AuthFormField(
-                              label: 'Email Address',
-                              hintText: 'Enter email Address',
-                              initialValue: state.email,
-                              inputType: TextInputType.emailAddress,
-                              validate: Validator.emailValidator,
-                              onChanged: _cubit.emailChanged,
-                            ),
-                            AppSpacings.vertical(40),
-                            AppButton(
-                              color: AppColors.primary,
-                              enabled: !state.isLoading,
-                              height: 42,
-                              borderRadius: BorderRadius.circular(10.0.radius),
-                              margin: EdgeInsets.zero,
-                              onPressed: _submit,
-                              child: Text(
-                                "Reset Password",
-                                style: context.text.titleMedium?.copyWith(
-                                  color: AppColors.white,
-                                  fontSize: 16.0.fontSize,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                          ],
+                      Text(
+                        'Forgot Password?',
+                        style: context.text.displayLarge?.copyWith(
+                          color: AppColors.textColor,
+                          fontSize: 24.0.fontSize,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      AppSpacings.vertical(10),
+                      Text(
+                        'Enter your email to reset your password.',
+                        style: context.text.bodyLarge?.copyWith(
+                          color: AppColors.textSecondary,
+                          fontSize: 16.0.fontSize,
+                        ),
+                      ),
+                      AppSpacings.vertical(42),
+                      AuthFormField(
+                        label: 'Email Address',
+                        hintText: 'Enter email Address',
+                        initialValue: state.email,
+                        inputType: TextInputType.emailAddress,
+                        validate: Validator.emailValidator,
+                        onChanged: _cubit.emailChanged,
+                      ),
+                      AppSpacings.vertical(40),
+                      AppButton(
+                        color: AppColors.primary,
+                        enabled: !state.isLoading,
+                        height: 42,
+                        borderRadius: BorderRadius.circular(10.0.radius),
+                        margin: EdgeInsets.zero,
+                        onPressed: _submit,
+                        child: Text(
+                          "Reset Password",
+                          style: context.text.titleMedium?.copyWith(
+                            color: AppColors.white,
+                            fontSize: 16.0.fontSize,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
                     ],

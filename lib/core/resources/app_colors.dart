@@ -17,6 +17,7 @@ class AppColors {
   static Color alert = HexColor.fromHex("#D92D20");
   static Color fieldBorder = HexColor.fromHex("#D8D8D8");
   static Color cardGridLine = HexColor.fromHex("#F1F1F1");
+  static Color cardGridAccent = HexColor.fromHex("#F6A06C");
   static Color success = HexColor.fromHex("#00C851");
   static Color successLight = HexColor.fromHex("#55D187");
   static Color warning = HexColor.fromHex("#ffbb33");
