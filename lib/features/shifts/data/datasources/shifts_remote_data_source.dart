@@ -61,16 +61,18 @@ class ShiftsRemoteDataSource extends BaseAppRepository {
           if (date != null) 'date': DateUtils.dateOnly(date),
           if (typeOfShift != null && typeOfShift.isNotEmpty)
             'typeOfShift': typeOfShift,
-          if (sortOrder != null) 'sortOrder': sortOrder.value,
         },
       );
       final Map<String, dynamic> responseData = Map<String, dynamic>.from(
         response.data as Map,
       );
+      final Map<String, dynamic> paginatedData = _readPaginatedJson(
+        responseData,
+      );
 
       return right<AppError, PaginatedResponse<Shift>>(
         PaginatedResponse<Shift>.fromJson(
-          json: responseData,
+          json: paginatedData,
           dataKey: 'shifts',
           fromJson: (dynamic json) =>
               Shift.fromJson(Map<String, dynamic>.from(json as Map)),
@@ -103,7 +105,7 @@ class ShiftsRemoteDataSource extends BaseAppRepository {
       );
       final PaginatedResponse<Shift> paginatedResponse =
           PaginatedResponse<Shift>.fromJson(
-            json: responseData,
+            json: _readPaginatedJson(responseData),
             dataKey: 'shifts',
             fromJson: (dynamic json) =>
                 Shift.fromJson(Map<String, dynamic>.from(json as Map)),
@@ -149,5 +151,14 @@ class ShiftsRemoteDataSource extends BaseAppRepository {
         ),
       );
     });
+  }
+
+  Map<String, dynamic> _readPaginatedJson(Map<String, dynamic> body) {
+    final Object? data = body['data'];
+    if (data is Map && data['pagination'] != null) {
+      return Map<String, dynamic>.from(data);
+    }
+
+    return body;
   }
 }

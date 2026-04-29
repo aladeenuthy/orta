@@ -10,9 +10,7 @@ _$ShiftImpl _$$ShiftImplFromJson(Map<String, dynamic> json) => _$ShiftImpl(
   id: json['id'] as String,
   title: json['title'] as String,
   role: json['role'] as String,
-  typeOfShift: (json['typeOfShift'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
+  typeOfShift: _shiftTypesFromJson(json['typeOfShift']),
   user: _userNameFromJson(json['user']),
   startTime: _dateTimeFromJson(json['startTime']),
   finishTime: _dateTimeFromJson(json['finishTime']),
@@ -32,7 +30,7 @@ Map<String, dynamic> _$$ShiftImplToJson(_$ShiftImpl instance) =>
       'id': instance.id,
       'title': instance.title,
       'role': instance.role,
-      'typeOfShift': instance.typeOfShift,
+      'typeOfShift': _shiftTypesToJson(instance.typeOfShift),
       'user': _userToJson(instance.user),
       'startTime': _dateTimeToJson(instance.startTime),
       'finishTime': _dateTimeToJson(instance.finishTime),

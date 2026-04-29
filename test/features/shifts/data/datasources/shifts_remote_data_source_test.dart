@@ -240,6 +240,135 @@ void main() {
     });
   });
 
+  group('ShiftsRemoteDataSource.getMarketplaceShifts', () {
+    test('gets marketplace shifts with filters', () async {
+      when(
+        () => api.get(
+          Endpoints.shiftMarketplace,
+          queryParameters: <String, dynamic>{
+            'page': 1,
+            'limit': 10,
+            'role': 'Care Worker',
+            'date': '2026-04-26',
+            'typeOfShift': 'Morning',
+          },
+        ),
+      ).thenAnswer(
+        (_) async => Response<dynamic>(
+          requestOptions: RequestOptions(path: Endpoints.shiftMarketplace),
+          data: <String, dynamic>{
+            'success': true,
+            'data': paginatedShiftsJson(
+              shifts: <Map<String, dynamic>>[shiftJson()],
+            ),
+          },
+        ),
+      );
+
+      final Either<AppError, PaginatedResponse<Shift>> result = await dataSource
+          .getMarketplaceShifts(
+            page: 1,
+            limit: 10,
+            role: 'Care Worker',
+            date: DateTime(2026, 4, 26),
+            typeOfShift: 'Morning',
+            sortOrder: ShiftSortOrder.desc,
+          );
+
+      verify(
+        () => api.get(
+          Endpoints.shiftMarketplace,
+          queryParameters: <String, dynamic>{
+            'page': 1,
+            'limit': 10,
+            'role': 'Care Worker',
+            'date': '2026-04-26',
+            'typeOfShift': 'Morning',
+          },
+        ),
+      ).called(1);
+      result.fold(
+        (AppError error) => fail('Expected marketplace shifts, got $error'),
+        (PaginatedResponse<Shift> response) {
+          expect(response.data, hasLength(1));
+          expect(response.data.first.id, 'shift-id');
+        },
+      );
+    });
+  });
+
+  group('ShiftsRemoteDataSource.claimShift', () {
+    test('patches claim endpoint and parses returned shift', () async {
+      when(() => api.patch(Endpoints.claimShift('shift-id'))).thenAnswer(
+        (_) async => Response<dynamic>(
+          requestOptions: RequestOptions(
+            path: Endpoints.claimShift('shift-id'),
+          ),
+          data: <String, dynamic>{
+            'success': true,
+            'data': <String, dynamic>{'shift': shiftJson()},
+          },
+        ),
+      );
+
+      final Either<AppError, Shift> result = await dataSource.claimShift(
+        'shift-id',
+      );
+
+      verify(() => api.patch(Endpoints.claimShift('shift-id'))).called(1);
+      result.fold(
+        (AppError error) => fail('Expected claimed shift, got $error'),
+        (Shift shift) => expect(shift.id, 'shift-id'),
+      );
+    });
+  });
+
+  group('ShiftsRemoteDataSource.verifyLocation', () {
+    test('posts coordinates and parses verification result', () async {
+      when(
+        () => api.post(
+          Endpoints.verifyShiftLocation('shift-id'),
+          data: <String, dynamic>{'latitude': 51.5074, 'longitude': -0.1276},
+        ),
+      ).thenAnswer(
+        (_) async => Response<dynamic>(
+          requestOptions: RequestOptions(
+            path: Endpoints.verifyShiftLocation('shift-id'),
+          ),
+          data: <String, dynamic>{
+            'success': true,
+            'data': <String, dynamic>{
+              'withinRange': true,
+              'distanceMeters': 45,
+              'radiusMeters': 200,
+            },
+          },
+        ),
+      );
+
+      final Either<AppError, LocationVerificationResult> result =
+          await dataSource.verifyLocation(
+            id: 'shift-id',
+            latitude: 51.5074,
+            longitude: -0.1276,
+          );
+
+      verify(
+        () => api.post(
+          Endpoints.verifyShiftLocation('shift-id'),
+          data: <String, dynamic>{'latitude': 51.5074, 'longitude': -0.1276},
+        ),
+      ).called(1);
+      result.fold(
+        (AppError error) => fail('Expected verification, got $error'),
+        (LocationVerificationResult result) {
+          expect(result.withinRange, isTrue);
+          expect(result.distanceMeters, 45);
+        },
+      );
+    });
+  });
+
   group('ShiftsRemoteDataSource.getShiftDetail', () {
     test('gets and parses shift detail', () async {
       when(() => api.get(Endpoints.shiftDetail('shift-id'))).thenAnswer(

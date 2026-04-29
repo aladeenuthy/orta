@@ -115,7 +115,7 @@ class ShiftCard extends StatelessWidget {
 
   String _formatPay(num? pay) {
     if (pay == null) {
-      return '120';
+      return 'N/A';
     }
 
     if (pay % 1 == 0) {

@@ -13,7 +13,8 @@ class Shift with _$Shift {
     required String id,
     required String title,
     required String role,
-    required List<String> typeOfShift,
+    @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
+    required List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
     required String user,
     @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
@@ -74,10 +75,33 @@ enum ShiftStatus {
 
   static ShiftStatus? fromValue(String? value) {
     return switch (value?.trim().toLowerCase().replaceAll(' ', '_')) {
-      'scheduled' || 'not_started' => ShiftStatus.scheduled,
-      'in_progress' || 'active' => ShiftStatus.inProgress,
+      'scheduled' => ShiftStatus.scheduled,
+      'in_progress' => ShiftStatus.inProgress,
       'completed' => ShiftStatus.completed,
-      'cancelled' || 'canceled' => ShiftStatus.cancelled,
+      'cancelled' => ShiftStatus.cancelled,
+      _ => null,
+    };
+  }
+}
+
+enum ShiftType {
+  morning('Morning'),
+  evening('Evening'),
+  night('Night'),
+  weekday('Weekday'),
+  weekend('Weekend');
+
+  const ShiftType(this.apiValue);
+
+  final String apiValue;
+
+  static ShiftType? fromValue(String? value) {
+    return switch (value?.trim().toLowerCase()) {
+      'weekend' => ShiftType.weekend,
+      'weekday' => ShiftType.weekday,
+      'evening' => ShiftType.evening,
+      'morning' => ShiftType.morning,
+      'night' => ShiftType.night,
       _ => null,
     };
   }
@@ -110,6 +134,19 @@ String _userNameFromJson(dynamic json) {
 }
 
 String _userToJson(String user) => user;
+
+List<ShiftType> _shiftTypesFromJson(dynamic json) {
+  if (json is! List) return const <ShiftType>[];
+
+  return json
+      .map((dynamic item) => ShiftType.fromValue(item?.toString()))
+      .whereType<ShiftType>()
+      .toList();
+}
+
+List<String> _shiftTypesToJson(List<ShiftType> types) {
+  return types.map((ShiftType type) => type.apiValue).toList();
+}
 
 DateTime _dateTimeFromJson(dynamic json) {
   if (json is DateTime) {

@@ -1,16 +1,14 @@
-import 'package:geolocator/geolocator.dart';
 import 'package:orta/features/features.dart';
 
 class ShiftActionRules {
   const ShiftActionRules();
   static const Duration clockInLeadTime = Duration(minutes: 10);
   static const Duration clockOutLeadTime = Duration(hours: 2);
-  static const double geofenceRadiusMeters = 200;
 
   ShiftActionEligibility evaluate({
     required Shift shift,
     required DateTime now,
-    required Coordinates? workerCoordinates,
+    required LocationVerificationResult? locationVerification,
     String? locationWarning,
     ShiftLocationAction? locationAction,
   }) {
@@ -30,19 +28,8 @@ class ShiftActionRules {
       );
     }
 
-    final double? distanceInMeters = workerCoordinates == null
-        ? null
-        : distanceBetween(
-            workerCoordinates.latitude,
-            workerCoordinates.longitude,
-            shift.location.coordinates.latitude,
-            shift.location.coordinates.longitude,
-          );
-    final bool? isWithinWorkLocation = distanceInMeters == null
-        ? null
-        : distanceInMeters <= geofenceRadiusMeters;
     final String? geoWarning = _geoWarning(
-      distanceInMeters: distanceInMeters,
+      locationVerification: locationVerification,
       locationWarning: locationWarning,
     );
 
@@ -52,8 +39,7 @@ class ShiftActionRules {
         now: now,
         geoWarning: geoWarning,
         locationAction: locationAction,
-        distanceInMeters: distanceInMeters,
-        isWithinWorkLocation: isWithinWorkLocation,
+        locationVerification: locationVerification,
       );
     }
 
@@ -62,23 +48,7 @@ class ShiftActionRules {
       now: now,
       geoWarning: geoWarning,
       locationAction: locationAction,
-      distanceInMeters: distanceInMeters,
-      isWithinWorkLocation: isWithinWorkLocation,
-    );
-  }
-
-  double distanceBetween(
-    double startLatitude,
-    double startLongitude,
-    double endLatitude,
-    double endLongitude,
-  ) {
-    // Uses Haversine formula via Geolocator package to calculate distance between two coordinates
-    return Geolocator.distanceBetween(
-      startLatitude,
-      startLongitude,
-      endLatitude,
-      endLongitude,
+      locationVerification: locationVerification,
     );
   }
 
@@ -87,8 +57,7 @@ class ShiftActionRules {
     required DateTime now,
     required String? geoWarning,
     required ShiftLocationAction? locationAction,
-    required double? distanceInMeters,
-    required bool? isWithinWorkLocation,
+    required LocationVerificationResult? locationVerification,
   }) {
     final DateTime start = _combineDateAndTime(shift.date, shift.startTime);
     final DateTime opensAt = start.subtract(clockInLeadTime);
@@ -103,10 +72,10 @@ class ShiftActionRules {
       action: ShiftPrimaryActionType.clockIn,
       enabled: warningMessage == null,
       label: 'Clock In',
-      isWithinWorkLocation: isWithinWorkLocation,
+      isWithinWorkLocation: locationVerification?.withinRange,
       warningMessage: warningMessage,
       locationAction: locationAction,
-      distanceInMeters: distanceInMeters,
+      distanceInMeters: locationVerification?.distanceMeters.toDouble(),
     );
   }
 
@@ -115,8 +84,7 @@ class ShiftActionRules {
     required DateTime now,
     required String? geoWarning,
     required ShiftLocationAction? locationAction,
-    required double? distanceInMeters,
-    required bool? isWithinWorkLocation,
+    required LocationVerificationResult? locationVerification,
   }) {
     final DateTime start = _combineDateAndTime(shift.date, shift.startTime);
     final DateTime baseFinish = _combineDateAndTime(
@@ -138,27 +106,27 @@ class ShiftActionRules {
       action: ShiftPrimaryActionType.clockOut,
       enabled: warningMessage == null,
       label: 'Clock Out',
-      isWithinWorkLocation: isWithinWorkLocation,
+      isWithinWorkLocation: locationVerification?.withinRange,
       warningMessage: warningMessage,
       locationAction: locationAction,
-      distanceInMeters: distanceInMeters,
+      distanceInMeters: locationVerification?.distanceMeters.toDouble(),
     );
   }
 
   String? _geoWarning({
-    required double? distanceInMeters,
+    required LocationVerificationResult? locationVerification,
     required String? locationWarning,
   }) {
     if (locationWarning != null) {
       return locationWarning;
     }
 
-    if (distanceInMeters == null) {
+    if (locationVerification == null) {
       return 'Unable to verify your current location';
     }
 
-    if (distanceInMeters > geofenceRadiusMeters) {
-      return 'You must be within 200m of the work location';
+    if (!locationVerification.withinRange) {
+      return 'You must be within ${locationVerification.radiusMeters}m of the work location';
     }
 
     return null;

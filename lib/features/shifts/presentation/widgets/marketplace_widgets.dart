@@ -64,7 +64,6 @@ class MarketplaceFilterChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> types = <String>['Morning', 'Evening', 'Night'];
     return SizedBox(
       height: 34.0.height,
       child: ListView(
@@ -93,15 +92,17 @@ class MarketplaceFilterChips extends StatelessWidget {
             active: filters.role != null,
             onTap: () => _cycleRole(),
           ),
-          ...types.map(
-            (String type) => Padding(
+          ...ShiftType.values.map(
+            (ShiftType type) => Padding(
               padding: EdgeInsets.only(left: 8.0.width),
               child: _FilterChipButton(
-                label: type,
-                active: filters.typeOfShift == type,
+                label: type.apiValue,
+                active: filters.typeOfShift == type.apiValue,
                 onTap: () => onChanged(
                   filters.copyWith(
-                    typeOfShift: filters.typeOfShift == type ? null : type,
+                    typeOfShift: filters.typeOfShift == type.apiValue
+                        ? null
+                        : type.apiValue,
                   ),
                 ),
               ),
@@ -135,6 +136,7 @@ class MarketplaceFilterSheet {
     return showModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColors.white,
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18.0.radius)),
       ),
@@ -143,7 +145,7 @@ class MarketplaceFilterSheet {
           filters: filters,
           onChanged: (ShiftFilters value) {
             onChanged(value);
-            Navigator.of(context).pop();
+            AppRouter.back();
           },
         );
       },
@@ -162,7 +164,10 @@ class _MarketplaceFilterSheetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> types = <String>['Morning', 'Evening', 'Night'];
+    final bool hasActiveFilters =
+        filters.role != null ||
+        filters.date != null ||
+        filters.typeOfShift != null;
 
     return SafeArea(
       child: Padding(
@@ -176,55 +181,72 @@ class _MarketplaceFilterSheetContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              'Filters',
-              style: context.text.titleLarge?.copyWith(
-                color: AppColors.textColor,
-                fontSize: 20.0.fontSize,
-                fontWeight: FontWeight.w800,
-              ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    'Filters',
+                    style: context.text.titleLarge?.copyWith(
+                      color: AppColors.textColor,
+                      fontSize: 20.0.fontSize,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: hasActiveFilters
+                      ? () => onChanged(
+                          const ShiftFilters(sortOrder: ShiftSortOrder.desc),
+                        )
+                      : null,
+                  child: Text(
+                    'Clear filter',
+                    style: context.text.bodyMedium?.copyWith(
+                      color: hasActiveFilters
+                          ? AppColors.primary
+                          : AppColors.greyDark,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
             ),
             AppSpacings.vertical(18),
             _SheetLabel(text: 'Role'),
-            Wrap(
-              spacing: 8.0.width,
-              runSpacing: 8.0.height,
-              children: ProfileDefaults.roles
-                  .map(
-                    (String role) => _FilterChipButton(
-                      label: role,
-                      active: filters.role == role,
-                      onTap: () => onChanged(
-                        filters.copyWith(
-                          role: filters.role == role ? null : role,
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
+            DropdownButtonFormField<String>(
+              value: filters.role,
+              isExpanded: true,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 14.0.width,
+                  vertical: 10.0.height,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0.radius),
+                  borderSide: BorderSide(color: AppColors.cardBorder),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0.radius),
+                  borderSide: BorderSide(color: AppColors.cardBorder),
+                ),
+              ),
+              hint: const Text('Select role'),
+              items: <DropdownMenuItem<String>>[
+                const DropdownMenuItem<String>(
+                  value: null,
+                  child: Text('All roles'),
+                ),
+                ...ProfileDefaults.roles.map(
+                  (String role) =>
+                      DropdownMenuItem<String>(value: role, child: Text(role)),
+                ),
+              ],
+              onChanged: (String? role) {
+                onChanged(filters.copyWith(role: role));
+              },
             ),
             AppSpacings.vertical(18),
-            _SheetLabel(text: 'Shift type'),
-            Wrap(
-              spacing: 8.0.width,
-              runSpacing: 8.0.height,
-              children: types
-                  .map(
-                    (String type) => _FilterChipButton(
-                      label: type,
-                      active: filters.typeOfShift == type,
-                      onTap: () => onChanged(
-                        filters.copyWith(
-                          typeOfShift: filters.typeOfShift == type
-                              ? null
-                              : type,
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-            AppSpacings.vertical(18),
+            _SheetLabel(text: 'Date'),
             _FilterChipButton(
               label: filters.date == null
                   ? 'Pick date'
@@ -241,6 +263,27 @@ class _MarketplaceFilterSheetContent extends StatelessWidget {
                   onChanged(filters.copyWith(date: picked));
                 }
               },
+            ),
+            AppSpacings.vertical(18),
+            _SheetLabel(text: 'Shift type'),
+            Wrap(
+              spacing: 8.0.width,
+              runSpacing: 8.0.height,
+              children: ShiftType.values
+                  .map(
+                    (ShiftType type) => _FilterChipButton(
+                      label: type.apiValue,
+                      active: filters.typeOfShift == type.apiValue,
+                      onTap: () => onChanged(
+                        filters.copyWith(
+                          typeOfShift: filters.typeOfShift == type.apiValue
+                              ? null
+                              : type.apiValue,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
           ],
         ),
@@ -315,9 +358,9 @@ class MarketplaceShiftCard extends StatelessWidget {
                   ),
                 ),
               ),
-              if (shift.typeOfShift.contains('Evening'))
+              if (shift.typeOfShift.contains(ShiftType.evening))
                 const _MarketplaceBadge(label: 'Urgent'),
-              if (shift.typeOfShift.contains('Weekend'))
+              if (shift.typeOfShift.contains(ShiftType.weekend))
                 const _MarketplaceBadge(label: 'Required cash handling'),
             ],
           ),
@@ -345,7 +388,7 @@ class MarketplaceShiftCard extends StatelessWidget {
   }
 
   String _formatPay(num? pay) {
-    if (pay == null) return '120';
+    if (pay == null) return 'N/A';
     return pay % 1 == 0 ? pay.toInt().toString() : pay.toStringAsFixed(2);
   }
 }

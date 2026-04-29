@@ -149,8 +149,8 @@ class AppRouter {
     );
   }
 
-  static void back() {
-    navigatorKey.currentState?.pop();
+  static void back<T extends Object?>([T? result]) {
+    navigatorKey.currentState?.pop<T>(result);
   }
 
   static bool canPop() {

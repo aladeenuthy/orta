@@ -6,12 +6,16 @@ import 'package:orta/features/features.dart';
 
 class MockLocationService extends Mock implements LocationService {}
 
+class MockShiftsService extends Mock implements ShiftsService {}
+
 void main() {
   late MockLocationService locationService;
+  late MockShiftsService shiftsService;
   late ShiftActionRules shiftActionRules;
 
   setUp(() {
     locationService = MockLocationService();
+    shiftsService = MockShiftsService();
     shiftActionRules = const ShiftActionRules();
   });
 
@@ -19,6 +23,7 @@ void main() {
     return ShiftActionEligibilityCubit(
       locationService: locationService,
       shiftActionRules: shiftActionRules,
+      shiftsService: shiftsService,
     );
   }
 
@@ -29,6 +34,21 @@ void main() {
         when(() => locationService.currentCoordinates()).thenAnswer(
           (_) async => const Right<AppError, Coordinates>(
             Coordinates(longitude: -2.2427, latitude: 53.4809),
+          ),
+        );
+        when(
+          () => shiftsService.verifyLocation(
+            id: 'shift-id',
+            latitude: 53.4809,
+            longitude: -2.2427,
+          ),
+        ).thenAnswer(
+          (_) async => const Right<AppError, LocationVerificationResult>(
+            LocationVerificationResult(
+              withinRange: true,
+              distanceMeters: 12,
+              radiusMeters: 200,
+            ),
           ),
         );
       },
@@ -58,6 +78,37 @@ void main() {
               isTrue,
             ),
       ],
+    );
+
+    blocTest<ShiftActionEligibilityCubit, ShiftActionEligibilityState>(
+      'loads a disabled eligibility when server location verification fails',
+      setUp: () {
+        when(() => locationService.currentCoordinates()).thenAnswer(
+          (_) async => const Right<AppError, Coordinates>(
+            Coordinates(longitude: -2.3, latitude: 53.5),
+          ),
+        );
+        when(
+          () => shiftsService.verifyLocation(
+            id: 'shift-id',
+            latitude: 53.5,
+            longitude: -2.3,
+          ),
+        ).thenAnswer(
+          (_) async => const Left<AppError, LocationVerificationResult>(
+            AppError('You are not within the required distance'),
+          ),
+        );
+      },
+      build: buildCubit,
+      act: (ShiftActionEligibilityCubit cubit) => cubit.evaluate(_shift()),
+      verify: (ShiftActionEligibilityCubit cubit) {
+        expect(cubit.state.eligibility?.enabled, isFalse);
+        expect(
+          cubit.state.eligibility?.warningMessage,
+          'You are not within the required distance',
+        );
+      },
     );
 
     blocTest<ShiftActionEligibilityCubit, ShiftActionEligibilityState>(
@@ -139,6 +190,21 @@ void main() {
             Coordinates(longitude: -2.2427, latitude: 53.4809),
           ),
         );
+        when(
+          () => shiftsService.verifyLocation(
+            id: 'shift-id',
+            latitude: 53.4809,
+            longitude: -2.2427,
+          ),
+        ).thenAnswer(
+          (_) async => const Right<AppError, LocationVerificationResult>(
+            LocationVerificationResult(
+              withinRange: true,
+              distanceMeters: 12,
+              radiusMeters: 200,
+            ),
+          ),
+        );
       },
       build: buildCubit,
       act: (ShiftActionEligibilityCubit cubit) =>
@@ -160,6 +226,21 @@ void main() {
             Coordinates(longitude: -2.2427, latitude: 53.4809),
           ),
         );
+        when(
+          () => shiftsService.verifyLocation(
+            id: 'shift-id',
+            latitude: 53.4809,
+            longitude: -2.2427,
+          ),
+        ).thenAnswer(
+          (_) async => const Right<AppError, LocationVerificationResult>(
+            LocationVerificationResult(
+              withinRange: true,
+              distanceMeters: 12,
+              radiusMeters: 200,
+            ),
+          ),
+        );
       },
       build: buildCubit,
       act: (ShiftActionEligibilityCubit cubit) =>
@@ -177,7 +258,7 @@ Shift _shift() {
     id: 'shift-id',
     title: 'Community Visit Shift',
     role: 'Care Assistant',
-    typeOfShift: const <String>['Weekday'],
+    typeOfShift: const <ShiftType>[ShiftType.weekday],
     user: 'Worker',
     startTime: DateTime.now().subtract(const Duration(minutes: 1)),
     finishTime: DateTime.now().add(const Duration(hours: 3)),

@@ -3,22 +3,23 @@ import 'package:orta/features/features.dart';
 
 void main() {
   const ShiftActionRules rules = ShiftActionRules();
-  const Coordinates workLocation = Coordinates(
-    longitude: -2.2426,
-    latitude: 53.4808,
+  const LocationVerificationResult withinRange = LocationVerificationResult(
+    withinRange: true,
+    distanceMeters: 12,
+    radiusMeters: 200,
   );
-  const Coordinates nearbyWorker = Coordinates(
-    longitude: -2.2427,
-    latitude: 53.4809,
+  const LocationVerificationResult outsideRange = LocationVerificationResult(
+    withinRange: false,
+    distanceMeters: 850,
+    radiusMeters: 200,
   );
-  const Coordinates farWorker = Coordinates(longitude: -2.3, latitude: 53.5);
 
   group('ShiftActionRules', () {
     test('disables clock in before the ten minute opening window', () {
       final ShiftActionEligibility eligibility = rules.evaluate(
         shift: _shift(status: ShiftStatus.scheduled, startHour: 13),
         now: DateTime(2026, 5, 5, 12, 49),
-        workerCoordinates: nearbyWorker,
+        locationVerification: withinRange,
       );
 
       expect(eligibility.action, ShiftPrimaryActionType.clockIn);
@@ -34,7 +35,7 @@ void main() {
           startHour: 8,
         ),
         now: DateTime(2026, 4, 28, 8),
-        workerCoordinates: nearbyWorker,
+        locationVerification: withinRange,
       );
 
       expect(eligibility.action, ShiftPrimaryActionType.clockIn);
@@ -46,7 +47,7 @@ void main() {
       final ShiftActionEligibility eligibility = rules.evaluate(
         shift: _shift(status: ShiftStatus.scheduled, startHour: 13),
         now: DateTime(2026, 5, 5, 12, 50),
-        workerCoordinates: nearbyWorker,
+        locationVerification: withinRange,
       );
 
       expect(eligibility.action, ShiftPrimaryActionType.clockIn);
@@ -59,7 +60,7 @@ void main() {
       final ShiftActionEligibility eligibility = rules.evaluate(
         shift: _shift(status: ShiftStatus.scheduled, startHour: 13),
         now: DateTime(2026, 5, 5, 13),
-        workerCoordinates: farWorker,
+        locationVerification: outsideRange,
       );
 
       expect(eligibility.enabled, isFalse);
@@ -74,7 +75,7 @@ void main() {
       final ShiftActionEligibility eligibility = rules.evaluate(
         shift: _shift(status: ShiftStatus.inProgress, finishHour: 19),
         now: DateTime(2026, 5, 5, 16, 59),
-        workerCoordinates: nearbyWorker,
+        locationVerification: withinRange,
       );
 
       expect(eligibility.action, ShiftPrimaryActionType.clockOut);
@@ -88,7 +89,7 @@ void main() {
         final ShiftActionEligibility eligibility = rules.evaluate(
           shift: _shift(status: ShiftStatus.inProgress, finishHour: 19),
           now: DateTime(2026, 5, 5, 17),
-          workerCoordinates: nearbyWorker,
+          locationVerification: withinRange,
         );
 
         expect(eligibility.action, ShiftPrimaryActionType.clockOut);
@@ -101,7 +102,7 @@ void main() {
       final ShiftActionEligibility eligibility = rules.evaluate(
         shift: _shift(status: ShiftStatus.completed),
         now: DateTime(2026, 5, 5, 17),
-        workerCoordinates: nearbyWorker,
+        locationVerification: withinRange,
       );
 
       expect(eligibility.action, ShiftPrimaryActionType.completed);
@@ -113,7 +114,7 @@ void main() {
       final ShiftActionEligibility eligibility = rules.evaluate(
         shift: _shift(status: ShiftStatus.cancelled),
         now: DateTime(2026, 5, 5, 17),
-        workerCoordinates: nearbyWorker,
+        locationVerification: withinRange,
       );
 
       expect(eligibility.action, ShiftPrimaryActionType.cancelled);
@@ -129,23 +130,11 @@ void main() {
           finishHour: 2,
         ),
         now: DateTime(2026, 5, 6),
-        workerCoordinates: nearbyWorker,
+        locationVerification: withinRange,
       );
 
       expect(eligibility.action, ShiftPrimaryActionType.clockOut);
       expect(eligibility.enabled, isTrue);
-    });
-
-    test('calculates haversine distance in meters', () {
-      final double distance = rules.distanceBetween(
-        workLocation.latitude,
-        workLocation.longitude,
-        nearbyWorker.latitude,
-        nearbyWorker.longitude,
-      );
-
-      expect(distance, greaterThan(0));
-      expect(distance, lessThan(20));
     });
   });
 }
@@ -160,7 +149,7 @@ Shift _shift({
     id: 'shift-id',
     title: 'Community Visit Shift',
     role: 'Care Assistant',
-    typeOfShift: const <String>['Weekday'],
+    typeOfShift: const <ShiftType>[ShiftType.weekday],
     user: 'Worker',
     startTime: DateTime(1970, 1, 1, startHour),
     finishTime: DateTime(1970, 1, 1, finishHour),

@@ -59,5 +59,29 @@ void main() {
         'Validation failed: password: Password must be min 8 characters long and include uppercase, lowercase, number, and symbol',
       );
     });
+
+    test('uses backend error field when message is absent', () {
+      final error = DioExceptions.fromDioError(
+        dioException(
+          statusCode: 400,
+          data: <String, dynamic>{
+            'success': false,
+            'data': <String, dynamic>{
+              'withinRange': false,
+              'distanceMeters': 231,
+              'radiusMeters': 200,
+            },
+            'error':
+                'You are not within the required distance of the shift location',
+            'code': 'OUTSIDE_GEOFENCE',
+          },
+        ),
+      );
+
+      expect(
+        error.message,
+        'You are not within the required distance of the shift location',
+      );
+    });
   });
 }

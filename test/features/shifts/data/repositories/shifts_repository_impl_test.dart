@@ -112,6 +112,75 @@ void main() {
     });
   });
 
+  group('ShiftsRepositoryImpl.getMarketplaceShifts', () {
+    test('delegates to remote data source', () async {
+      final PaginatedResponse<Shift> paginatedResponse =
+          PaginatedResponse<Shift>(
+            data: <Shift>[shiftModel()],
+            currentPage: 1,
+            totalPages: 1,
+            totalCount: 1,
+            hasNextPage: false,
+            hasPrevPage: false,
+            limit: 10,
+          );
+      when(
+        () => remoteDataSource.getMarketplaceShifts(
+          page: 1,
+          limit: 10,
+          role: 'Care Worker',
+          date: DateTime(2026, 4, 26),
+          typeOfShift: 'Morning',
+          sortOrder: ShiftSortOrder.desc,
+        ),
+      ).thenAnswer(
+        (_) async =>
+            Right<AppError, PaginatedResponse<Shift>>(paginatedResponse),
+      );
+
+      final Either<AppError, PaginatedResponse<Shift>> result = await repository
+          .getMarketplaceShifts(
+            page: 1,
+            limit: 10,
+            role: 'Care Worker',
+            date: DateTime(2026, 4, 26),
+            typeOfShift: 'Morning',
+            sortOrder: ShiftSortOrder.desc,
+          );
+
+      expect(
+        result,
+        equals(Right<AppError, PaginatedResponse<Shift>>(paginatedResponse)),
+      );
+      verify(
+        () => remoteDataSource.getMarketplaceShifts(
+          page: 1,
+          limit: 10,
+          role: 'Care Worker',
+          date: DateTime(2026, 4, 26),
+          typeOfShift: 'Morning',
+          sortOrder: ShiftSortOrder.desc,
+        ),
+      ).called(1);
+    });
+  });
+
+  group('ShiftsRepositoryImpl.claimShift', () {
+    test('delegates to remote data source', () async {
+      final Shift shift = shiftModel();
+      when(
+        () => remoteDataSource.claimShift('shift-id'),
+      ).thenAnswer((_) async => Right<AppError, Shift>(shift));
+
+      final Either<AppError, Shift> result = await repository.claimShift(
+        'shift-id',
+      );
+
+      expect(result, equals(Right<AppError, Shift>(shift)));
+      verify(() => remoteDataSource.claimShift('shift-id')).called(1);
+    });
+  });
+
   group('ShiftsRepositoryImpl.getShiftDetail', () {
     test('delegates to remote data source', () async {
       final Shift shift = shiftModel();
@@ -125,6 +194,46 @@ void main() {
 
       expect(result, equals(Right<AppError, Shift>(shift)));
       verify(() => remoteDataSource.getShiftDetail('shift-id')).called(1);
+    });
+  });
+
+  group('ShiftsRepositoryImpl.verifyLocation', () {
+    test('delegates to remote data source', () async {
+      const LocationVerificationResult verification =
+          LocationVerificationResult(
+            withinRange: true,
+            distanceMeters: 45,
+            radiusMeters: 200,
+          );
+      when(
+        () => remoteDataSource.verifyLocation(
+          id: 'shift-id',
+          latitude: 51.5074,
+          longitude: -0.1276,
+        ),
+      ).thenAnswer(
+        (_) async =>
+            const Right<AppError, LocationVerificationResult>(verification),
+      );
+
+      final Either<AppError, LocationVerificationResult> result =
+          await repository.verifyLocation(
+            id: 'shift-id',
+            latitude: 51.5074,
+            longitude: -0.1276,
+          );
+
+      expect(
+        result,
+        equals(const Right<AppError, LocationVerificationResult>(verification)),
+      );
+      verify(
+        () => remoteDataSource.verifyLocation(
+          id: 'shift-id',
+          latitude: 51.5074,
+          longitude: -0.1276,
+        ),
+      ).called(1);
     });
   });
 }

@@ -9,7 +9,7 @@ class ShiftActionEligibilityCubit extends Cubit<ShiftActionEligibilityState> {
   ShiftActionEligibilityCubit({
     required LocationService locationService,
     required ShiftActionRules shiftActionRules,
-    ShiftsService? shiftsService,
+    required ShiftsService shiftsService,
   }) : _locationService = locationService,
        _shiftActionRules = shiftActionRules,
        _shiftsService = shiftsService,
@@ -17,17 +17,13 @@ class ShiftActionEligibilityCubit extends Cubit<ShiftActionEligibilityState> {
 
   final LocationService _locationService;
   final ShiftActionRules _shiftActionRules;
-  final ShiftsService? _shiftsService;
+  final ShiftsService _shiftsService;
 
   Future<void> evaluate(Shift shift) async {
     emit(state.toLoading());
 
     final Either<AppError, Coordinates> result = await _locationService
         .currentCoordinates();
-    final Coordinates? workerCoordinates = result.fold(
-      (_) => null,
-      (Coordinates coordinates) => coordinates,
-    );
     final String? locationWarning = result.fold(
       (AppError error) => error.message,
       (_) => null,
@@ -36,11 +32,10 @@ class ShiftActionEligibilityCubit extends Cubit<ShiftActionEligibilityState> {
       (AppError error) => _locationActionFor(error.message),
       (_) => null,
     );
-
-    final _VerifiedLocation verifiedLocation = await _verifyLocation(
-      shift: shift,
-      workerCoordinates: workerCoordinates,
-      fallbackWarning: locationWarning,
+    final _VerifiedLocation verifiedLocation = await result.fold(
+      (_) async => const _VerifiedLocation(),
+      (Coordinates coordinates) =>
+          _verifyLocation(shift: shift, coordinates: coordinates),
     );
 
     emit(
@@ -48,7 +43,7 @@ class ShiftActionEligibilityCubit extends Cubit<ShiftActionEligibilityState> {
         _shiftActionRules.evaluate(
           shift: shift,
           now: DateTime.now(),
-          workerCoordinates: verifiedLocation.coordinates,
+          locationVerification: verifiedLocation.result,
           locationWarning: verifiedLocation.warning ?? locationWarning,
           locationAction: locationAction,
         ),
@@ -80,39 +75,26 @@ class ShiftActionEligibilityCubit extends Cubit<ShiftActionEligibilityState> {
 
   Future<_VerifiedLocation> _verifyLocation({
     required Shift shift,
-    required Coordinates? workerCoordinates,
-    required String? fallbackWarning,
+    required Coordinates coordinates,
   }) async {
-    final ShiftsService? shiftsService = _shiftsService;
-    if (shiftsService == null || workerCoordinates == null) {
-      return _VerifiedLocation(workerCoordinates, fallbackWarning);
-    }
-
     final Either<AppError, LocationVerificationResult> result =
-        await shiftsService.verifyLocation(
+        await _shiftsService.verifyLocation(
           id: shift.id,
-          latitude: workerCoordinates.latitude,
-          longitude: workerCoordinates.longitude,
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
         );
 
     return result.fold(
-      (AppError error) => _VerifiedLocation(null, error.message),
-      (LocationVerificationResult verification) {
-        if (verification.withinRange) {
-          return _VerifiedLocation(workerCoordinates, null);
-        }
-        return const _VerifiedLocation(
-          null,
-          'You must be within 200m of the work location',
-        );
-      },
+      (AppError error) => _VerifiedLocation(warning: error.message),
+      (LocationVerificationResult verification) =>
+          _VerifiedLocation(result: verification),
     );
   }
 }
 
 class _VerifiedLocation {
-  const _VerifiedLocation(this.coordinates, this.warning);
+  const _VerifiedLocation({this.result, this.warning});
 
-  final Coordinates? coordinates;
+  final LocationVerificationResult? result;
   final String? warning;
 }

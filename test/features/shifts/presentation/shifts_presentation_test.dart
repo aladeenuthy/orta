@@ -8,8 +8,11 @@ import '../shift_test_helpers.dart';
 
 class MockShiftsService extends Mock implements ShiftsService {}
 
+class MockLocationService extends Mock implements LocationService {}
+
 void main() {
   late MockShiftsService shiftsService;
+  late MockLocationService locationService;
 
   PaginatedResponse<Shift> paginatedResponse({
     required List<Shift> shifts,
@@ -30,6 +33,7 @@ void main() {
 
   setUp(() {
     shiftsService = MockShiftsService();
+    locationService = MockLocationService();
   });
 
   group('MyShiftsBloc', () {
@@ -507,6 +511,102 @@ void main() {
           action: ShiftAction.clockIn,
         ),
       ],
+    );
+
+    blocTest<ShiftActionsCubit, ShiftActionsState>(
+      'verifies location before clock in when location service is available',
+      build: () {
+        when(() => locationService.currentCoordinates()).thenAnswer(
+          (_) async => const Right<AppError, Coordinates>(
+            Coordinates(latitude: 51.5074, longitude: -0.1276),
+          ),
+        );
+        when(
+          () => shiftsService.verifyLocation(
+            id: 'shift-id',
+            latitude: 51.5074,
+            longitude: -0.1276,
+          ),
+        ).thenAnswer(
+          (_) async => const Right<AppError, LocationVerificationResult>(
+            LocationVerificationResult(
+              withinRange: true,
+              distanceMeters: 45,
+              radiusMeters: 200,
+            ),
+          ),
+        );
+        when(
+          () => shiftsService.clockIn('shift-id'),
+        ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+        return ShiftActionsCubit(
+          shiftsService: shiftsService,
+          locationService: locationService,
+        );
+      },
+      act: (ShiftActionsCubit cubit) => cubit.clockIn('shift-id'),
+      expect: () => <ShiftActionsState>[
+        const ShiftActionsState(
+          viewState: ViewState.loading,
+          action: ShiftAction.clockIn,
+        ),
+        const ShiftActionsState(
+          viewState: ViewState.loaded,
+          action: ShiftAction.clockIn,
+        ),
+      ],
+      verify: (_) {
+        verify(() => locationService.currentCoordinates()).called(1);
+        verify(
+          () => shiftsService.verifyLocation(
+            id: 'shift-id',
+            latitude: 51.5074,
+            longitude: -0.1276,
+          ),
+        ).called(1);
+        verify(() => shiftsService.clockIn('shift-id')).called(1);
+      },
+    );
+
+    blocTest<ShiftActionsCubit, ShiftActionsState>(
+      'does not clock in when server location verification fails',
+      build: () {
+        when(() => locationService.currentCoordinates()).thenAnswer(
+          (_) async => const Right<AppError, Coordinates>(
+            Coordinates(latitude: 51.5074, longitude: -0.1276),
+          ),
+        );
+        when(
+          () => shiftsService.verifyLocation(
+            id: 'shift-id',
+            latitude: 51.5074,
+            longitude: -0.1276,
+          ),
+        ).thenAnswer(
+          (_) async => const Left<AppError, LocationVerificationResult>(
+            AppError('You are not within the required distance'),
+          ),
+        );
+        return ShiftActionsCubit(
+          shiftsService: shiftsService,
+          locationService: locationService,
+        );
+      },
+      act: (ShiftActionsCubit cubit) => cubit.clockIn('shift-id'),
+      expect: () => <ShiftActionsState>[
+        const ShiftActionsState(
+          viewState: ViewState.loading,
+          action: ShiftAction.clockIn,
+        ),
+        const ShiftActionsState(
+          viewState: ViewState.error,
+          action: ShiftAction.clockIn,
+          errorMessage: 'You are not within the required distance',
+        ),
+      ],
+      verify: (_) {
+        verifyNever(() => shiftsService.clockIn('shift-id'));
+      },
     );
 
     blocTest<ShiftActionsCubit, ShiftActionsState>(

@@ -36,7 +36,10 @@ class ShiftsServiceLocator implements ServiceLocator {
     );
 
     locator.registerFactory<ShiftActionsCubit>(
-      () => ShiftActionsCubit(shiftsService: locator<ShiftsService>()),
+      () => ShiftActionsCubit(
+        shiftsService: locator<ShiftsService>(),
+        locationService: locator<LocationService>(),
+      ),
     );
 
     locator.registerFactory<MarketplaceActionsCubit>(

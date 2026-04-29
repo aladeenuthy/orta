@@ -85,14 +85,12 @@ class ShiftDecisionDialog extends StatelessWidget {
             AppSpacings.vertical(22),
             _ShiftDecisionConfirmButton(
               onPressed: () {
-                Navigator.of(context).pop(true);
+                AppRouter.back(true);
                 onConfirmed?.call();
               },
             ),
             AppSpacings.vertical(22),
-            _ShiftDecisionCancelButton(
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
+            _ShiftDecisionCancelButton(onPressed: () => AppRouter.back(false)),
           ],
         ),
       ),

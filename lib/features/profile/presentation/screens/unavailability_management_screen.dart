@@ -273,7 +273,7 @@ class _AddUnavailabilityDialogState extends State<_AddUnavailabilityDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => AppRouter.back(),
           child: const Text('Cancel'),
         ),
         TextButton(
@@ -327,7 +327,7 @@ class _AddUnavailabilityDialogState extends State<_AddUnavailabilityDialog> {
     final DateTimeRange? range = _range;
     if (range == null) return;
 
-    Navigator.of(context).pop(
+    AppRouter.back(
       UnavailabilityInput(
         range: range,
         reason: _reasonController.text.trim().isEmpty

@@ -24,7 +24,8 @@ mixin _$Shift {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
-  List<String> get typeOfShift => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
+  List<ShiftType> get typeOfShift => throw _privateConstructorUsedError;
   @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
   String get user => throw _privateConstructorUsedError;
   @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
@@ -65,7 +66,8 @@ abstract class $ShiftCopyWith<$Res> {
     String id,
     String title,
     String role,
-    List<String> typeOfShift,
+    @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
+    List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson) String user,
     @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     DateTime startTime,
@@ -151,7 +153,7 @@ class _$ShiftCopyWithImpl<$Res, $Val extends Shift>
             typeOfShift: null == typeOfShift
                 ? _value.typeOfShift
                 : typeOfShift // ignore: cast_nullable_to_non_nullable
-                      as List<String>,
+                      as List<ShiftType>,
             user: null == user
                 ? _value.user
                 : user // ignore: cast_nullable_to_non_nullable
@@ -228,7 +230,8 @@ abstract class _$$ShiftImplCopyWith<$Res> implements $ShiftCopyWith<$Res> {
     String id,
     String title,
     String role,
-    List<String> typeOfShift,
+    @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
+    List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson) String user,
     @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
     DateTime startTime,
@@ -314,7 +317,7 @@ class __$$ShiftImplCopyWithImpl<$Res>
         typeOfShift: null == typeOfShift
             ? _value._typeOfShift
             : typeOfShift // ignore: cast_nullable_to_non_nullable
-                  as List<String>,
+                  as List<ShiftType>,
         user: null == user
             ? _value.user
             : user // ignore: cast_nullable_to_non_nullable
@@ -376,7 +379,8 @@ class _$ShiftImpl implements _Shift {
     required this.id,
     required this.title,
     required this.role,
-    required final List<String> typeOfShift,
+    @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
+    required final List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
     required this.user,
     @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
@@ -420,9 +424,10 @@ class _$ShiftImpl implements _Shift {
   final String title;
   @override
   final String role;
-  final List<String> _typeOfShift;
+  final List<ShiftType> _typeOfShift;
   @override
-  List<String> get typeOfShift {
+  @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
+  List<ShiftType> get typeOfShift {
     if (_typeOfShift is EqualUnmodifiableListView) return _typeOfShift;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_typeOfShift);
@@ -542,7 +547,8 @@ abstract class _Shift implements Shift {
     required final String id,
     required final String title,
     required final String role,
-    required final List<String> typeOfShift,
+    @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
+    required final List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
     required final String user,
     @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
@@ -586,7 +592,8 @@ abstract class _Shift implements Shift {
   @override
   String get role;
   @override
-  List<String> get typeOfShift;
+  @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
+  List<ShiftType> get typeOfShift;
   @override
   @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
   String get user;
