@@ -17,6 +17,11 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.args.editMode && widget.args.profile != null) {
+      context.read<ProfileOnboardingCubit>().initializeForEdit(
+        widget.args.profile!,
+      );
+    }
     final ProfileOnboardingState state = context
         .read<ProfileOnboardingCubit>()
         .state;
@@ -52,7 +57,7 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
             AppRouter.back();
             return;
           }
-          AppRouter.toNamed(AppRoutes.availabilitySetting);
+          AppRouter.toCloseAllNamed(AppRoutes.home);
         }
       },
       builder: (BuildContext context, ProfileOnboardingState state) {
@@ -113,7 +118,7 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
                       _SkillChips(skills: state.skills),
                       const Spacer(),
                       if (!widget.args.editMode)
-                        const StepDots(activeIndex: 1, count: 3),
+                        const StepDots(activeIndex: 1, count: 2),
                       AppSpacings.vertical(24),
                       AppButton(
                         color: AppColors.primary,

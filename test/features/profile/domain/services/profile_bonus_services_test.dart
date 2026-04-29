@@ -16,8 +16,11 @@ void main() {
     test('rejects incomplete personal information', () async {
       final ProfileService service = ProfileService(repository: repository);
 
-      final Either<AppError, Profile> result = await service
-          .savePersonalInformation(phone: '', city: 'London', jobRole: 'Nurse');
+      final Either<AppError, Unit> result = service.validatePersonalInformation(
+        phone: '',
+        city: 'London',
+        jobRole: 'Nurse',
+      );
 
       expect(result.isLeft(), isTrue);
       verifyNever(
@@ -49,34 +52,38 @@ void main() {
     });
 
     test(
-      'passes profile picture path when saving personal information',
+      'saves personal information and skills in one profile update',
       () async {
         const Profile profile = Profile(
           id: 'id',
-          name: 'Worker',
+          name: 'Updated Worker',
           email: 'worker@example.com',
           phone: '+447911123456',
           city: 'London',
           jobRole: 'Nurse',
           profilePictureUrl: '/tmp/profile.png',
+          skills: <String>['First Aid'],
         );
         when(
           () => repository.updateProfile(
             phone: '+447911123456',
+            name: 'Updated Worker',
             city: 'London',
             jobRole: 'Nurse',
+            skills: <String>['First Aid'],
             profilePictureUrl: '/tmp/profile.png',
           ),
         ).thenAnswer((_) async => const Right<AppError, Profile>(profile));
         final ProfileService service = ProfileService(repository: repository);
 
-        final Either<AppError, Profile> result = await service
-            .savePersonalInformation(
-              phone: '+447911123456',
-              city: 'London',
-              jobRole: 'Nurse',
-              profilePictureUrl: '/tmp/profile.png',
-            );
+        final Either<AppError, Profile> result = await service.saveProfile(
+          phone: '+447911123456',
+          name: 'Updated Worker',
+          city: 'London',
+          jobRole: 'Nurse',
+          skills: <String>['First Aid'],
+          profilePictureUrl: '/tmp/profile.png',
+        );
 
         expect(result, const Right<AppError, Profile>(profile));
       },

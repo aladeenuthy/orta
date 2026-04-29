@@ -11,20 +11,47 @@ class ProfileService {
     return _repository.getProfile();
   }
 
-  Future<Either<AppError, Profile>> savePersonalInformation({
+  Either<AppError, Unit> validatePersonalInformation({
     required String phone,
     required String city,
     required String jobRole,
-    String? profilePictureUrl,
   }) {
     if (phone.trim().isEmpty || city.isEmpty || jobRole.isEmpty) {
-      return Future.value(left(const AppError('Complete all fields')));
+      return left(const AppError('Complete all fields'));
+    }
+
+    return right(unit);
+  }
+
+  Future<Either<AppError, Profile>> saveProfile({
+    String? name,
+    required String phone,
+    required String city,
+    required String jobRole,
+    required List<String> skills,
+    String? profilePictureUrl,
+  }) {
+    final Either<AppError, Unit> personalValidation =
+        validatePersonalInformation(phone: phone, city: city, jobRole: jobRole);
+
+    final AppError? validationError = personalValidation.fold(
+      (AppError error) => error,
+      (_) => null,
+    );
+    if (validationError != null) {
+      return Future.value(left(validationError));
+    }
+
+    if (skills.isEmpty) {
+      return Future.value(left(const AppError('Add at least one skill')));
     }
 
     return _repository.updateProfile(
       phone: phone.trim(),
+      name: name?.trim(),
       city: city,
       jobRole: jobRole,
+      skills: skills,
       profilePictureUrl: profilePictureUrl,
     );
   }

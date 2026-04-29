@@ -24,7 +24,10 @@ class ProfilesServiceLocator implements ServiceLocator {
     );
 
     locator.registerLazySingleton<ProfileOnboardingCubit>(
-      () => ProfileOnboardingCubit(profileService: locator<ProfileService>()),
+      () => ProfileOnboardingCubit(
+        profileService: locator<ProfileService>(),
+        authService: locator<AuthService>(),
+      ),
     );
 
     locator.registerLazySingleton<AvailabilityCubit>(

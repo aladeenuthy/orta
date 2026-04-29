@@ -97,26 +97,39 @@ class _ProfileBody extends StatelessWidget {
             icon: Icons.calendar_month_outlined,
             title: 'Availability',
             body: 'Mon- Fri: 09:00-17:00',
-            onEdit: () => AppRouter.toNamed(
+            onEdit: () => _ProfileNavigation.openAndRefresh(
+              context,
               AppRoutes.availabilitySetting,
-              arguments: const ProfileFlowArgs(editMode: true),
+              arguments: ProfileFlowArgs(editMode: true, profile: profile),
             ),
           ),
           _ProfileSection(
             icon: Icons.error_outline,
             iconColor: AppColors.alert,
             title: 'Unavailable Dates',
-            body: '•  12 April\n•  24 April',
-            onEdit: () => AppRouter.toNamed(AppRoutes.unavailability),
+            body: _ProfileDisplay.list(const <String>[
+              '12 April',
+              '24 April',
+              '30 April',
+              '4 May',
+            ], bullet: '•'),
+            onEdit: () => _ProfileNavigation.openAndRefresh(
+              context,
+              AppRoutes.unavailability,
+            ),
           ),
           _ProfileSection(
             title: 'Skill',
-            body: profile.skills.isEmpty
-                ? '- Forklift\n- Packing'
-                : profile.skills.map((String skill) => '- $skill').join('\n'),
-            onEdit: () => AppRouter.toNamed(
+            body: _ProfileDisplay.list(
+              profile.skills.isEmpty
+                  ? const <String>['Forklift', 'Packing']
+                  : profile.skills,
+              bullet: '-',
+            ),
+            onEdit: () => _ProfileNavigation.openAndRefresh(
+              context,
               AppRoutes.profileSkills,
-              arguments: const ProfileFlowArgs(editMode: true),
+              arguments: ProfileFlowArgs(editMode: true, profile: profile),
             ),
           ),
           _ProfileSection(
@@ -196,14 +209,55 @@ class _ProfileName extends StatelessWidget {
         ),
         AppSpacings.horizontal(12),
         GestureDetector(
-          onTap: () => AppRouter.toNamed(
-            AppRoutes.profilePersonal,
-            arguments: const ProfileFlowArgs(editMode: true),
-          ),
+          onTap: () =>
+              AppRouter.toNamed(
+                AppRoutes.profilePersonal,
+                arguments: ProfileFlowArgs(editMode: true, profile: profile),
+              ).then((_) {
+                if (context.mounted) {
+                  context.read<ProfileCubit>().loadProfile();
+                }
+              }),
           child: Icon(Icons.edit_outlined, size: 22.0.radius),
         ),
       ],
     );
+  }
+}
+
+class _ProfileDisplay {
+  const _ProfileDisplay._();
+
+  static String list(
+    List<String> items, {
+    required String bullet,
+    int maxItems = 3,
+  }) {
+    final List<String> visibleItems = items.take(maxItems).toList();
+    final int remainingCount = items.length - visibleItems.length;
+    final List<String> lines = visibleItems
+        .map((String item) => '$bullet  $item')
+        .toList();
+
+    if (remainingCount > 0) {
+      lines.add('+ $remainingCount more');
+    }
+
+    return lines.join('\n');
+  }
+}
+
+class _ProfileNavigation {
+  const _ProfileNavigation._();
+
+  static Future<void> openAndRefresh(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+  }) async {
+    await AppRouter.toNamed(routeName, arguments: arguments);
+    if (!context.mounted) return;
+    await context.read<ProfileCubit>().loadProfile();
   }
 }
 

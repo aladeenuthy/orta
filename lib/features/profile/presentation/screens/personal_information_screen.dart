@@ -18,6 +18,18 @@ class PersonalInformationScreen extends StatefulWidget {
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AppImagePicker _imagePicker = AppImagePicker();
+  late final ProfileOnboardingCubit cubit = context
+      .watch<ProfileOnboardingCubit>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.args.editMode && widget.args.profile != null) {
+      context.read<ProfileOnboardingCubit>().initializeForEdit(
+        widget.args.profile!,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,57 +55,128 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
             backgroundColor: AppColors.white,
             appBar: const OnboardingAppBar(title: 'Personal Information'),
             body: SafeArea(
-              child: Padding(
-                padding: AppPaddings.horizontal(16),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: <Widget>[
-                      AppSpacings.vertical(35),
-                      _AvatarPicker(
-                        imagePath: state.profilePicturePath,
-                        onTap: _pickProfilePicture,
-                      ),
-                      AppSpacings.vertical(50),
-                      _PhoneField(state: state),
-                      AppSpacings.vertical(26),
-                      OnboardingSelectField(
-                        label: 'City',
-                        value: state.city,
-                        items: ProfileDefaults.cities,
-                        onChanged: context
-                            .read<ProfileOnboardingCubit>()
-                            .cityChanged,
-                      ),
-                      AppSpacings.vertical(26),
-                      OnboardingSelectField(
-                        label: 'Role',
-                        value: state.jobRole,
-                        items: ProfileDefaults.roles,
-                        onChanged: context
-                            .read<ProfileOnboardingCubit>()
-                            .jobRoleChanged,
-                      ),
-                      const Spacer(),
-                      const StepDots(activeIndex: 0, count: 3),
-                      AppSpacings.vertical(24),
-                      AppButton(
-                        color: AppColors.primary,
-                        height: 42,
-                        borderRadius: BorderRadius.circular(10.0.radius),
-                        margin: EdgeInsets.zero,
-                        onPressed: _submit,
-                        child: Text(
-                          'Continue',
-                          style: context.text.titleMedium?.copyWith(
-                            color: AppColors.white,
-                            fontSize: 18.0.fontSize,
-                            fontWeight: FontWeight.w800,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: AppPaddings.horizontal(16),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        AppSpacings.vertical(35),
+                        _AvatarPicker(
+                          imagePath: state.profilePicturePath,
+                          initials: StringUtils.initials(
+                            context.watch<AuthCubit>().state.user?.name,
+                          ),
+                          onTap: _pickProfilePicture,
+                        ),
+                        AppSpacings.vertical(50),
+                        if (widget.args.editMode)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Full Name',
+                                style: context.text.titleMedium?.copyWith(
+                                  color: AppColors.textColor.withValues(
+                                    alpha: .84,
+                                  ),
+                                  fontSize: 14.5.fontSize,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              AppSpacings.vertical(10),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: AppTextField(
+                                      intiaVal: state.firstName,
+                                      hintText: 'First Name',
+                                      validate: (String? value) =>
+                                          Validator.emptyField(
+                                            value,
+                                            message: 'Enter first name',
+                                          ),
+                                      onChanged: cubit.firstNameChanged,
+                                      hasTextfieldLabel: false,
+                                      borderRadius: BorderRadius.circular(
+                                        10.0.radius,
+                                      ),
+                                      borderColor: AppColors.fieldBorder,
+                                      focusedBorderColor: AppColors.primary,
+                                      enabledBorderWidth: 1,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 20.0.width,
+                                        vertical: 11.0.height,
+                                      ),
+                                    ),
+                                  ),
+                                  AppSpacings.horizontal(20),
+                                  Expanded(
+                                    child: AppTextField(
+                                      intiaVal: state.lastName,
+                                      hintText: 'Last Name',
+                                      validate: (String? value) =>
+                                          Validator.emptyField(
+                                            value,
+                                            message: 'Enter last name',
+                                          ),
+                                      onChanged: cubit.lastNameChanged,
+                                      hasTextfieldLabel: false,
+                                      borderRadius: BorderRadius.circular(
+                                        10.0.radius,
+                                      ),
+                                      borderColor: AppColors.fieldBorder,
+                                      focusedBorderColor: AppColors.primary,
+                                      enabledBorderWidth: 1,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 20.0.width,
+                                        vertical: 11.0.height,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              AppSpacings.vertical(26),
+                            ],
+                          ),
+                        _PhoneField(state: state),
+                        AppSpacings.vertical(26),
+                        OnboardingSelectField(
+                          label: 'City',
+                          value: state.city,
+                          items: ProfileDefaults.cities,
+                          onChanged: cubit.cityChanged,
+                        ),
+                        AppSpacings.vertical(26),
+                        OnboardingSelectField(
+                          label: 'Role',
+                          value: state.jobRole,
+                          items: ProfileDefaults.roles,
+                          onChanged: cubit.jobRoleChanged,
+                        ),
+                        if (widget.args.editMode) AppSpacings.vertical(26),
+                        if (!widget.args.editMode)
+                          const StepDots(activeIndex: 0, count: 2),
+                        AppSpacings.vertical(24),
+                        AppButton(
+                          color: AppColors.primary,
+                          height: 42,
+                          borderRadius: BorderRadius.circular(10.0.radius),
+                          margin: EdgeInsets.zero,
+                          onPressed: _submit,
+                          child: Text(
+                            'Continue',
+                            style: context.text.titleMedium?.copyWith(
+                              color: AppColors.white,
+                              fontSize: 18.0.fontSize,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ),
-                      ),
-                      AppSpacings.vertical(42),
-                    ],
+                        AppSpacings.vertical(42),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -107,7 +190,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   void _submit() {
     final FormState? form = _formKey.currentState;
     if (form == null || !form.validate()) return;
-    context.read<ProfileOnboardingCubit>().savePersonalInformation();
+    final ProfileOnboardingCubit cubit = context.read<ProfileOnboardingCubit>();
+    widget.args.editMode
+        ? cubit.savePersonalInformationEdit()
+        : cubit.completePersonalInformation();
   }
 
   Future<void> _pickProfilePicture() async {
@@ -125,9 +211,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 }
 
 class _AvatarPicker extends StatelessWidget {
-  const _AvatarPicker({required this.imagePath, required this.onTap});
+  const _AvatarPicker({
+    required this.imagePath,
+    required this.initials,
+    required this.onTap,
+  });
 
   final String imagePath;
+  final String initials;
   final VoidCallback onTap;
 
   @override
@@ -148,7 +239,7 @@ class _AvatarPicker extends StatelessWidget {
                 child: hasImage
                     ? null
                     : Text(
-                        'AA',
+                        initials,
                         style: context.text.displayLarge?.copyWith(
                           color: AppColors.white,
                           fontSize: 50.0.fontSize,

@@ -18,6 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ProfileOnboardingState {
   ViewState get viewState => throw _privateConstructorUsedError;
+  String get firstName => throw _privateConstructorUsedError;
+  String get lastName => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
   String get city => throw _privateConstructorUsedError;
   String get jobRole => throw _privateConstructorUsedError;
@@ -44,6 +46,8 @@ abstract class $ProfileOnboardingStateCopyWith<$Res> {
   @useResult
   $Res call({
     ViewState viewState,
+    String firstName,
+    String lastName,
     String phone,
     String city,
     String jobRole,
@@ -77,6 +81,8 @@ class _$ProfileOnboardingStateCopyWithImpl<
   @override
   $Res call({
     Object? viewState = null,
+    Object? firstName = null,
+    Object? lastName = null,
     Object? phone = null,
     Object? city = null,
     Object? jobRole = null,
@@ -93,6 +99,14 @@ class _$ProfileOnboardingStateCopyWithImpl<
                 ? _value.viewState
                 : viewState // ignore: cast_nullable_to_non_nullable
                       as ViewState,
+            firstName: null == firstName
+                ? _value.firstName
+                : firstName // ignore: cast_nullable_to_non_nullable
+                      as String,
+            lastName: null == lastName
+                ? _value.lastName
+                : lastName // ignore: cast_nullable_to_non_nullable
+                      as String,
             phone: null == phone
                 ? _value.phone
                 : phone // ignore: cast_nullable_to_non_nullable
@@ -160,6 +174,8 @@ abstract class _$$ProfileOnboardingStateImplCopyWith<$Res>
   @useResult
   $Res call({
     ViewState viewState,
+    String firstName,
+    String lastName,
     String phone,
     String city,
     String jobRole,
@@ -191,6 +207,8 @@ class __$$ProfileOnboardingStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? viewState = null,
+    Object? firstName = null,
+    Object? lastName = null,
     Object? phone = null,
     Object? city = null,
     Object? jobRole = null,
@@ -207,6 +225,14 @@ class __$$ProfileOnboardingStateImplCopyWithImpl<$Res>
             ? _value.viewState
             : viewState // ignore: cast_nullable_to_non_nullable
                   as ViewState,
+        firstName: null == firstName
+            ? _value.firstName
+            : firstName // ignore: cast_nullable_to_non_nullable
+                  as String,
+        lastName: null == lastName
+            ? _value.lastName
+            : lastName // ignore: cast_nullable_to_non_nullable
+                  as String,
         phone: null == phone
             ? _value.phone
             : phone // ignore: cast_nullable_to_non_nullable
@@ -253,6 +279,8 @@ class __$$ProfileOnboardingStateImplCopyWithImpl<$Res>
 class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
   const _$ProfileOnboardingStateImpl({
     this.viewState = ViewState.initial,
+    this.firstName = '',
+    this.lastName = '',
     this.phone = '',
     this.city = '',
     this.jobRole = '',
@@ -268,6 +296,12 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
   @override
   @JsonKey()
   final ViewState viewState;
+  @override
+  @JsonKey()
+  final String firstName;
+  @override
+  @JsonKey()
+  final String lastName;
   @override
   @JsonKey()
   final String phone;
@@ -302,7 +336,7 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
 
   @override
   String toString() {
-    return 'ProfileOnboardingState(viewState: $viewState, phone: $phone, city: $city, jobRole: $jobRole, profilePicturePath: $profilePicturePath, skillInput: $skillInput, skills: $skills, profile: $profile, savedStep: $savedStep, errorMessage: $errorMessage)';
+    return 'ProfileOnboardingState(viewState: $viewState, firstName: $firstName, lastName: $lastName, phone: $phone, city: $city, jobRole: $jobRole, profilePicturePath: $profilePicturePath, skillInput: $skillInput, skills: $skills, profile: $profile, savedStep: $savedStep, errorMessage: $errorMessage)';
   }
 
   @override
@@ -312,6 +346,10 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
             other is _$ProfileOnboardingStateImpl &&
             (identical(other.viewState, viewState) ||
                 other.viewState == viewState) &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName) &&
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.city, city) || other.city == city) &&
             (identical(other.jobRole, jobRole) || other.jobRole == jobRole) &&
@@ -331,6 +369,8 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
   int get hashCode => Object.hash(
     runtimeType,
     viewState,
+    firstName,
+    lastName,
     phone,
     city,
     jobRole,
@@ -358,6 +398,8 @@ class _$ProfileOnboardingStateImpl extends _ProfileOnboardingState {
 abstract class _ProfileOnboardingState extends ProfileOnboardingState {
   const factory _ProfileOnboardingState({
     final ViewState viewState,
+    final String firstName,
+    final String lastName,
     final String phone,
     final String city,
     final String jobRole,
@@ -372,6 +414,10 @@ abstract class _ProfileOnboardingState extends ProfileOnboardingState {
 
   @override
   ViewState get viewState;
+  @override
+  String get firstName;
+  @override
+  String get lastName;
   @override
   String get phone;
   @override

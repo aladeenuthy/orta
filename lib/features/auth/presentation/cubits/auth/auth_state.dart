@@ -19,6 +19,10 @@ class AuthState with _$AuthState {
   bool get isUnauthenticated => isLoaded && session == null;
   bool get requiresEmailVerification =>
       isAuthenticated && !(session?.user.isEmailVerified ?? false);
+  bool get requiresProfileSetup =>
+      isAuthenticated &&
+      (session?.user.isEmailVerified ?? false) &&
+      !(session?.user.isProfileComplete ?? false);
 
   User? get user => session?.user;
   String? get token => session?.token;

@@ -5,6 +5,7 @@ abstract class ProfileRepository {
   Future<Either<AppError, Profile>> getProfile();
 
   Future<Either<AppError, Profile>> updateProfile({
+    String? name,
     String? phone,
     String? city,
     String? jobRole,

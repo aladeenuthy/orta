@@ -30,6 +30,45 @@ class AuthService extends BaseAppService {
     return _repository.getCachedSession();
   }
 
+  Future<Either<AppError, AuthSession>> updateCachedUserFromProfile(
+    Profile profile,
+  ) async {
+    final Either<AppError, AuthSession?> sessionResult = await _repository
+        .getCachedSession();
+
+    return sessionResult.fold(
+      (AppError error) async => left<AppError, AuthSession>(error),
+      (AuthSession? session) async {
+        if (session == null) {
+          return left<AppError, AuthSession>(
+            const AppError('Please login again to continue'),
+          );
+        }
+
+        final AuthSession updatedSession = session.copyWith(
+          user: session.user.copyWith(
+            name: profile.name,
+            email: profile.email,
+            phone: profile.phone,
+            city: profile.city,
+            jobRole: profile.jobRole,
+            skills: profile.skills,
+            profilePictureUrl: profile.profilePictureUrl,
+            isProfileComplete: profile.isProfileComplete,
+          ),
+        );
+        final Either<AppError, AuthSession> result = await _repository
+            .cacheSession(updatedSession);
+
+        result.fold((_) {}, (AuthSession session) {
+          publishEvent(AuthSessionUpdated(session));
+        });
+
+        return result;
+      },
+    );
+  }
+
   Future<Either<AppError, User>> getUser() async {
     final Either<AppError, User> result = await _repository.getUser();
 

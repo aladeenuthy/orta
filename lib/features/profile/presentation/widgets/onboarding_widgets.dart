@@ -141,6 +141,8 @@ class OnboardingSelectField extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
           dropdownColor: AppColors.white,
+          validator: (String? selectedValue) =>
+              Validator.emptyField(selectedValue, message: 'Select $label'),
           items: items
               .map(
                 (String item) => DropdownMenuItem<String>(

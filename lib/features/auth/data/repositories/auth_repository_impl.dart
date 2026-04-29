@@ -12,6 +12,20 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthLocalDataSource _localDataSource;
 
   @override
+  Future<Either<AppError, AuthSession>> cacheSession(
+    AuthSession session,
+  ) async {
+    try {
+      await _localDataSource.cacheSession(session);
+      return right<AppError, AuthSession>(session);
+    } catch (_) {
+      return left<AppError, AuthSession>(
+        const AppError('Something went wront! Please try again later.'),
+      );
+    }
+  }
+
+  @override
   Future<Either<AppError, Unit>> clearSession() async {
     try {
       await _localDataSource.clearSession();

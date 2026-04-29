@@ -12,6 +12,8 @@ abstract class AuthRepository {
 
   Future<Either<AppError, AuthSession?>> getCachedSession();
 
+  Future<Either<AppError, AuthSession>> cacheSession(AuthSession session);
+
   Future<Either<AppError, User>> getUser();
 
   Future<Either<AppError, AuthSession>> login({

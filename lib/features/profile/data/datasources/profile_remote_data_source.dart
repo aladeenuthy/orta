@@ -11,13 +11,12 @@ class ProfileRemoteDataSource extends BaseAppRepository {
         response.data as Map,
       );
 
-      return right<AppError, Profile>(
-        Profile.fromJson(Map<String, dynamic>.from(body['data'] as Map)),
-      );
+      return right<AppError, Profile>(Profile.fromJson(_readProfileJson(body)));
     });
   }
 
   Future<Either<AppError, Profile>> updateProfile({
+    String? name,
     String? phone,
     String? city,
     String? jobRole,
@@ -28,6 +27,7 @@ class ProfileRemoteDataSource extends BaseAppRepository {
       final response = await patch(
         Endpoints.profile,
         data: <String, dynamic>{
+          if (name != null) 'name': name,
           if (phone != null) 'phone': phone,
           if (city != null) 'city': city,
           if (jobRole != null) 'jobRole': jobRole,
@@ -38,11 +38,8 @@ class ProfileRemoteDataSource extends BaseAppRepository {
       final Map<String, dynamic> body = Map<String, dynamic>.from(
         response.data as Map,
       );
-      final Object? data = body['data'] ?? body['user'];
 
-      return right<AppError, Profile>(
-        Profile.fromJson(Map<String, dynamic>.from(data as Map)),
-      );
+      return right<AppError, Profile>(Profile.fromJson(_readProfileJson(body)));
     });
   }
 
@@ -138,5 +135,19 @@ class ProfileRemoteDataSource extends BaseAppRepository {
 
       return right<AppError, Unit>(unit);
     });
+  }
+
+  Map<String, dynamic> _readProfileJson(Map<String, dynamic> body) {
+    final Object? data = body['data'] ?? body['profile'] ?? body['user'];
+    if (data is Map) {
+      final Map<String, dynamic> json = Map<String, dynamic>.from(data);
+      final Object? nestedProfile = json['profile'];
+      if (nestedProfile is Map) {
+        return Map<String, dynamic>.from(nestedProfile);
+      }
+      return json;
+    }
+
+    return body;
   }
 }

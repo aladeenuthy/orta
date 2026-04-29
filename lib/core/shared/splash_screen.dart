@@ -49,19 +49,6 @@ class _SplashScreenState extends State<SplashScreen>
           previous.viewState != current.viewState ||
           previous.session != current.session,
       listener: (BuildContext context, AuthState state) {
-        if (state.requiresEmailVerification && state.user != null) {
-          AppRouter.toReplacementNamed(
-            AppRoutes.otpVerification,
-            arguments: OtpVerificationArgs(
-              email: state.user!.email,
-              successRoute: AppRoutes.home,
-              preventBack: true,
-              autoSendOtp: true,
-            ),
-          );
-          return;
-        }
-
         if (state.isAuthenticated) {
           AppRouter.toReplacementNamed(AppRoutes.home);
           return;

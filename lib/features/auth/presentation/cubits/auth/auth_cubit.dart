@@ -43,6 +43,14 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.toAuthenticated(session));
   }
 
+  Future<void> refreshCurrentUser() async {
+    if (!state.isAuthenticated) return;
+
+    final Either<AppError, User> result = await _authService.getUser();
+
+    result.fold((AppError error) => emit(state.toError(error.message)), (_) {});
+  }
+
   Future<void> logout() async {
     if (state.isLoading) return;
 

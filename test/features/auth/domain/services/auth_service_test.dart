@@ -94,6 +94,85 @@ void main() {
     });
   });
 
+  group('AuthService.updateCachedUserFromProfile', () {
+    test(
+      'updates cached session user from profile and publishes event',
+      () async {
+        const Profile profile = Profile(
+          id: 'profile-id',
+          name: 'Updated Doe',
+          email: 'updated@example.com',
+          phone: '+447911123456',
+          city: 'London',
+          jobRole: 'Nurse',
+          skills: <String>['First Aid'],
+          isProfileComplete: true,
+        );
+        const AuthSession updatedSession = AuthSession(
+          token: 'token',
+          user: User(
+            id: '69edb6a277d24da71a004b3e',
+            name: 'Updated Doe',
+            email: 'updated@example.com',
+            role: 'worker',
+            phone: '+447911123456',
+            city: 'London',
+            jobRole: 'Nurse',
+            skills: <String>['First Aid'],
+            isProfileComplete: true,
+          ),
+        );
+        when(
+          () => repository.getCachedSession(),
+        ).thenAnswer((_) async => const Right<AppError, AuthSession?>(session));
+        when(() => repository.cacheSession(updatedSession)).thenAnswer(
+          (_) async => const Right<AppError, AuthSession>(updatedSession),
+        );
+        final Future<void> eventExpectation = expectLater(
+          service.eventStream,
+          emits(
+            isA<AuthSessionUpdated>().having(
+              (AuthSessionUpdated event) => event.session,
+              'session',
+              updatedSession,
+            ),
+          ),
+        );
+
+        final Either<AppError, AuthSession> result = await service
+            .updateCachedUserFromProfile(profile);
+
+        expect(
+          result,
+          equals(const Right<AppError, AuthSession>(updatedSession)),
+        );
+        verify(() => repository.getCachedSession()).called(1);
+        verify(() => repository.cacheSession(updatedSession)).called(1);
+        await eventExpectation;
+      },
+    );
+
+    test('returns AppError when no cached session exists', () async {
+      when(
+        () => repository.getCachedSession(),
+      ).thenAnswer((_) async => const Right<AppError, AuthSession?>(null));
+
+      final Either<AppError, AuthSession> result = await service
+          .updateCachedUserFromProfile(
+            const Profile(id: 'id', name: 'Name', email: 'email@example.com'),
+          );
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, AuthSession>(
+            AppError('Please login again to continue'),
+          ),
+        ),
+      );
+    });
+  });
+
   group('AuthService.getUser', () {
     test('delegates current user fetch to repository', () async {
       const User user = User(

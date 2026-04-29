@@ -59,6 +59,38 @@ void main() {
     });
   });
 
+  group('AuthRepositoryImpl.cacheSession', () {
+    test('delegates session caching to local data source', () async {
+      when(
+        () => localDataSource.cacheSession(session),
+      ).thenAnswer((_) async {});
+
+      final Either<AppError, AuthSession> result = await repository
+          .cacheSession(session);
+
+      expect(result, equals(const Right<AppError, AuthSession>(session)));
+      verify(() => localDataSource.cacheSession(session)).called(1);
+    });
+
+    test('returns AppError when session caching fails', () async {
+      when(
+        () => localDataSource.cacheSession(session),
+      ).thenThrow(Exception('Cache failed'));
+
+      final Either<AppError, AuthSession> result = await repository
+          .cacheSession(session);
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, AuthSession>(
+            AppError('Something went wront! Please try again later.'),
+          ),
+        ),
+      );
+    });
+  });
+
   group('AuthRepositoryImpl.getCachedSession', () {
     test('returns cached session from local data source', () async {
       when(

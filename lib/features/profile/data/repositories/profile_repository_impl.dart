@@ -6,105 +6,65 @@ class ProfileRepositoryImpl implements ProfileRepository {
     : _remote = remote;
 
   final ProfileRemoteDataSource _remote;
-
-  Profile _profile = const Profile(
-    id: 'mock-worker',
-    name: 'Abdulmalik Uthman',
-    email: 'worker@example.com',
-    isProfileComplete: false,
-  );
   List<AvailabilityDay> _availability = ProfileDefaults.availability;
   final List<UnavailabilityPeriod> _unavailability = <UnavailabilityPeriod>[];
 
-  bool get _useMock => true;
-
   @override
   Future<Either<AppError, Profile>> getProfile() {
-    if (_useMock) return Future.value(right(_profile));
     return _remote.getProfile();
   }
 
   @override
   Future<Either<AppError, Profile>> updateProfile({
+    String? name,
     String? phone,
     String? city,
     String? jobRole,
     List<String>? skills,
     String? profilePictureUrl,
   }) async {
-    if (!_useMock) {
-      return _remote.updateProfile(
-        phone: phone,
-        city: city,
-        jobRole: jobRole,
-        skills: skills,
-        profilePictureUrl: profilePictureUrl,
-      );
-    }
-
-    _profile = _profile.copyWith(
-      phone: phone ?? _profile.phone,
-      city: city ?? _profile.city,
-      jobRole: jobRole ?? _profile.jobRole,
-      skills: skills ?? _profile.skills,
-      profilePictureUrl: profilePictureUrl ?? _profile.profilePictureUrl,
+    return _remote.updateProfile(
+      phone: phone,
+      name: name,
+      city: city,
+      jobRole: jobRole,
+      skills: skills,
+      profilePictureUrl: profilePictureUrl,
     );
-    _profile = _profile.copyWith(
-      isProfileComplete:
-          (_profile.phone?.isNotEmpty ?? false) &&
-          (_profile.city?.isNotEmpty ?? false) &&
-          (_profile.jobRole?.isNotEmpty ?? false),
-    );
-
-    return right(_profile);
   }
 
   @override
   Future<Either<AppError, List<AvailabilityDay>>> getAvailability() {
-    if (_useMock) return Future.value(right(_availability));
-    return _remote.getAvailability();
+    return Future.value(right(_availability));
   }
 
   @override
   Future<Either<AppError, Unit>> saveAvailability({
     required List<AvailabilityDay> weeklySchedule,
   }) {
-    if (_useMock) {
-      _availability = weeklySchedule;
-      return Future.value(right(unit));
-    }
-
-    return _remote.saveAvailability(weeklySchedule: weeklySchedule);
+    _availability = weeklySchedule;
+    return Future.value(right(unit));
   }
 
   @override
   Future<Either<AppError, List<UnavailabilityPeriod>>> getUnavailability({
     String? month,
   }) {
-    if (_useMock) return Future.value(right(_unavailability));
-    return _remote.getUnavailability(month: month);
+    return Future.value(right(_unavailability));
   }
 
   @override
   Future<Either<AppError, Unit>> saveUnavailability({
     required List<UnavailabilityPeriod> unavailableDates,
   }) {
-    if (_useMock) {
-      _unavailability.addAll(unavailableDates);
-      return Future.value(right(unit));
-    }
-
-    return _remote.saveUnavailability(unavailableDates: unavailableDates);
+    _unavailability.addAll(unavailableDates);
+    return Future.value(right(unit));
   }
 
   @override
   Future<Either<AppError, Unit>> deleteUnavailability(String id) {
-    if (_useMock) {
-      _unavailability.removeWhere((UnavailabilityPeriod item) => item.id == id);
-      return Future.value(right(unit));
-    }
-
-    return _remote.deleteUnavailability(id);
+    _unavailability.removeWhere((UnavailabilityPeriod item) => item.id == id);
+    return Future.value(right(unit));
   }
 }
 

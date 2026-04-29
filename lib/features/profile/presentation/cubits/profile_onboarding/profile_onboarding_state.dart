@@ -4,6 +4,8 @@ part of 'profile_onboarding_cubit.dart';
 class ProfileOnboardingState with _$ProfileOnboardingState {
   const factory ProfileOnboardingState({
     @Default(ViewState.initial) ViewState viewState,
+    @Default('') String firstName,
+    @Default('') String lastName,
     @Default('') String phone,
     @Default('') String city,
     @Default('') String jobRole,
@@ -21,6 +23,11 @@ class ProfileOnboardingState with _$ProfileOnboardingState {
   bool get isLoaded => viewState == ViewState.loaded;
   bool get isError => viewState == ViewState.error;
   bool get canAddSkill => skillInput.trim().isNotEmpty;
+  String get normalizedPhone => '+44${phone.trim()}';
+  String get fullName => <String>[
+    firstName.trim(),
+    lastName.trim(),
+  ].where((String item) => item.isNotEmpty).join(' ');
 
   ProfileOnboardingState toEditing() =>
       copyWith(viewState: ViewState.initial, errorMessage: null);
@@ -30,6 +37,12 @@ class ProfileOnboardingState with _$ProfileOnboardingState {
 
   ProfileOnboardingState toError(String message) =>
       copyWith(viewState: ViewState.error, errorMessage: message);
+
+  ProfileOnboardingState toPersonalCompleted() => copyWith(
+    viewState: ViewState.loaded,
+    savedStep: ProfileOnboardingStep.personal,
+    errorMessage: null,
+  );
 
   ProfileOnboardingState toPersonalSaved(Profile profile) => copyWith(
     viewState: ViewState.loaded,

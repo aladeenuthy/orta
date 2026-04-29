@@ -1,13 +1,30 @@
 import 'package:orta/features/features.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: <BlocProvider<dynamic>>[
+        BlocProvider<ShiftActionsCubit>(
+          create: (_) => locator<ShiftActionsCubit>(),
+        ),
+        BlocProvider<ProfileCubit>(create: (_) => locator<ProfileCubit>()),
+      ],
+      child: const _HomeView(),
+    );
+  }
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeView extends StatefulWidget {
+  const _HomeView();
+
+  @override
+  State<_HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<_HomeView> {
   int _selectedIndex = 0;
   final GlobalKey<_DashboardHomeBodyState> _dashboardKey =
       GlobalKey<_DashboardHomeBodyState>();
@@ -22,86 +39,154 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _EmailVerificationGate.openIfRequired(context.read<AuthCubit>().state);
+      _refreshAccessState();
     });
+  }
+
+  Future<void> _refreshAccessState() async {
+    await context.read<AuthCubit>().refreshCurrentUser();
+    if (!mounted) return;
+
+    final AuthState authState = context.read<AuthCubit>().state;
+    if (_DashboardAccessGate.openForAuthState(authState)) return;
+
+    await _loadProfileIfNeeded(authState);
+  }
+
+  Future<void> _loadProfileIfNeeded(AuthState authState) async {
+    if (!authState.isAuthenticated) return;
+
+    final ProfileState profileState = context.read<ProfileCubit>().state;
+    if (!profileState.isInitial) return;
+
+    await context.read<ProfileCubit>().loadProfile();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ShiftActionsCubit>(
-      create: (_) => locator<ShiftActionsCubit>(),
+    return MultiBlocListener(
+      listeners: <BlocListener<dynamic, dynamic>>[
+        BlocListener<AuthCubit, AuthState>(
+          listener: (BuildContext context, AuthState authState) {
+            if (authState.isError && authState.errorMessage != null) {
+              AppSnacks.error(context, authState.errorMessage!);
+            }
+
+            if (authState.isUnauthenticated) {
+              AppRouter.toCloseAllNamed(AppRoutes.login);
+              return;
+            }
+
+            final bool opened = _DashboardAccessGate.openForAuthState(
+              authState,
+            );
+            if (!opened && authState.isAuthenticated) {
+              _loadProfileIfNeeded(authState);
+            }
+          },
+        ),
+        BlocListener<ProfileCubit, ProfileState>(
+          listener: (BuildContext context, ProfileState profileState) {
+            if (profileState.isError && profileState.errorMessage != null) {
+              AppSnacks.error(context, profileState.errorMessage!);
+            }
+
+            _DashboardAccessGate.openForProfileState(
+              authState: context.read<AuthCubit>().state,
+              profileState: profileState,
+            );
+          },
+        ),
+      ],
       child: BlocConsumer<ShiftActionsCubit, ShiftActionsState>(
-        listener: (BuildContext context, ShiftActionsState state) {
-          if (state.isError && state.errorMessage != null) {
-            AppSnacks.error(context, state.errorMessage!);
-          }
+        listener: _listenForShiftActions,
+        builder: _buildDashboard,
+      ),
+    );
+  }
 
-          if (state.isLoaded) {
-            AppSnacks.success(context, _ShiftActionMessage.from(state.action));
-            _dashboardKey.currentState?.refreshDashboard();
-          }
-        },
-        builder: (BuildContext context, ShiftActionsState state) {
-          return BlocListener<AuthCubit, AuthState>(
-            listener: (BuildContext context, AuthState authState) {
-              if (authState.isError && authState.errorMessage != null) {
-                AppSnacks.error(context, authState.errorMessage!);
-              }
-              if (authState.isUnauthenticated) {
-                AppRouter.toCloseAllNamed(AppRoutes.login);
-                return;
-              }
+  void _listenForShiftActions(BuildContext context, ShiftActionsState state) {
+    if (state.isError && state.errorMessage != null) {
+      AppSnacks.error(context, state.errorMessage!);
+    }
 
-              _EmailVerificationGate.openIfRequired(authState);
-            },
-            child: AppLoadingOverlay(
-              loading: state.isLoading,
-              child: Scaffold(
-                backgroundColor: AppColors.white,
-                bottomNavigationBar: DashboardBottomNav(
-                  selectedIndex: _selectedIndex,
-                  onItemSelected: (int index) {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                ),
-                body: IndexedStack(
-                  index: _selectedIndex,
-                  children: <Widget>[
-                    _DashboardHomeBody(key: _dashboardKey),
-                    const MarketplaceScreen(),
-                    ..._placeholderTabs.map(
-                      (_PlaceholderTab tab) => _EmptyDashboardTab(tab: tab),
-                    ),
-                    const _SettingsTab(),
-                  ],
-                ),
-              ),
+    if (state.isLoaded) {
+      AppSnacks.success(context, _ShiftActionMessage.from(state.action));
+      _dashboardKey.currentState?.refreshDashboard();
+    }
+  }
+
+  Widget _buildDashboard(BuildContext context, ShiftActionsState state) {
+    final bool profileLoading = context.select<ProfileCubit, bool>(
+      (ProfileCubit cubit) => cubit.state.isLoading,
+    );
+
+    return AppLoadingOverlay(
+      loading: state.isLoading || profileLoading,
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        bottomNavigationBar: DashboardBottomNav(
+          selectedIndex: _selectedIndex,
+          onItemSelected: (int index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: <Widget>[
+            _DashboardHomeBody(key: _dashboardKey),
+            const MarketplaceScreen(),
+            ..._placeholderTabs.map(
+              (_PlaceholderTab tab) => _EmptyDashboardTab(tab: tab),
             ),
-          );
-        },
+            const _SettingsTab(),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _EmailVerificationGate {
-  const _EmailVerificationGate._();
+class _DashboardAccessGate {
+  const _DashboardAccessGate._();
 
-  static void openIfRequired(AuthState state) {
+  static bool openForAuthState(AuthState state) {
     final User? user = state.user;
-    if (!state.requiresEmailVerification || user == null) return;
+    if (state.requiresEmailVerification && user != null) {
+      AppRouter.toCloseAllNamed(
+        AppRoutes.otpVerification,
+        arguments: OtpVerificationArgs(
+          email: user.email,
+          successRoute: AppRoutes.home,
+          preventBack: true,
+          autoSendOtp: true,
+        ),
+      );
+      return true;
+    }
 
-    AppRouter.toCloseAllNamed(
-      AppRoutes.otpVerification,
-      arguments: OtpVerificationArgs(
-        email: user.email,
-        successRoute: AppRoutes.home,
-        preventBack: true,
-        autoSendOtp: true,
-      ),
-    );
+    return false;
+  }
+
+  static bool openForProfileState({
+    required AuthState authState,
+    required ProfileState profileState,
+  }) {
+    if (authState.requiresEmailVerification || !authState.isAuthenticated) {
+      return false;
+    }
+
+    final Profile? profile = profileState.profile;
+    if (profileState.isLoading || profile == null) return false;
+
+    if (!profile.isProfileComplete) {
+      AppRouter.toCloseAllNamed(AppRoutes.profileIntro);
+      return true;
+    }
+
+    return false;
   }
 }
 

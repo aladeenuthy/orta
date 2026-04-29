@@ -43,8 +43,8 @@ class ProfileSetupIntroScreen extends StatelessWidget {
               ),
               AppSpacings.vertical(22),
               const _IntroItem(
-                icon: Icons.event_available_outlined,
-                title: 'Availability Setup',
+                icon: Icons.workspace_premium_outlined,
+                title: 'Skills',
               ),
               const Spacer(),
               AppButton(
