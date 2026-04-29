@@ -38,8 +38,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: AppAnimatedColumn(
+                
                     children: <Widget>[
                       const AuthHeader(),
                       Padding(

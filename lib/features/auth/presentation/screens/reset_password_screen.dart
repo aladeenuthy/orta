@@ -34,8 +34,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             child: SingleChildScrollView(
               child: Form(
                 key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: AppAnimatedColumn(
                   children: <Widget>[
                     AuthHeader(
                       showBackButton: true,

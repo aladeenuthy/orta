@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
-                  child: Column(
+                  child: AppAnimatedColumn(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       const AuthHeader(),

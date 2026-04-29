@@ -60,7 +60,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   padding: AppPaddings.horizontal(16),
                   child: Form(
                     key: _formKey,
-                    child: Column(
+                    child: AppAnimatedColumn(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         AppSpacings.vertical(35),
                         _AvatarPicker(

@@ -39,7 +39,7 @@ class OtpVerificationScreen extends StatelessWidget {
               backgroundColor: AppColors.white,
               body: SafeArea(
                 top: false,
-                child: Column(
+                child: AppAnimatedColumn(
                   children: <Widget>[
                     const AuthHeader(),
                     Expanded(

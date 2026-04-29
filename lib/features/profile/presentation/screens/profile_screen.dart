@@ -85,7 +85,8 @@ class _ProfileBody extends StatelessWidget {
         18.0.width,
         34.0.height,
       ),
-      child: Column(
+      child: AppAnimatedColumn(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           _ProfileAvatar(profile: profile),
           AppSpacings.vertical(26),

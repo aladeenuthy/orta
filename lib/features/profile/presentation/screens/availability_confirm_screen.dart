@@ -31,7 +31,8 @@ class AvailabilityConfirmScreen extends StatelessWidget {
             body: SafeArea(
               child: Padding(
                 padding: AppPaddings.horizontal(16),
-                child: Column(
+                child: AppAnimatedColumn(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     AppSpacings.vertical(70),
                     Image.asset(

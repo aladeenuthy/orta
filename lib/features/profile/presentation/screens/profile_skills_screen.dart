@@ -73,8 +73,8 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
                 padding: AppPaddings.horizontal(16),
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: AppAnimatedColumn(
+                   
                     children: <Widget>[
                       AppSpacings.vertical(50),
                       _SkillInputField(

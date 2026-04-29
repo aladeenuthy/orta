@@ -14,6 +14,7 @@ class AvailabilitySettingScreen extends StatefulWidget {
 }
 
 class _AvailabilitySettingScreenState extends State<AvailabilitySettingScreen> {
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AvailabilityCubit, AvailabilityState>(
