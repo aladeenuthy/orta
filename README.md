@@ -249,9 +249,6 @@ Project rules:
 - Animated transitions
 - Unit tests for implemented business/data/service/cubit flows
 
-Not completed:
-
-- Bonus G: Push notification token
 
 ## Marketplace
 
@@ -350,7 +347,6 @@ flutter pub run build_runner build --delete-conflicting-outputs
 Android emulator cannot reach backend:
 
 - Use `API_BASE_URL_ANDROID=http://10.0.2.2:8000/api`.
-- Make sure the backend is listening on `0.0.0.0` or localhost as needed.
 
 Reset-password deep link opens without token on Android:
 
