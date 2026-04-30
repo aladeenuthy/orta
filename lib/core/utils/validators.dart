@@ -51,7 +51,7 @@ class Validator {
     String? value, {
     String message = 'Field cant"t be empty',
   }) {
-    if (value!.isEmpty) {
+    if (value?.isEmpty ?? true) {
       return message;
     } else {
       return null;

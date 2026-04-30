@@ -47,8 +47,8 @@ class _ShiftStatusStyle {
     return switch (status) {
       ShiftStatus.inProgress => _ShiftStatusStyle(
         label: ShiftStatus.inProgress.label,
-        backgroundColor: AppColors.success.withValues(alpha: .12),
-        textColor: AppColors.success,
+        backgroundColor: AppColors.ongoingChipBg,
+        textColor: AppColors.primary,
       ),
       ShiftStatus.completed => _ShiftStatusStyle(
         label: ShiftStatus.completed.label,

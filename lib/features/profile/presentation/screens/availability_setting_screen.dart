@@ -14,7 +14,6 @@ class AvailabilitySettingScreen extends StatefulWidget {
 }
 
 class _AvailabilitySettingScreenState extends State<AvailabilitySettingScreen> {
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AvailabilityCubit, AvailabilityState>(
@@ -62,6 +61,7 @@ class _AvailabilitySettingScreenState extends State<AvailabilitySettingScreen> {
                         },
                       ),
                     ),
+                    if (!widget.args.editMode) AppSpacings.vertical(10),
                     if (!widget.args.editMode)
                       const StepDots(activeIndex: 2, count: 3),
                     AppSpacings.vertical(24),

@@ -13,18 +13,16 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final TextEditingController _skillController;
   late final FocusNode _skillFocusNode;
+  late final ProfileOnboardingCubit _cubit;
 
   @override
   void initState() {
     super.initState();
+    _cubit = context.read<ProfileOnboardingCubit>();
     if (widget.args.editMode && widget.args.profile != null) {
-      context.read<ProfileOnboardingCubit>().initializeForEdit(
-        widget.args.profile!,
-      );
+      _cubit.initializeForEdit(widget.args.profile!);
     }
-    final ProfileOnboardingState state = context
-        .read<ProfileOnboardingCubit>()
-        .state;
+    final ProfileOnboardingState state = _cubit.state;
     _skillController = TextEditingController(text: state.skillInput);
     _skillFocusNode = FocusNode();
   }
@@ -33,6 +31,9 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
   void dispose() {
     _skillController.dispose();
     _skillFocusNode.dispose();
+    if (widget.args.editMode) {
+      _cubit.reset();
+    }
     super.dispose();
   }
 
@@ -74,7 +75,6 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
                 child: Form(
                   key: _formKey,
                   child: AppAnimatedColumn(
-                   
                     children: <Widget>[
                       AppSpacings.vertical(50),
                       _SkillInputField(

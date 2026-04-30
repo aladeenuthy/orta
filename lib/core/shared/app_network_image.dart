@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:orta/core/ui/num.dart';
+
+import '../ui/num.dart';
 
 class AppNetworkImage extends StatelessWidget {
   const AppNetworkImage({

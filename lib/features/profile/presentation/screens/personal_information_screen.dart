@@ -18,17 +18,22 @@ class PersonalInformationScreen extends StatefulWidget {
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AppImagePicker _imagePicker = AppImagePicker();
-  late final ProfileOnboardingCubit cubit = context
-      .watch<ProfileOnboardingCubit>();
+  late final ProfileOnboardingCubit cubit;
 
   @override
   void initState() {
     super.initState();
+    cubit = context.read<ProfileOnboardingCubit>();
     if (widget.args.editMode && widget.args.profile != null) {
-      context.read<ProfileOnboardingCubit>().initializeForEdit(
+      cubit.initializeForEdit(
         widget.args.profile!,
       );
     }
+  }
+ @override
+  void dispose() {
+    cubit.reset();
+    super.dispose();
   }
 
   @override
@@ -45,6 +50,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
             AppRouter.back();
             return;
           }
+
           AppRouter.toNamed(AppRoutes.profileSkills);
         }
       },
@@ -156,7 +162,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                           items: ProfileDefaults.roles,
                           onChanged: cubit.jobRoleChanged,
                         ),
-                        if (widget.args.editMode) AppSpacings.vertical(26),
+                        if (!widget.args.editMode) AppSpacings.vertical(26),
                         if (!widget.args.editMode)
                           const StepDots(activeIndex: 0, count: 2),
                         AppSpacings.vertical(24),
@@ -191,6 +197,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   void _submit() {
     final FormState? form = _formKey.currentState;
     if (form == null || !form.validate()) return;
+
     final ProfileOnboardingCubit cubit = context.read<ProfileOnboardingCubit>();
     widget.args.editMode
         ? cubit.savePersonalInformationEdit()

@@ -19,6 +19,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       listener: (BuildContext context, ResetPasswordState state) {
         if (state.isError && state.errorMessage != null) {
           AppSnacks.error(context, state.errorMessage!);
+          _cubit.resetErrorMessage();
         }
 
         if (state.isLoaded) {

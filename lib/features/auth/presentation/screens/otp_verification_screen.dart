@@ -38,7 +38,6 @@ class OtpVerificationScreen extends StatelessWidget {
             child: Scaffold(
               backgroundColor: AppColors.white,
               body: SingleChildScrollView(
-              
                 child: Padding(
                   padding: AppPaddings.horizontal(16),
                   child: AppAnimatedColumn(
@@ -85,7 +84,7 @@ class OtpVerificationScreen extends StatelessWidget {
                               .resendOtp(args.email),
                         ),
                       ),
-                      const Spacer(),
+                      AppSpacings.vertical(110),
                       AppButton(
                         color: AppColors.primary,
                         enabled: state.canSubmit,

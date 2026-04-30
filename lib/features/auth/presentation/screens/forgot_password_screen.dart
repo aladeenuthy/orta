@@ -17,6 +17,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       listener: (BuildContext context, ForgotPasswordState state) {
         if (state.isError && state.errorMessage != null) {
           AppSnacks.error(context, state.errorMessage!);
+          _cubit.resetErrorMessage();
         }
 
         if (state.isLoaded) {

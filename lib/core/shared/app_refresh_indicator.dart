@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:orta/core/resources/resources.dart';
 
+import '../resources/resources.dart';
 import 'app_spinner.dart';
 
 class AppRefreshIndicator extends StatelessWidget {

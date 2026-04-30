@@ -38,7 +38,6 @@ class _HomeViewState extends State<_HomeView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
       _refreshAccessState();
     });
   }
@@ -48,7 +47,7 @@ class _HomeViewState extends State<_HomeView> {
     if (!mounted) return;
 
     final AuthState authState = context.read<AuthCubit>().state;
-    if (_DashboardAccessGate.openForAuthState(authState)) return;
+    if (_DashboardAccessGate.openForOtpState(authState)) return;
 
     await _loadProfileIfNeeded(authState);
   }
@@ -77,9 +76,7 @@ class _HomeViewState extends State<_HomeView> {
               return;
             }
 
-            final bool opened = _DashboardAccessGate.openForAuthState(
-              authState,
-            );
+            final bool opened = _DashboardAccessGate.openForOtpState(authState);
             if (!opened && authState.isAuthenticated) {
               _loadProfileIfNeeded(authState);
             }
@@ -152,7 +149,7 @@ class _HomeViewState extends State<_HomeView> {
 class _DashboardAccessGate {
   const _DashboardAccessGate._();
 
-  static bool openForAuthState(AuthState state) {
+  static bool openForOtpState(AuthState state) {
     final User? user = state.user;
     if (state.requiresEmailVerification && user != null) {
       AppRouter.toCloseAllNamed(

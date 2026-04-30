@@ -14,7 +14,7 @@ class AppRetryWidget extends StatelessWidget {
     return Column(
       children: [
         AppSpacings.vertical(70),
-        Text(errorMessage, style: context.text.labelMedium),
+        Center(child: Text(errorMessage, style: context.text.labelMedium)),
         AppSpacings.verticalSpaceMedium(),
         AppButton(
           label: 'Retry',

@@ -20,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         if (state.isLoaded) {
-          AppSnacks.success(context, 'Login successful');
           AppRouter.toCloseAllNamed(AppRoutes.home);
         }
       },

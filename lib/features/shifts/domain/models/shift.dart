@@ -54,7 +54,7 @@ class Shift with _$Shift {
 
 enum ShiftStatus {
   scheduled('Scheduled', 'Not Started'),
-  inProgress('In Progress', 'In Progress'),
+  inProgress('In Progress', 'Ongoing'),
   completed('Completed', 'Completed'),
   cancelled('Cancelled', 'Cancelled');
 

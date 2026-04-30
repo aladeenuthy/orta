@@ -75,10 +75,9 @@ class ProfileOnboardingCubit extends Cubit<ProfileOnboardingState> {
           jobRole: state.jobRole,
         );
 
-    result.fold(
-      (AppError error) => emit(state.toError(error.message)),
-      (_) => emit(state.toPersonalCompleted()),
-    );
+    result.fold((AppError error) => emit(state.toError(error.message)), (_) {
+      emit(state.toPersonalCompleted());
+    });
   }
 
   Future<void> savePersonalInformationEdit() async {
@@ -146,5 +145,8 @@ class ProfileOnboardingCubit extends Cubit<ProfileOnboardingState> {
     final List<String> parts = name.trim().split(RegExp(r'\s+'));
     if (parts.length < 2) return '';
     return parts.skip(1).join(' ');
+  }
+  void reset (){
+    emit(const ProfileOnboardingState());
   }
 }

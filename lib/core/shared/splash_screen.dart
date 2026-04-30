@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void splashTimer() {
-    const Duration duration = Duration(milliseconds: 2200);
+    const Duration duration = Duration(milliseconds: 2000);
     timer = Timer(duration, autoNavigate);
   }
 
@@ -64,6 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
           child: BounceInAnimation(
             key: _logoKey,
             duration: const Duration(milliseconds: 1200),
+            curve: Curves.easeOutBack,
             child: const OrtaBrand(
               iconSize: 44,
               fontSize: 22,

@@ -8,8 +8,8 @@ class DeepLinkHandler {
   DeepLinkHandler._();
 
   static final DeepLinkHandler instance = DeepLinkHandler._();
-  static const Duration _splashWait = Duration(milliseconds: 2200);
-  static const Duration _authReadyTimeout = Duration(seconds: 5);
+  static const Duration _splashWait = Duration(milliseconds: 2000);
+  static const Duration _authReadyTimeout = Duration(seconds: 4);
 
   late final AppLinks _appLinks;
   StreamSubscription<Uri>? _subscription;
@@ -109,7 +109,7 @@ class DeepLinkHandler {
           .firstWhere((AuthState state) => !state.isInitial && !state.isLoading)
           .timeout(_authReadyTimeout);
     } on TimeoutException catch (error) {
-      log(
+      log( 
         'Timed out waiting for auth initialization',
         error: error,
         name: 'DeepLinkHandler',
