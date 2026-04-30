@@ -68,6 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       AppSpacings.vertical(10),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Expanded(
                             child: AppTextField(

@@ -25,12 +25,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     super.initState();
     cubit = context.read<ProfileOnboardingCubit>();
     if (widget.args.editMode && widget.args.profile != null) {
-      cubit.initializeForEdit(
-        widget.args.profile!,
-      );
+      cubit.initializeForEdit(widget.args.profile!);
     }
   }
- @override
+
+  @override
   void dispose() {
     cubit.reset();
     super.dispose();
@@ -94,6 +93,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                               ),
                               AppSpacings.vertical(10),
                               Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Expanded(
                                     child: AppTextField(
