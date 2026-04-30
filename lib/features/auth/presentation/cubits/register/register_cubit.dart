@@ -37,15 +37,20 @@ class RegisterCubit extends Cubit<RegisterState> {
 
     emit(state.toLoading());
 
-    final Either<AppError, Unit> result = await _authService.register(
+    final Either<AppError, AuthSession> result = await _authService.register(
       name: state.fullName,
       email: state.email.trim(),
       password: state.password,
     );
 
-    result.fold(
-      (AppError error) => emit(state.toError(error.message)),
-      (_) => emit(state.toLoaded()),
+    await result.fold(
+      (AppError error) async => emit(state.toError(error.message)),
+      (_) async {
+        try {
+          await _authService.sendOtp(email: state.email.trim());
+        } catch (_) {}
+        emit(state.toLoaded());
+      },
     );
   }
 

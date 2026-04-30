@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import app_links
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -8,9 +9,15 @@ import UIKit
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
+
+    if let url = AppLinks.shared.getLink(launchOptions: launchOptions) {
+      AppLinks.shared.handleLink(url: url)
+    }
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-   // Handle deep link when app is in background
+
+  // Handle deep link when app is in background.
   override func application(
     _ app: UIApplication,
     open url: URL,

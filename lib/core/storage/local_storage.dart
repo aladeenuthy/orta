@@ -3,38 +3,25 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LocalStorage {
-  LocalStorage({
-    required FlutterSecureStorage storage,
-  }) : _storage = storage;
+  LocalStorage({required FlutterSecureStorage storage}) : _storage = storage;
 
   final FlutterSecureStorage _storage;
 
   Future<void> init() async {}
 
-  Future<void> setString({
-    required String key,
-    required String value,
-  }) {
+  Future<void> setString({required String key, required String value}) {
     return _storage.write(key: key, value: value);
   }
 
-  Future<String> getString({
-    required String key,
-  }) async {
+  Future<String> getString({required String key}) async {
     return await _storage.read(key: key) ?? '';
   }
 
-  Future<void> setBool({
-    required String key,
-    required bool value,
-  }) {
+  Future<void> setBool({required String key, required bool value}) {
     return _storage.write(key: key, value: value.toString());
   }
 
-  Future<bool> getBool({
-    required String key,
-    bool defaultValue = false,
-  }) async {
+  Future<bool> getBool({required String key, bool defaultValue = false}) async {
     final value = await _storage.read(key: key);
 
     if (value == null) return defaultValue;
@@ -42,16 +29,11 @@ class LocalStorage {
     return value.toLowerCase() == 'true';
   }
 
-  Future<void> setInt({
-    required String key,
-    required int value,
-  }) {
+  Future<void> setInt({required String key, required int value}) {
     return _storage.write(key: key, value: value.toString());
   }
 
-  Future<int?> getInt({
-    required String key,
-  }) async {
+  Future<int?> getInt({required String key}) async {
     final value = await _storage.read(key: key);
 
     if (value == null || value.isEmpty) return null;
@@ -63,15 +45,10 @@ class LocalStorage {
     required String key,
     required Map<String, dynamic> value,
   }) {
-    return _storage.write(
-      key: key,
-      value: jsonEncode(value),
-    );
+    return _storage.write(key: key, value: jsonEncode(value));
   }
 
-  Future<Map<String, dynamic>> getMap({
-    required String key,
-  }) async {
+  Future<Map<String, dynamic>> getMap({required String key}) async {
     final value = await _storage.read(key: key);
 
     if (value == null || value.isEmpty) return <String, dynamic>{};
@@ -87,15 +64,10 @@ class LocalStorage {
     required String key,
     required List<String> value,
   }) {
-    return _storage.write(
-      key: key,
-      value: jsonEncode(value),
-    );
+    return _storage.write(key: key, value: jsonEncode(value));
   }
 
-  Future<List<String>> getStringList({
-    required String key,
-  }) async {
+  Future<List<String>> getStringList({required String key}) async {
     final value = await _storage.read(key: key);
 
     if (value == null || value.isEmpty) return <String>[];

@@ -4,7 +4,7 @@ class AppSnacks {
   const AppSnacks._();
 
   static void success(BuildContext context, String message) {
-    _show(context, message, backgroundColor: AppColors.primary);
+    _show(context, message, backgroundColor: AppColors.success);
   }
 
   static void error(BuildContext context, String message) {

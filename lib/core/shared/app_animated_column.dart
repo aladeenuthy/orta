@@ -1,4 +1,3 @@
-
 import "dart:async";
 
 import "package:flutter/material.dart";
@@ -29,19 +28,20 @@ class AppAnimatedColumn extends StatefulWidget {
   State<AppAnimatedColumn> createState() => _AppAnimatedColumnState();
 }
 
-class _AppAnimatedColumnState extends State<AppAnimatedColumn> with TickerProviderStateMixin {
+class _AppAnimatedColumnState extends State<AppAnimatedColumn>
+    with TickerProviderStateMixin {
   AnimationController? _animationController;
   Timer? delay;
   @override
   void initState() {
     super.initState();
-    _animationController = widget._animationController ??
+    _animationController =
+        widget._animationController ??
         AnimationController(
           vsync: this,
-          duration: widget.duration ??
-              Duration(
-                milliseconds: widget.children.length * 150,
-              ),
+          duration:
+              widget.duration ??
+              Duration(milliseconds: widget.children.length * 150),
         );
     if (widget._animationController == null) {
       delay = Timer(widget.delay ?? Duration.zero, () {
@@ -67,20 +67,17 @@ class _AppAnimatedColumnState extends State<AppAnimatedColumn> with TickerProvid
       builder: (BuildContext context, Widget? child) {
         return Column(
           mainAxisSize: widget.mainAxisSize ?? MainAxisSize.max,
-          crossAxisAlignment: widget.crossAxisAlignment ?? CrossAxisAlignment.start,
-          mainAxisAlignment: widget.mainAxisAlignment ?? MainAxisAlignment.start,
+          crossAxisAlignment:
+              widget.crossAxisAlignment ?? CrossAxisAlignment.start,
+          mainAxisAlignment:
+              widget.mainAxisAlignment ?? MainAxisAlignment.start,
           children: <Widget>[
             ...List<Widget>.generate(widget.children.length, (int index) {
               if (widget.children[index] is Spacer) {
-                return Spacer(
-                  flex: (widget.children[index] as Spacer).flex,
-                );
+                return Spacer(flex: (widget.children[index] as Spacer).flex);
               }
               return FadeTransition(
-                opacity: Tween<double>(
-                  begin: 0,
-                  end: 1,
-                ).animate(
+                opacity: Tween<double>(begin: 0, end: 1).animate(
                   CurvedAnimation(
                     curve: Interval(
                       1 / widget.children.length * index * 0.5,
@@ -91,23 +88,29 @@ class _AppAnimatedColumnState extends State<AppAnimatedColumn> with TickerProvid
                   ),
                 ),
                 child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: widget.direction == Axis.vertical ? const Offset(0.0, 4) : const Offset(.9, 0.0),
-                    end: Offset.zero,
-                  ).animate(
-                    CurvedAnimation(
-                      curve: Interval(
-                        1 / widget.children.length * (index + index == 0 ? 2 : 1) * 0.25,
-                        1 / widget.children.length * (index + 1),
-                        curve: Curves.linearToEaseOut,
+                  position:
+                      Tween<Offset>(
+                        begin: widget.direction == Axis.vertical
+                            ? const Offset(0.0, 4)
+                            : const Offset(.9, 0.0),
+                        end: Offset.zero,
+                      ).animate(
+                        CurvedAnimation(
+                          curve: Interval(
+                            1 /
+                                widget.children.length *
+                                (index + index == 0 ? 2 : 1) *
+                                0.25,
+                            1 / widget.children.length * (index + 1),
+                            curve: Curves.linearToEaseOut,
+                          ),
+                          parent: _animationController!,
+                        ),
                       ),
-                      parent: _animationController!,
-                    ),
-                  ),
                   child: widget.children[index],
                 ),
               );
-            })
+            }),
           ],
         );
       },
@@ -141,21 +144,26 @@ class AppAnimatedRow extends StatefulWidget {
   State<AppAnimatedRow> createState() => _AppAnimatedRowState();
 }
 
-class _AppAnimatedRowState extends State<AppAnimatedRow> with TickerProviderStateMixin {
+class _AppAnimatedRowState extends State<AppAnimatedRow>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   @override
   void initState() {
     super.initState();
-    _animationController = widget._animationController ??
+    _animationController =
+        widget._animationController ??
         AnimationController(
           vsync: this,
-          duration: widget.duration ?? Duration(milliseconds: widget.children.length * 200),
+          duration:
+              widget.duration ??
+              Duration(milliseconds: widget.children.length * 200),
         );
 
     if (widget._animationController == null) {
       if (mounted) {
-        Future<void>.delayed(widget.delay ?? const Duration(milliseconds: 100))
-            .then((_) => _animationController.forward());
+        Future<void>.delayed(
+          widget.delay ?? const Duration(milliseconds: 100),
+        ).then((_) => _animationController.forward());
       }
     }
   }
@@ -163,8 +171,9 @@ class _AppAnimatedRowState extends State<AppAnimatedRow> with TickerProviderStat
   @override
   void dispose() {
     if (widget._animationController == null) {
-      Future<void>.delayed(widget.delay ?? const Duration(milliseconds: 200))
-          .then((_) => _animationController.forward());
+      Future<void>.delayed(
+        widget.delay ?? const Duration(milliseconds: 200),
+      ).then((_) => _animationController.forward());
     }
     super.dispose();
   }
@@ -176,16 +185,15 @@ class _AppAnimatedRowState extends State<AppAnimatedRow> with TickerProviderStat
       builder: (BuildContext context, Widget? child) {
         return Row(
           mainAxisSize: widget.mainAxisSize ?? MainAxisSize.max,
-          crossAxisAlignment: widget.crossAxisAlignment ?? CrossAxisAlignment.start,
-          mainAxisAlignment: widget.mainAxisAlignment ?? MainAxisAlignment.start,
+          crossAxisAlignment:
+              widget.crossAxisAlignment ?? CrossAxisAlignment.start,
+          mainAxisAlignment:
+              widget.mainAxisAlignment ?? MainAxisAlignment.start,
           children: <Widget>[
             ...List<Widget>.generate(widget.children.length, (int index) {
               return FadeTransition(
                 key: ValueKey<int>(index),
-                opacity: Tween<double>(
-                  begin: 0,
-                  end: 1,
-                ).animate(
+                opacity: Tween<double>(begin: 0, end: 1).animate(
                   CurvedAnimation(
                     curve: Interval(
                       1 / widget.children.length * index * 0.1,
@@ -196,23 +204,26 @@ class _AppAnimatedRowState extends State<AppAnimatedRow> with TickerProviderStat
                   ),
                 ),
                 child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: widget.direction == Axis.vertical ? const Offset(0.0, 1.0) : const Offset(1.0, 0.0),
-                    end: Offset.zero,
-                  ).animate(
-                    CurvedAnimation(
-                      curve: Interval(
-                        1 / widget.children.length * index * 0.1,
-                        1 / widget.children.length * index,
-                        curve: Curves.ease,
+                  position:
+                      Tween<Offset>(
+                        begin: widget.direction == Axis.vertical
+                            ? const Offset(0.0, 1.0)
+                            : const Offset(1.0, 0.0),
+                        end: Offset.zero,
+                      ).animate(
+                        CurvedAnimation(
+                          curve: Interval(
+                            1 / widget.children.length * index * 0.1,
+                            1 / widget.children.length * index,
+                            curve: Curves.ease,
+                          ),
+                          parent: _animationController,
+                        ),
                       ),
-                      parent: _animationController,
-                    ),
-                  ),
                   child: widget.children[index],
                 ),
               );
-            })
+            }),
           ],
         );
       },

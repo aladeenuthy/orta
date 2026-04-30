@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
+
 class FontConstants {
+  static const String poppins = "Poppins";
   static const String openSans = "OpenSans";
   static const String manrope = "Manrope";
   static const String spaceMono = "SpaceMono";

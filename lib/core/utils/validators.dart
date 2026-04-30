@@ -1,4 +1,3 @@
-
 class Validator {
   static String? password(String? value, {String message = "Enter password"}) {
     if (value == null || value.isEmpty) {
@@ -52,7 +51,7 @@ class Validator {
     String? value, {
     String message = 'Field cant"t be empty',
   }) {
-    if (value!.isEmpty) {
+    if (value?.isEmpty ?? true) {
       return message;
     } else {
       return null;
@@ -131,16 +130,18 @@ class Validator {
   }
 
   static String? validatePhoneNumber(String? value) {
-    if (value!.isEmpty) {
+    if (value == null || value.isEmpty) {
       return "Field cannot be empty";
-    } else if (value.length > 9 &&
-        RegExp(
-          r"^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$",
-        ).hasMatch(value)) {
-      return null;
-    } else {
+    }
+
+    final cleaned = value.replaceAll(RegExp(r'[\s\-\(\)]'), '');
+
+    // UK formats: +447XXXXXXXXX, 07XXXXXXXXX, 447XXXXXXXXX
+    if (!RegExp(r'^(\+44|44|0)7\d{9}$').hasMatch(cleaned)) {
       return "Enter a valid phone number";
     }
+
+    return null;
   }
 
   static String? validateNIN(String? value) {

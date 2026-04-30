@@ -14,13 +14,12 @@ class AppRetryWidget extends StatelessWidget {
     return Column(
       children: [
         AppSpacings.vertical(70),
-        Text(
-          errorMessage,
-          style: context.text.labelMedium,
-        ),
+        Center(child: Text(errorMessage, style: context.text.labelMedium)),
         AppSpacings.verticalSpaceMedium(),
         AppButton(
           label: 'Retry',
+          textColor: AppColors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20.0.radius)),
           onPressed: () {
             onRetry();
           },

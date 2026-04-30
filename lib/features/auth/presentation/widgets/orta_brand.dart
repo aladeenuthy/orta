@@ -6,7 +6,7 @@ class OrtaBrand extends StatelessWidget {
     this.iconSize = 32,
     this.fontSize = 18,
     this.centered = false,
-    this.text  = 'Orta Shift Manager'
+    this.text = 'Orta Shift Manager',
   });
 
   final double iconSize;

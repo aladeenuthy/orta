@@ -1,0 +1,37 @@
+import 'package:dartz/dartz.dart';
+import 'package:orta/features/features.dart';
+
+abstract class ShiftsRepository {
+  Future<Either<AppError, Unit>> cancelShift(String id);
+
+  Future<Either<AppError, Unit>> clockIn(String id);
+
+  Future<Either<AppError, Unit>> clockOut(String id);
+
+  Future<Either<AppError, Shift>> claimShift(String id);
+
+  Future<Either<AppError, PaginatedResponse<Shift>>> getMarketplaceShifts({
+    required int page,
+    required int limit,
+    String? role,
+    DateTime? date,
+    String? typeOfShift,
+    ShiftSortOrder? sortOrder,
+  });
+
+  Future<Either<AppError, PaginatedResponse<Shift>>> getMyShifts({
+    required int page,
+    required int limit,
+    ShiftStatusFilter? status,
+    ShiftSortBy? sortBy,
+    ShiftSortOrder? sortOrder,
+  });
+
+  Future<Either<AppError, Shift>> getShiftDetail(String id);
+
+  Future<Either<AppError, LocationVerificationResult>> verifyLocation({
+    required String id,
+    required double latitude,
+    required double longitude,
+  });
+}

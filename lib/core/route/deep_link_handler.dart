@@ -8,8 +8,7 @@ class DeepLinkHandler {
   DeepLinkHandler._();
 
   static final DeepLinkHandler instance = DeepLinkHandler._();
-  static const Duration _splashWait = Duration(milliseconds: 2200);
-  static const Duration _authReadyTimeout = Duration(seconds: 5);
+  static const Duration _navigatorReadyTimeout = Duration(seconds: 5);
 
   late final AppLinks _appLinks;
   StreamSubscription<Uri>? _subscription;
@@ -23,6 +22,7 @@ class DeepLinkHandler {
 
     _initialized = true;
     _appLinks = AppLinks();
+    log('Deep link handler initialized', name: 'DeepLinkHandler');
     _handleInitialLink();
     _subscription = _appLinks.uriLinkStream.listen(
       _handleUri,
@@ -57,15 +57,12 @@ class DeepLinkHandler {
     _lastHandledUri = uri;
     log('Deep link received: $uri', name: 'DeepLinkHandler');
 
-    if (uri.scheme != 'orta' || uri.host != 'app') {
-      log(
-        'Unhandled deep link host: ${uri.scheme}://${uri.host}',
-        name: 'DeepLinkHandler',
-      );
+    if (uri.scheme != 'orta') {
+      log('Unhandled deep link scheme: ${uri.scheme}', name: 'DeepLinkHandler');
       return;
     }
 
-    switch (uri.path) {
+    switch (_routePath(uri)) {
       case AppRoutes.resetPassword:
         _openResetPassword(uri, source: source);
         return;
@@ -86,9 +83,13 @@ class DeepLinkHandler {
       );
       return;
     }
+    log(
+      " Opening reset password screen with args: uid=${args.userId}, token=${args.resetToken}",
+      name: 'DeepLinkHandler',
+    );
 
     if (source == _DeepLinkSource.initial) {
-      await _waitForInitialRouteReadiness();
+      await _waitForNavigatorReadiness();
       AppRouter.toCloseAllNamed(AppRoutes.resetPassword, arguments: args);
       return;
     }
@@ -96,24 +97,28 @@ class DeepLinkHandler {
     AppRouter.toNamed(AppRoutes.resetPassword, arguments: args);
   }
 
-  Future<void> _waitForInitialRouteReadiness() async {
-    await Future<void>.delayed(_splashWait);
-
-    final AuthCubit authCubit = locator<AuthCubit>();
-    if (!authCubit.state.isInitial && !authCubit.state.isLoading) {
-      return;
+  String _routePath(Uri uri) {
+    if (uri.host == 'app') {
+      return uri.path;
     }
 
-    try {
-      await authCubit.stream
-          .firstWhere((AuthState state) => !state.isInitial && !state.isLoading)
-          .timeout(_authReadyTimeout);
-    } on TimeoutException catch (error) {
-      log(
-        'Timed out waiting for auth initialization',
-        error: error,
-        name: 'DeepLinkHandler',
-      );
+    if (uri.host == AppRoutes.resetPassword.replaceFirst('/', '')) {
+      return AppRoutes.resetPassword;
+    }
+
+    return uri.path;
+  }
+
+  Future<void> _waitForNavigatorReadiness() async {
+    final Stopwatch stopwatch = Stopwatch()..start();
+
+    while (AppRouter.navigatorKey.currentState == null &&
+        stopwatch.elapsed < _navigatorReadyTimeout) {
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
+
+    if (AppRouter.navigatorKey.currentState == null) {
+      log('Timed out waiting for navigator readiness', name: 'DeepLinkHandler');
     }
   }
 

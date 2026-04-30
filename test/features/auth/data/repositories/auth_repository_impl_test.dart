@@ -59,6 +59,38 @@ void main() {
     });
   });
 
+  group('AuthRepositoryImpl.cacheSession', () {
+    test('delegates session caching to local data source', () async {
+      when(
+        () => localDataSource.cacheSession(session),
+      ).thenAnswer((_) async {});
+
+      final Either<AppError, AuthSession> result = await repository
+          .cacheSession(session);
+
+      expect(result, equals(const Right<AppError, AuthSession>(session)));
+      verify(() => localDataSource.cacheSession(session)).called(1);
+    });
+
+    test('returns AppError when session caching fails', () async {
+      when(
+        () => localDataSource.cacheSession(session),
+      ).thenThrow(Exception('Cache failed'));
+
+      final Either<AppError, AuthSession> result = await repository
+          .cacheSession(session);
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, AuthSession>(
+            AppError('Something went wront! Please try again later.'),
+          ),
+        ),
+      );
+    });
+  });
+
   group('AuthRepositoryImpl.getCachedSession', () {
     test('returns cached session from local data source', () async {
       when(
@@ -197,6 +229,40 @@ void main() {
     });
   });
 
+  group('AuthRepositoryImpl.sendOtp', () {
+    test('delegates to remote data source', () async {
+      when(
+        () => remoteDataSource.sendOtp(email: 'john@example.com'),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await repository.sendOtp(
+        email: 'john@example.com',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(
+        () => remoteDataSource.sendOtp(email: 'john@example.com'),
+      ).called(1);
+    });
+  });
+
+  group('AuthRepositoryImpl.resendOtp', () {
+    test('delegates to remote data source', () async {
+      when(
+        () => remoteDataSource.resendOtp(email: 'john@example.com'),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await repository.resendOtp(
+        email: 'john@example.com',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(
+        () => remoteDataSource.resendOtp(email: 'john@example.com'),
+      ).called(1);
+    });
+  });
+
   group('AuthRepositoryImpl.login', () {
     test('delegates to remote data source and caches session', () async {
       when(
@@ -277,30 +343,37 @@ void main() {
   });
 
   group('AuthRepositoryImpl.register', () {
-    test('delegates to remote data source', () async {
-      when(
-        () => remoteDataSource.register(
+    test(
+      'delegates to remote data source and caches returned session',
+      () async {
+        when(
+          () => remoteDataSource.register(
+            name: 'Test Doe',
+            email: 'Test@example.com',
+            password: 'Marine345@',
+          ),
+        ).thenAnswer((_) async => const Right<AppError, AuthSession>(session));
+        when(
+          () => localDataSource.cacheSession(session),
+        ).thenAnswer((_) async {});
+
+        final Either<AppError, AuthSession> result = await repository.register(
           name: 'Test Doe',
           email: 'Test@example.com',
           password: 'Marine345@',
-        ),
-      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+        );
 
-      final Either<AppError, Unit> result = await repository.register(
-        name: 'Test Doe',
-        email: 'Test@example.com',
-        password: 'Marine345@',
-      );
-
-      expect(result, equals(const Right<AppError, Unit>(unit)));
-      verify(
-        () => remoteDataSource.register(
-          name: 'Test Doe',
-          email: 'Test@example.com',
-          password: 'Marine345@',
-        ),
-      ).called(1);
-    });
+        expect(result, equals(const Right<AppError, AuthSession>(session)));
+        verify(
+          () => remoteDataSource.register(
+            name: 'Test Doe',
+            email: 'Test@example.com',
+            password: 'Marine345@',
+          ),
+        ).called(1);
+        verify(() => localDataSource.cacheSession(session)).called(1);
+      },
+    );
 
     test('returns remote data source errors', () async {
       when(
@@ -310,10 +383,11 @@ void main() {
           password: 'Marine345@',
         ),
       ).thenAnswer(
-        (_) async => const Left<AppError, Unit>(AppError('Email exists')),
+        (_) async =>
+            const Left<AppError, AuthSession>(AppError('Email exists')),
       );
 
-      final Either<AppError, Unit> result = await repository.register(
+      final Either<AppError, AuthSession> result = await repository.register(
         name: 'Test Doe',
         email: 'Test@example.com',
         password: 'Marine345@',
@@ -321,8 +395,76 @@ void main() {
 
       expect(
         result,
-        equals(const Left<AppError, Unit>(AppError('Email exists'))),
+        equals(const Left<AppError, AuthSession>(AppError('Email exists'))),
       );
+    });
+  });
+
+  group('AuthRepositoryImpl.verifyOtp', () {
+    test(
+      'delegates to remote data source and caches returned session',
+      () async {
+        const AuthSession verifiedSession = AuthSession(
+          token: 'verified-token',
+          user: User(
+            id: '69edb6a277d24da71a004b3e',
+            name: 'Test Doe',
+            email: 'Test@example.com',
+            role: 'worker',
+            isEmailVerified: true,
+          ),
+        );
+        when(
+          () => remoteDataSource.verifyOtp(
+            email: 'Test@example.com',
+            otp: '123456',
+          ),
+        ).thenAnswer(
+          (_) async => const Right<AppError, AuthSession>(verifiedSession),
+        );
+        when(
+          () => localDataSource.cacheSession(verifiedSession),
+        ).thenAnswer((_) async {});
+
+        final Either<AppError, AuthSession> result = await repository.verifyOtp(
+          email: 'Test@example.com',
+          otp: '123456',
+        );
+
+        expect(
+          result,
+          equals(const Right<AppError, AuthSession>(verifiedSession)),
+        );
+        verify(
+          () => remoteDataSource.verifyOtp(
+            email: 'Test@example.com',
+            otp: '123456',
+          ),
+        ).called(1);
+        verify(() => localDataSource.cacheSession(verifiedSession)).called(1);
+      },
+    );
+
+    test('returns remote data source errors without caching', () async {
+      when(
+        () => remoteDataSource.verifyOtp(
+          email: 'Test@example.com',
+          otp: '123456',
+        ),
+      ).thenAnswer(
+        (_) async => const Left<AppError, AuthSession>(AppError('Invalid OTP')),
+      );
+
+      final Either<AppError, AuthSession> result = await repository.verifyOtp(
+        email: 'Test@example.com',
+        otp: '123456',
+      );
+
+      expect(
+        result,
+        equals(const Left<AppError, AuthSession>(AppError('Invalid OTP'))),
+      );
+      verifyNever(() => localDataSource.cacheSession(session));
     });
   });
 

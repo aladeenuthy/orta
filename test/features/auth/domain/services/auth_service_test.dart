@@ -94,6 +94,85 @@ void main() {
     });
   });
 
+  group('AuthService.updateCachedUserFromProfile', () {
+    test(
+      'updates cached session user from profile and publishes event',
+      () async {
+        const Profile profile = Profile(
+          id: 'profile-id',
+          name: 'Updated Doe',
+          email: 'updated@example.com',
+          phone: '+447911123456',
+          city: 'London',
+          jobRole: 'Nurse',
+          skills: <String>['First Aid'],
+          isProfileComplete: true,
+        );
+        const AuthSession updatedSession = AuthSession(
+          token: 'token',
+          user: User(
+            id: '69edb6a277d24da71a004b3e',
+            name: 'Updated Doe',
+            email: 'updated@example.com',
+            role: 'worker',
+            phone: '+447911123456',
+            city: 'London',
+            jobRole: 'Nurse',
+            skills: <String>['First Aid'],
+            isProfileComplete: true,
+          ),
+        );
+        when(
+          () => repository.getCachedSession(),
+        ).thenAnswer((_) async => const Right<AppError, AuthSession?>(session));
+        when(() => repository.cacheSession(updatedSession)).thenAnswer(
+          (_) async => const Right<AppError, AuthSession>(updatedSession),
+        );
+        final Future<void> eventExpectation = expectLater(
+          service.eventStream,
+          emits(
+            isA<AuthSessionUpdated>().having(
+              (AuthSessionUpdated event) => event.session,
+              'session',
+              updatedSession,
+            ),
+          ),
+        );
+
+        final Either<AppError, AuthSession> result = await service
+            .updateCachedUserFromProfile(profile);
+
+        expect(
+          result,
+          equals(const Right<AppError, AuthSession>(updatedSession)),
+        );
+        verify(() => repository.getCachedSession()).called(1);
+        verify(() => repository.cacheSession(updatedSession)).called(1);
+        await eventExpectation;
+      },
+    );
+
+    test('returns AppError when no cached session exists', () async {
+      when(
+        () => repository.getCachedSession(),
+      ).thenAnswer((_) async => const Right<AppError, AuthSession?>(null));
+
+      final Either<AppError, AuthSession> result = await service
+          .updateCachedUserFromProfile(
+            const Profile(id: 'id', name: 'Name', email: 'email@example.com'),
+          );
+
+      expect(
+        result,
+        equals(
+          const Left<AppError, AuthSession>(
+            AppError('Please login again to continue'),
+          ),
+        ),
+      );
+    });
+  });
+
   group('AuthService.getUser', () {
     test('delegates current user fetch to repository', () async {
       const User user = User(
@@ -282,15 +361,15 @@ void main() {
           email: 'Test@example.com',
           password: 'Marine345@',
         ),
-      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+      ).thenAnswer((_) async => const Right<AppError, AuthSession>(session));
 
-      final Either<AppError, Unit> result = await service.register(
+      final Either<AppError, AuthSession> result = await service.register(
         name: 'Test Doe',
         email: 'Test@example.com',
         password: 'Marine345@',
       );
 
-      expect(result, equals(const Right<AppError, Unit>(unit)));
+      expect(result, equals(const Right<AppError, AuthSession>(session)));
       verify(
         () => repository.register(
           name: 'Test Doe',
@@ -308,10 +387,11 @@ void main() {
           password: 'Marine345@',
         ),
       ).thenAnswer(
-        (_) async => const Left<AppError, Unit>(AppError('Invalid email')),
+        (_) async =>
+            const Left<AppError, AuthSession>(AppError('Invalid email')),
       );
 
-      final Either<AppError, Unit> result = await service.register(
+      final Either<AppError, AuthSession> result = await service.register(
         name: 'Test Doe',
         email: 'Test@example.com',
         password: 'Marine345@',
@@ -319,14 +399,44 @@ void main() {
 
       expect(
         result,
-        equals(const Left<AppError, Unit>(AppError('Invalid email'))),
+        equals(const Left<AppError, AuthSession>(AppError('Invalid email'))),
       );
     });
   });
 
   group('AuthService.resetPassword', () {
+    test('clears cached session after reset password succeeds', () async {
+      when(
+        () => repository.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+        ),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+      when(
+        () => repository.clearSession(),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await service.resetPassword(
+        userId: 'user-id',
+        resetToken: 'reset-token',
+        newPassword: 'NewPass123!',
+        confirmPassword: 'NewPass123!',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(
+        () => repository.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+        ),
+      ).called(1);
+      verify(() => repository.clearSession()).called(1);
+    });
+
     test(
-      'delegates reset password to repository when passwords match',
+      'publishes AuthSessionCleared after reset password succeeds',
       () async {
         when(
           () => repository.resetPassword(
@@ -335,22 +445,23 @@ void main() {
             newPassword: 'NewPass123!',
           ),
         ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+        when(
+          () => repository.clearSession(),
+        ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
 
-        final Either<AppError, Unit> result = await service.resetPassword(
+        final List<ServiceEvent> events = <ServiceEvent>[];
+        final subscription = service.eventStream.listen(events.add);
+
+        await service.resetPassword(
           userId: 'user-id',
           resetToken: 'reset-token',
           newPassword: 'NewPass123!',
           confirmPassword: 'NewPass123!',
         );
+        await Future<void>.delayed(Duration.zero);
 
-        expect(result, equals(const Right<AppError, Unit>(unit)));
-        verify(
-          () => repository.resetPassword(
-            userId: 'user-id',
-            resetToken: 'reset-token',
-            newPassword: 'NewPass123!',
-          ),
-        ).called(1);
+        expect(events, <ServiceEvent>[const AuthSessionCleared()]);
+        await subscription.cancel();
       },
     );
 
@@ -397,6 +508,7 @@ void main() {
         result,
         equals(const Left<AppError, Unit>(AppError('Invalid token'))),
       );
+      verifyNever(() => repository.clearSession());
     });
   });
 }

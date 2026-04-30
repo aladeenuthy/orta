@@ -11,9 +11,9 @@ class ResetPasswordArgs with _$ResetPasswordArgs {
 
   static ResetPasswordArgs? fromUri(Uri uri) {
     final String? userId =
-        uri.queryParameters['uid'] ?? uri.queryParameters['id'];
+        uri.queryParameters['uid'];
     final String? resetToken =
-        uri.queryParameters['token'] ?? uri.queryParameters['resetToken'];
+        uri.queryParameters['token'] ;
 
     if (userId == null ||
         userId.isEmpty ||

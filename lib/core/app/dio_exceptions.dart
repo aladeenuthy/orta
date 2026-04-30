@@ -41,6 +41,9 @@ class DioExceptions implements Exception {
       final String? message = payload['message'] is String
           ? payload['message'] as String
           : null;
+      final String? backendError = payload['error'] is String
+          ? payload['error'] as String
+          : null;
       final String? issuesMessage = _formatIssues(payload['issues']);
 
       if (issuesMessage != null && message != null && message.isNotEmpty) {
@@ -53,6 +56,10 @@ class DioExceptions implements Exception {
 
       if (message != null && message.isNotEmpty) {
         return message;
+      }
+
+      if (backendError != null && backendError.isNotEmpty) {
+        return backendError;
       }
     }
 

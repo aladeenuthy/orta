@@ -10,6 +10,13 @@ class User with _$User {
     required String name,
     required String email,
     required String role,
+    String? phone,
+    String? city,
+    String? jobRole,
+    @Default(<String>[]) List<String> skills,
+    String? profilePictureUrl,
+    @Default(false) bool isEmailVerified,
+    @Default(false) bool isProfileComplete,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

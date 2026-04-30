@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:orta/core/ui/num.dart';
+
+import '../ui/num.dart';
 
 class AppNetworkImage extends StatelessWidget {
   const AppNetworkImage({
@@ -10,6 +11,7 @@ class AppNetworkImage extends StatelessWidget {
     this.height,
     this.fit = BoxFit.cover,
     this.borderRadius,
+    this.errorWidget,
   });
 
   final String? imageUrl;
@@ -17,6 +19,7 @@ class AppNetworkImage extends StatelessWidget {
   final double? height;
   final BoxFit fit;
   final BorderRadius? borderRadius;
+  final Widget? errorWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class AppNetworkImage extends StatelessWidget {
       placeholder: (context, url) =>
           _ImagePlaceholder(width: width, height: height),
       errorWidget: (context, url, error) =>
-          _ImageErrorPlaceholder(width: width, height: height),
+          errorWidget ?? _ImageErrorPlaceholder(width: width, height: height),
     );
 
     if (borderRadius != null) {

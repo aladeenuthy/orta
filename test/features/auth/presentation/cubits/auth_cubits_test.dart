@@ -121,6 +121,56 @@ void main() {
     );
 
     blocTest<AuthCubit, AuthState>(
+      'refreshes current user when authenticated',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () {
+        when(
+          () => authService.getUser(),
+        ).thenAnswer((_) async => const Right<AppError, User>(user));
+        return AuthCubit(authService: authService);
+      },
+      seed: () =>
+          const AuthState(viewState: ViewState.loaded, session: session),
+      act: (AuthCubit cubit) => cubit.refreshCurrentUser(),
+      expect: () => <AuthState>[],
+      verify: (_) {
+        verify(() => authService.getUser()).called(1);
+      },
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'emits error when current user refresh fails',
+      setUp: () {
+        eventController = StreamController<ServiceEvent>.broadcast();
+        when(
+          () => authService.eventStream,
+        ).thenAnswer((_) => eventController.stream);
+      },
+      build: () {
+        when(() => authService.getUser()).thenAnswer(
+          (_) async =>
+              const Left<AppError, User>(AppError('Unable to refresh')),
+        );
+        return AuthCubit(authService: authService);
+      },
+      seed: () =>
+          const AuthState(viewState: ViewState.loaded, session: session),
+      act: (AuthCubit cubit) => cubit.refreshCurrentUser(),
+      expect: () => <AuthState>[
+        const AuthState(
+          viewState: ViewState.error,
+          session: session,
+          errorMessage: 'Unable to refresh',
+        ),
+      ],
+    );
+
+    blocTest<AuthCubit, AuthState>(
       'clears session and emits unauthenticated on logout',
       setUp: () {
         eventController = StreamController<ServiceEvent>.broadcast();
@@ -332,7 +382,7 @@ void main() {
             email: 'Test@example.com',
             password: 'Marine345@',
           ),
-        ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+        ).thenAnswer((_) async => const Right<AppError, AuthSession>(session));
         return RegisterCubit(authService: authService);
       },
       seed: () => const RegisterState(
@@ -370,7 +420,8 @@ void main() {
             password: 'Marine345@',
           ),
         ).thenAnswer(
-          (_) async => const Left<AppError, Unit>(AppError('Email exists')),
+          (_) async =>
+              const Left<AppError, AuthSession>(AppError('Email exists')),
         );
         return RegisterCubit(authService: authService);
       },

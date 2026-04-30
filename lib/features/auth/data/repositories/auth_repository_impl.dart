@@ -12,6 +12,20 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthLocalDataSource _localDataSource;
 
   @override
+  Future<Either<AppError, AuthSession>> cacheSession(
+    AuthSession session,
+  ) async {
+    try {
+      await _localDataSource.cacheSession(session);
+      return right<AppError, AuthSession>(session);
+    } catch (_) {
+      return left<AppError, AuthSession>(
+        const AppError('Something went wront! Please try again later.'),
+      );
+    }
+  }
+
+  @override
   Future<Either<AppError, Unit>> clearSession() async {
     try {
       await _localDataSource.clearSession();
@@ -26,6 +40,16 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<AppError, Unit>> forgotPassword({required String email}) {
     return _remoteDataSource.forgotPassword(email: email);
+  }
+
+  @override
+  Future<Either<AppError, Unit>> resendOtp({required String email}) {
+    return _remoteDataSource.resendOtp(email: email);
+  }
+
+  @override
+  Future<Either<AppError, Unit>> sendOtp({required String email}) {
+    return _remoteDataSource.sendOtp(email: email);
   }
 
   @override
@@ -79,16 +103,24 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<AppError, Unit>> register({
+  Future<Either<AppError, AuthSession>> register({
     required String name,
     required String email,
     required String password,
-  }) {
-    return _remoteDataSource.register(
-      name: name,
-      email: email,
-      password: password,
-    );
+  }) async {
+    final Either<AppError, AuthSession> result = await _remoteDataSource
+        .register(name: name, email: email, password: password);
+
+    return result.fold(left, (AuthSession session) async {
+      try {
+        await _localDataSource.cacheSession(session);
+        return right<AppError, AuthSession>(session);
+      } catch (_) {
+        return left<AppError, AuthSession>(
+          const AppError('Something went wront! Please try again later.'),
+        );
+      }
+    });
   }
 
   @override
@@ -102,5 +134,25 @@ class AuthRepositoryImpl implements AuthRepository {
       resetToken: resetToken,
       newPassword: newPassword,
     );
+  }
+
+  @override
+  Future<Either<AppError, AuthSession>> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    final Either<AppError, AuthSession> result = await _remoteDataSource
+        .verifyOtp(email: email, otp: otp);
+
+    return result.fold(left, (AuthSession session) async {
+      try {
+        await _localDataSource.cacheSession(session);
+        return right<AppError, AuthSession>(session);
+      } catch (_) {
+        return left<AppError, AuthSession>(
+          const AppError('Something went wront! Please try again later.'),
+        );
+      }
+    });
   }
 }

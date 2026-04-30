@@ -1,5 +1,3 @@
-
-
 import 'dart:math';
 
 import 'package:flutter/services.dart';
@@ -240,7 +238,14 @@ class _AppButtonState extends State<AppButton>
                       padding: EdgeInsets.symmetric(
                         horizontal: widget.expanded ? 0 : 20,
                       ),
-                      child: widget.child ?? Text(widget.label!),
+                      child:
+                          widget.child ??
+                          Text(
+                            widget.label!,
+                            style: context.text.labelLarge?.copyWith(
+                              color: widget.textColor,
+                            ),
+                          ),
                     ),
                   ),
                 ),
