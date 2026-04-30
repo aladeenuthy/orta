@@ -108,6 +108,7 @@ void main() {
       expect(eligibility.action, ShiftPrimaryActionType.completed);
       expect(eligibility.enabled, isFalse);
       expect(eligibility.label, 'Shift Completed');
+      expect(eligibility.isWithinWorkLocation, isTrue);
     });
 
     test('returns a cancelled disabled action for cancelled shifts', () {
@@ -120,6 +121,7 @@ void main() {
       expect(eligibility.action, ShiftPrimaryActionType.cancelled);
       expect(eligibility.enabled, isFalse);
       expect(eligibility.label, 'Shift Cancelled');
+      expect(eligibility.isWithinWorkLocation, isTrue);
     });
 
     test('uses next day finish time for overnight clock out windows', () {

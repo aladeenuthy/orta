@@ -13,18 +13,22 @@ class ShiftActionRules {
     ShiftLocationAction? locationAction,
   }) {
     if (shift.status == ShiftStatus.completed) {
-      return const ShiftActionEligibility(
+      return ShiftActionEligibility(
         action: ShiftPrimaryActionType.completed,
         enabled: false,
         label: 'Shift Completed',
+        isWithinWorkLocation: locationVerification?.withinRange,
+        distanceInMeters: locationVerification?.distanceMeters.toDouble(),
       );
     }
 
     if (shift.status == ShiftStatus.cancelled) {
-      return const ShiftActionEligibility(
+      return ShiftActionEligibility(
         action: ShiftPrimaryActionType.cancelled,
         enabled: false,
         label: 'Shift Cancelled',
+        isWithinWorkLocation: locationVerification?.withinRange,
+        distanceInMeters: locationVerification?.distanceMeters.toDouble(),
       );
     }
 
