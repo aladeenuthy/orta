@@ -28,9 +28,9 @@ mixin _$Shift {
   List<ShiftType> get typeOfShift => throw _privateConstructorUsedError;
   @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
   String get user => throw _privateConstructorUsedError;
-  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
   DateTime get startTime => throw _privateConstructorUsedError;
-  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
   DateTime get finishTime => throw _privateConstructorUsedError;
   int get numOfShiftsPerDay => throw _privateConstructorUsedError;
   Location get location => throw _privateConstructorUsedError;
@@ -69,10 +69,8 @@ abstract class $ShiftCopyWith<$Res> {
     @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
     List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson) String user,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
-    DateTime startTime,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
-    DateTime finishTime,
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) DateTime startTime,
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) DateTime finishTime,
     int numOfShiftsPerDay,
     Location location,
     @ShiftStatusConverter() ShiftStatus? status,
@@ -233,10 +231,8 @@ abstract class _$$ShiftImplCopyWith<$Res> implements $ShiftCopyWith<$Res> {
     @JsonKey(fromJson: _shiftTypesFromJson, toJson: _shiftTypesToJson)
     List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson) String user,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
-    DateTime startTime,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
-    DateTime finishTime,
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) DateTime startTime,
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson) DateTime finishTime,
     int numOfShiftsPerDay,
     Location location,
     @ShiftStatusConverter() ShiftStatus? status,
@@ -383,9 +379,9 @@ class _$ShiftImpl implements _Shift {
     required final List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
     required this.user,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
     required this.startTime,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
     required this.finishTime,
     required this.numOfShiftsPerDay,
     required this.location,
@@ -437,10 +433,10 @@ class _$ShiftImpl implements _Shift {
   @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
   final String user;
   @override
-  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
   final DateTime startTime;
   @override
-  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
   final DateTime finishTime;
   @override
   final int numOfShiftsPerDay;
@@ -551,9 +547,9 @@ abstract class _Shift implements Shift {
     required final List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
     required final String user,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
     required final DateTime startTime,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
     required final DateTime finishTime,
     required final int numOfShiftsPerDay,
     required final Location location,
@@ -598,10 +594,10 @@ abstract class _Shift implements Shift {
   @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
   String get user;
   @override
-  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
   DateTime get startTime;
   @override
-  @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
   DateTime get finishTime;
   @override
   int get numOfShiftsPerDay;

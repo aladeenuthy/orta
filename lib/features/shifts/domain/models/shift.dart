@@ -17,9 +17,9 @@ class Shift with _$Shift {
     required List<ShiftType> typeOfShift,
     @JsonKey(fromJson: _userNameFromJson, toJson: _userToJson)
     required String user,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
     required DateTime startTime,
-    @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+    @JsonKey(fromJson: _timeFromJson, toJson: _timeToJson)
     required DateTime finishTime,
     required int numOfShiftsPerDay,
     required Location location,
@@ -173,6 +173,43 @@ DateTime _dateTimeFromJson(dynamic json) {
   return DateTime.fromMillisecondsSinceEpoch(0);
 }
 
+DateTime _timeFromJson(dynamic json) {
+  if (json is DateTime) {
+    return DateTime(1970, 1, 1, json.hour, json.minute, json.second);
+  }
+
+  final String? value = json?.toString();
+  if (value == null || value.isEmpty) {
+    return DateTime.fromMillisecondsSinceEpoch(0);
+  }
+
+  final RegExpMatch? isoTimeMatch = RegExp(
+    r'T(\d{2}):(\d{2})(?::(\d{2}))?',
+  ).firstMatch(value);
+  if (isoTimeMatch != null) {
+    return DateTime(
+      1970,
+      1,
+      1,
+      int.parse(isoTimeMatch.group(1)!),
+      int.parse(isoTimeMatch.group(2)!),
+      int.tryParse(isoTimeMatch.group(3) ?? '0') ?? 0,
+    );
+  }
+
+  final List<String> timeParts = value.split(':');
+  if (timeParts.length >= 2) {
+    final int hour = int.tryParse(timeParts[0]) ?? 0;
+    final int minute = int.tryParse(timeParts[1]) ?? 0;
+    final int second = timeParts.length > 2
+        ? int.tryParse(timeParts[2]) ?? 0
+        : 0;
+    return DateTime(1970, 1, 1, hour, minute, second);
+  }
+
+  return DateTime.fromMillisecondsSinceEpoch(0);
+}
+
 DateTime? _nullableDateTimeFromJson(dynamic json) {
   if (json == null) {
     return null;
@@ -188,4 +225,10 @@ DateTime? _nullableDateTimeFromJson(dynamic json) {
 
 String _dateTimeToJson(DateTime value) => value.toIso8601String();
 
+String _timeToJson(DateTime value) {
+  return '${_twoDigits(value.hour)}:${_twoDigits(value.minute)}';
+}
+
 String? _nullableDateTimeToJson(DateTime? value) => value?.toIso8601String();
+
+String _twoDigits(int value) => value.toString().padLeft(2, '0');
