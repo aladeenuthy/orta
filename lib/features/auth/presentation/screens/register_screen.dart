@@ -20,7 +20,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
 
         if (state.isLoaded) {
-          AppSnacks.success(context, 'Registration successful. Verify email.');
           AppRouter.toReplacementNamed(
             AppRoutes.otpVerification,
             arguments: OtpVerificationArgs(email: state.email.trim()),
