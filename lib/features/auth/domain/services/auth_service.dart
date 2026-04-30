@@ -122,18 +122,20 @@ class AuthService extends BaseAppService {
     required String resetToken,
     required String newPassword,
     required String confirmPassword,
-  }) {
+  }) async {
     if (newPassword != confirmPassword) {
       return Future<Either<AppError, Unit>>.value(
         left<AppError, Unit>(const AppError('Passwords do not match')),
       );
     }
 
-    return _repository.resetPassword(
+    final Either<AppError, Unit> result = await _repository.resetPassword(
       userId: userId,
       resetToken: resetToken,
       newPassword: newPassword,
     );
+
+    return result.fold(left, (_) => clearSession());
   }
 
   Future<Either<AppError, AuthSession>> verifyOtp({

@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>FlutterDeepLinkingEnabled</key>
-<true/>
+	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Orta needs your location to verify that you are within the shift work location before clocking in or out.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

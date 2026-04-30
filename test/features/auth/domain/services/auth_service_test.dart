@@ -405,8 +405,38 @@ void main() {
   });
 
   group('AuthService.resetPassword', () {
+    test('clears cached session after reset password succeeds', () async {
+      when(
+        () => repository.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+        ),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+      when(
+        () => repository.clearSession(),
+      ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+
+      final Either<AppError, Unit> result = await service.resetPassword(
+        userId: 'user-id',
+        resetToken: 'reset-token',
+        newPassword: 'NewPass123!',
+        confirmPassword: 'NewPass123!',
+      );
+
+      expect(result, equals(const Right<AppError, Unit>(unit)));
+      verify(
+        () => repository.resetPassword(
+          userId: 'user-id',
+          resetToken: 'reset-token',
+          newPassword: 'NewPass123!',
+        ),
+      ).called(1);
+      verify(() => repository.clearSession()).called(1);
+    });
+
     test(
-      'delegates reset password to repository when passwords match',
+      'publishes AuthSessionCleared after reset password succeeds',
       () async {
         when(
           () => repository.resetPassword(
@@ -415,22 +445,23 @@ void main() {
             newPassword: 'NewPass123!',
           ),
         ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
+        when(
+          () => repository.clearSession(),
+        ).thenAnswer((_) async => const Right<AppError, Unit>(unit));
 
-        final Either<AppError, Unit> result = await service.resetPassword(
+        final List<ServiceEvent> events = <ServiceEvent>[];
+        final subscription = service.eventStream.listen(events.add);
+
+        await service.resetPassword(
           userId: 'user-id',
           resetToken: 'reset-token',
           newPassword: 'NewPass123!',
           confirmPassword: 'NewPass123!',
         );
+        await Future<void>.delayed(Duration.zero);
 
-        expect(result, equals(const Right<AppError, Unit>(unit)));
-        verify(
-          () => repository.resetPassword(
-            userId: 'user-id',
-            resetToken: 'reset-token',
-            newPassword: 'NewPass123!',
-          ),
-        ).called(1);
+        expect(events, <ServiceEvent>[const AuthSessionCleared()]);
+        await subscription.cancel();
       },
     );
 
@@ -477,6 +508,7 @@ void main() {
         result,
         equals(const Left<AppError, Unit>(AppError('Invalid token'))),
       );
+      verifyNever(() => repository.clearSession());
     });
   });
 }

@@ -23,6 +23,7 @@ class DeepLinkHandler {
 
     _initialized = true;
     _appLinks = AppLinks();
+    log('Deep link handler initialized', name: 'DeepLinkHandler');
     _handleInitialLink();
     _subscription = _appLinks.uriLinkStream.listen(
       _handleUri,
@@ -57,15 +58,12 @@ class DeepLinkHandler {
     _lastHandledUri = uri;
     log('Deep link received: $uri', name: 'DeepLinkHandler');
 
-    if (uri.scheme != 'orta' || uri.host != 'app') {
-      log(
-        'Unhandled deep link host: ${uri.scheme}://${uri.host}',
-        name: 'DeepLinkHandler',
-      );
+    if (uri.scheme != 'orta') {
+      log('Unhandled deep link scheme: ${uri.scheme}', name: 'DeepLinkHandler');
       return;
     }
 
-    switch (uri.path) {
+    switch (_routePath(uri)) {
       case AppRoutes.resetPassword:
         _openResetPassword(uri, source: source);
         return;
@@ -86,6 +84,10 @@ class DeepLinkHandler {
       );
       return;
     }
+    log(
+      " Opening reset password screen with args: uid=${args.userId}, token=${args.resetToken}",
+      name: 'DeepLinkHandler',
+    );
 
     if (source == _DeepLinkSource.initial) {
       await _waitForInitialRouteReadiness();
@@ -94,6 +96,18 @@ class DeepLinkHandler {
     }
 
     AppRouter.toNamed(AppRoutes.resetPassword, arguments: args);
+  }
+
+  String _routePath(Uri uri) {
+    if (uri.host == 'app') {
+      return uri.path;
+    }
+
+    if (uri.host == AppRoutes.resetPassword.replaceFirst('/', '')) {
+      return AppRoutes.resetPassword;
+    }
+
+    return uri.path;
   }
 
   Future<void> _waitForInitialRouteReadiness() async {
@@ -109,7 +123,7 @@ class DeepLinkHandler {
           .firstWhere((AuthState state) => !state.isInitial && !state.isLoading)
           .timeout(_authReadyTimeout);
     } on TimeoutException catch (error) {
-      log( 
+      log(
         'Timed out waiting for auth initialization',
         error: error,
         name: 'DeepLinkHandler',

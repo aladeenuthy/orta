@@ -321,7 +321,7 @@ class _DashboardHomeBodyState extends State<_DashboardHomeBody> {
                 filters: const ShiftFilters(
                   status: ShiftStatusFilter.inProgress,
                   sortBy: ShiftSortBy.date,
-                  sortOrder: ShiftSortOrder.desc,
+                  sortOrder: ShiftSortOrder.asc,
                 ),
                 showOngoingChip: true,
                 showActions: false,
@@ -333,7 +333,7 @@ class _DashboardHomeBodyState extends State<_DashboardHomeBody> {
                 filters: const ShiftFilters(
                   status: ShiftStatusFilter.scheduled,
                   sortBy: ShiftSortBy.date,
-                  sortOrder: ShiftSortOrder.desc,
+                  sortOrder: ShiftSortOrder.asc,
                 ),
                 showOngoingChip: false,
                 showActions: true,
@@ -387,45 +387,26 @@ class _SettingsTab extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: AppPaddings.horizontal(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.settings_outlined,
-              color: AppColors.primary,
-              size: 56.0.radius,
-            ),
-            AppSpacings.vertical(12),
-            Text(
-              'Setting',
-              style: context.text.headlineMedium?.copyWith(
-                color: AppColors.textColor,
-                fontSize: 22.0.fontSize,
-                fontWeight: FontWeight.w800,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.settings_outlined,
+                color: AppColors.primary,
+                size: 56.0.radius,
               ),
-            ),
-            AppSpacings.vertical(28),
-            BlocBuilder<AuthCubit, AuthState>(
-              builder: (BuildContext context, AuthState state) {
-                return AppButton(
-                  color: AppColors.primary,
-                  enabled: !state.isLoading,
-                  height: 42,
-                  borderRadius: BorderRadius.circular(8.0.radius),
-                  margin: EdgeInsets.zero,
-                  onPressed: context.read<AuthCubit>().logout,
-                  child: Text(
-                    state.isLoading ? 'Logging out...' : 'Logout',
-                    style: context.text.titleMedium?.copyWith(
-                      color: AppColors.white,
-                      fontSize: 16.0.fontSize,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
+              AppSpacings.vertical(12),
+              Text(
+                'Setting',
+                style: context.text.headlineMedium?.copyWith(
+                  color: AppColors.textColor,
+                  fontSize: 22.0.fontSize,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:orta/features/features.dart';
 
 class ShiftDetailView extends StatelessWidget {
@@ -133,15 +135,7 @@ class ShiftDetailBody extends StatelessWidget {
           AppSpacings.vertical(25),
           _ShiftTitleRow(shift: shift),
           AppSpacings.vertical(26),
-          _DetailInfoRow(
-            icon: CupertinoIcons.clock,
-            title: DateUtils.twentyFourHourRange(
-              shift.startTime,
-              shift.finishTime,
-            ),
-            subtitle:
-                'Arrival Time, ${DateUtils.durationInHours(shift.startTime, shift.finishTime)}',
-          ),
+          _ShiftScheduleInfoRow(shift: shift),
           AppSpacings.vertical(22),
           const _DetailInfoRow(
             avatar: _SupervisorAvatar(),
@@ -354,6 +348,161 @@ class _DetailInfoRow extends StatelessWidget {
       ],
     );
   }
+}
+
+class _ShiftScheduleInfoRow extends StatelessWidget {
+  const _ShiftScheduleInfoRow({required this.shift});
+
+  final Shift shift;
+
+  @override
+  Widget build(BuildContext context) {
+    if (shift.status == ShiftStatus.inProgress && shift.clockInTime != null) {
+      return _InProgressShiftTimeRow(shift: shift);
+    }
+
+    return _DetailInfoRow(
+      icon: CupertinoIcons.clock,
+      title: DateUtils.twentyFourHourRange(shift.startTime, shift.finishTime),
+      subtitle:
+          'Arrival Time, ${DateUtils.durationInHours(shift.startTime, shift.finishTime)}',
+    );
+  }
+}
+
+class _InProgressShiftTimeRow extends StatefulWidget {
+  const _InProgressShiftTimeRow({required this.shift});
+
+  final Shift shift;
+
+  @override
+  State<_InProgressShiftTimeRow> createState() =>
+      _InProgressShiftTimeRowState();
+}
+
+class _InProgressShiftTimeRowState extends State<_InProgressShiftTimeRow> {
+  late DateTime _now = DateTime.now();
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() => _now = DateTime.now());
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final _ShiftTimeProgress progress = _ShiftTimeProgress.fromShift(
+      widget.shift,
+      now: _now,
+    );
+
+    return _DetailInfoRow(
+      icon: CupertinoIcons.clock,
+      title: progress.elapsedLabel,
+      subtitle: progress.remainingLabel,
+    );
+  }
+}
+
+class _ShiftTimeProgress {
+  const _ShiftTimeProgress({
+    required this.elapsedLabel,
+    required this.remainingLabel,
+  });
+
+  final String elapsedLabel;
+  final String remainingLabel;
+
+  factory _ShiftTimeProgress.fromShift(Shift shift, {required DateTime now}) {
+    final DateTime clockInTime = _clockInDateTime(shift) ?? now;
+    final Duration elapsed = _positiveDuration(now.difference(clockInTime));
+    final DateTime finish = _finishDateTime(shift);
+    final Duration remaining = _positiveDuration(finish.difference(now));
+
+    return _ShiftTimeProgress(
+      elapsedLabel: _clockDuration(elapsed),
+      remainingLabel: _hoursLeft(remaining),
+    );
+  }
+
+  static DateTime? _clockInDateTime(Shift shift) {
+    final DateTime? clockInTime = shift.clockInTime;
+    if (clockInTime == null) {
+      return null;
+    }
+
+    if (clockInTime.year > 1970) {
+      return clockInTime;
+    }
+
+    return DateTime(
+      shift.date.year,
+      shift.date.month,
+      shift.date.day,
+      clockInTime.hour,
+      clockInTime.minute,
+      clockInTime.second,
+    );
+  }
+
+  static DateTime _finishDateTime(Shift shift) {
+    final DateTime start = DateTime(
+      shift.date.year,
+      shift.date.month,
+      shift.date.day,
+      shift.startTime.hour,
+      shift.startTime.minute,
+      shift.startTime.second,
+    );
+    final DateTime finish = DateTime(
+      shift.date.year,
+      shift.date.month,
+      shift.date.day,
+      shift.finishTime.hour,
+      shift.finishTime.minute,
+      shift.finishTime.second,
+    );
+
+    return finish.isBefore(start)
+        ? finish.add(const Duration(days: 1))
+        : finish;
+  }
+
+  static Duration _positiveDuration(Duration duration) {
+    return duration.isNegative ? Duration.zero : duration;
+  }
+
+  static String _clockDuration(Duration duration) {
+    final int hours = duration.inHours;
+    final int minutes = duration.inMinutes.remainder(Duration.minutesPerHour);
+    final int seconds = duration.inSeconds.remainder(Duration.secondsPerMinute);
+
+    return '${_twoDigits(hours)}:${_twoDigits(minutes)}:${_twoDigits(seconds)}';
+  }
+
+  static String _hoursLeft(Duration duration) {
+    if (duration == Duration.zero) {
+      return '0 hours Left';
+    }
+
+    if (duration.inMinutes < Duration.minutesPerHour) {
+      return 'Less than 1 hour Left';
+    }
+
+    final int hours = (duration.inMinutes / Duration.minutesPerHour).ceil();
+    return '$hours ${hours == 1 ? 'hour' : 'hours'} Left';
+  }
+
+  static String _twoDigits(int value) => value.toString().padLeft(2, '0');
 }
 
 class _SupervisorAvatar extends StatelessWidget {
