@@ -10,10 +10,17 @@ class ShiftListScreen extends StatelessWidget {
     final bool isOngoing = args.filters.status == ShiftStatusFilter.inProgress;
     final bool isAssigned = args.filters.status == ShiftStatusFilter.scheduled;
 
-    return BlocProvider<PaginatedShiftsBloc>(
-      create: (_) =>
-          locator<PaginatedShiftsBloc>(param1: args.filters, param2: 10)
-            ..fetchInitial(),
+    return MultiBlocProvider(
+      providers: <BlocProvider<dynamic>>[
+        BlocProvider<PaginatedShiftsBloc>(
+          create: (_) =>
+              locator<PaginatedShiftsBloc>(param1: args.filters, param2: 10)
+                ..fetchInitial(),
+        ),
+        BlocProvider<ShiftActionsCubit>(
+          create: (_) => locator<ShiftActionsCubit>(),
+        ),
+      ],
       child: Scaffold(
         backgroundColor: AppColors.white,
         appBar: AppBar(
@@ -36,14 +43,31 @@ class ShiftListScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: BlocBuilder<PaginatedShiftsBloc, GetItemsState<Shift>>(
-          builder: (BuildContext context, GetItemsState<Shift> state) {
+        body: BlocConsumer<ShiftActionsCubit, ShiftActionsState>(
+          listener: (BuildContext context, ShiftActionsState actionState) {
+            if (actionState.isError && actionState.errorMessage != null) {
+              AppSnacks.error(context, actionState.errorMessage!);
+            }
+
+            if (actionState.isLoaded) {
+              AppSnacks.success(context, 'Shift rejected');
+              context.read<PaginatedShiftsBloc>().refresh();
+            }
+          },
+          builder: (BuildContext context, ShiftActionsState actionState) {
             return AppLoadingOverlay(
-              loading: _isInitialLoading(state),
-              child: _ShiftListContent(
-                state: state,
-                isOngoing: isOngoing,
-                isAssigned: isAssigned,
+              loading: actionState.isLoading,
+              child: BlocBuilder<PaginatedShiftsBloc, GetItemsState<Shift>>(
+                builder: (BuildContext context, GetItemsState<Shift> state) {
+                  return AppLoadingOverlay(
+                    loading: _isInitialLoading(state),
+                    child: _ShiftListContent(
+                      state: state,
+                      isOngoing: isOngoing,
+                      isAssigned: isAssigned,
+                    ),
+                  );
+                },
               ),
             );
           },
@@ -115,8 +139,29 @@ class _ShiftListContent extends StatelessWidget {
           shift: shift,
           showOngoingChip: isOngoing,
           showActions: isAssigned,
+          onAccept: isAssigned
+              ? (Shift shift) => _ShiftListAction.accept(shift)
+              : null,
+          onReject: isAssigned
+              ? (Shift shift) => _ShiftListAction.reject(context, shift)
+              : null,
         );
       },
     );
+  }
+}
+
+class _ShiftListAction {
+  const _ShiftListAction._();
+
+  static void accept(Shift shift) {
+    AppRouter.toNamed(
+      AppRoutes.shiftDetail,
+      arguments: ShiftDetailArgs(shiftId: shift.id),
+    );
+  }
+
+  static void reject(BuildContext context, Shift shift) {
+    context.read<ShiftActionsCubit>().cancelShift(shift.id);
   }
 }
