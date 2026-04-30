@@ -8,8 +8,7 @@ class DeepLinkHandler {
   DeepLinkHandler._();
 
   static final DeepLinkHandler instance = DeepLinkHandler._();
-  static const Duration _splashWait = Duration(milliseconds: 2000);
-  static const Duration _authReadyTimeout = Duration(seconds: 4);
+  static const Duration _navigatorReadyTimeout = Duration(seconds: 5);
 
   late final AppLinks _appLinks;
   StreamSubscription<Uri>? _subscription;
@@ -90,7 +89,7 @@ class DeepLinkHandler {
     );
 
     if (source == _DeepLinkSource.initial) {
-      await _waitForInitialRouteReadiness();
+      await _waitForNavigatorReadiness();
       AppRouter.toCloseAllNamed(AppRoutes.resetPassword, arguments: args);
       return;
     }
@@ -110,24 +109,16 @@ class DeepLinkHandler {
     return uri.path;
   }
 
-  Future<void> _waitForInitialRouteReadiness() async {
-    await Future<void>.delayed(_splashWait);
+  Future<void> _waitForNavigatorReadiness() async {
+    final Stopwatch stopwatch = Stopwatch()..start();
 
-    final AuthCubit authCubit = locator<AuthCubit>();
-    if (!authCubit.state.isInitial && !authCubit.state.isLoading) {
-      return;
+    while (AppRouter.navigatorKey.currentState == null &&
+        stopwatch.elapsed < _navigatorReadyTimeout) {
+      await Future<void>.delayed(const Duration(milliseconds: 50));
     }
 
-    try {
-      await authCubit.stream
-          .firstWhere((AuthState state) => !state.isInitial && !state.isLoading)
-          .timeout(_authReadyTimeout);
-    } on TimeoutException catch (error) {
-      log(
-        'Timed out waiting for auth initialization',
-        error: error,
-        name: 'DeepLinkHandler',
-      );
+    if (AppRouter.navigatorKey.currentState == null) {
+      log('Timed out waiting for navigator readiness', name: 'DeepLinkHandler');
     }
   }
 
