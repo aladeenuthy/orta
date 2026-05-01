@@ -218,6 +218,14 @@ Project rules:
 - Shared exports are available through `lib/features/features.dart`.
 - Navigation uses Flutter Navigator and named routes.
 
+### Architecture Rationale
+
+The project still follows Clean Architecture and separation of concerns, but keeps the implementation intentionally lean for the assessment scope.
+
+Services are used instead of one-class-per-use-case files because most flows are small and closely related. For example, auth actions live together in an auth service, shift actions live together in a shift service, and profile actions live together in profile services. This keeps business logic in the domain layer, keeps Cubits/Blocs free of API details, and avoids a large number of tiny use-case classes that would add ceremony without much value for this app.
+
+Domain models are used directly instead of adding DTOs because the backend response shape is already close to the app's domain shape. Avoiding DTOs reduces mapping boilerplate and keeps parsing easy to follow. The boundary is still preserved: API parsing happens in the data layer, repositories expose domain results, services coordinate business behavior, and presentation only reacts to state.
+
 ## Completed Core Features
 
 - Register
