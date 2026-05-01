@@ -85,6 +85,12 @@ Expected behavior:
 - Shift `startTime` and `finishTime` should use the backend formatted `HH:mm` fields when available to avoid timezone shifts from reparsing raw ISO dates.
 - Reset-password links use the app scheme: `orta://app/reset-password`.
 
+## Backend Changes (Bonus Sections)
+
+I did not have write access to the original backend repository, so backend modifications for the bonus features are available in a separate repository here:
+
+[shift-manager-be (feat/bonus branch)](https://github.com/aladeenuthy/shift-manager-be/tree/feat/bonus)
+
 ## Run The App
 
 Start the backend first, then run the Flutter app.
