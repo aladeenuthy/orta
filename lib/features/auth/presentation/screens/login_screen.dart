@@ -28,106 +28,110 @@ class _LoginScreenState extends State<LoginScreen> {
           loading: state.isLoading,
           child: Scaffold(
             backgroundColor: AppColors.white,
-            body:SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding: AppPaddings.horizontal(16),
-                  child: AppAnimatedColumn(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      AuthHeader(),
-                      Text(
-                        'Welcome Back!',
-                        style: context.text.displayLarge?.copyWith(
-                          color: AppColors.textColor,
-                           fontSize: 24.0.fontSize,
+            body: SingleChildScrollView(
+              child: KeyboardAutoPadding(
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: AppPaddings.horizontal(16),
+                    child: AppAnimatedColumn(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        AuthHeader(),
+                        Text(
+                          'Welcome Back!',
+                          style: context.text.displayLarge?.copyWith(
+                            color: AppColors.textColor,
+                            fontSize: 24.0.fontSize,
                             fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      AppSpacings.vertical(10),
-                      Text(
-                        'Login to continue.',
-                        style: context.text.bodyLarge?.copyWith(
-                          color: AppColors.textSecondary,
-                          fontSize: 16.0.fontSize,
-                        ),
-                      ),
-                      AppSpacings.vertical(42),
-                      AuthFormField(
-                        label: 'Email Address',
-                        hintText: 'Enter email Address',
-                        initialValue: state.email,
-                        inputType: TextInputType.emailAddress,
-                        validate: Validator.emailValidator,
-                        onChanged: cubit.emailChanged,
-                      ),
-                      AppSpacings.vertical(31),
-                      AuthPasswordField(
-                        label: 'Password',
-                        hintText: 'Enter Password',
-                        initialValue: state.password,
-                        textInputAction: TextInputAction.done,
-                        validate: (String? value) => Validator.emptyField(
-                          value,
-                          message: 'Enter password',
-                        ),
-                        onChanged: context.read<LoginCubit>().passwordChanged,
-                      ),
-                      AppSpacings.vertical(8),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: state.isLoading
-                              ? null
-                              : () =>
-                                    AppRouter.toNamed(AppRoutes.forgotPassword),
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: Text(
-                            'Forgot Password?',
-                            style: context.text.bodyMedium?.copyWith(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w700,
-                            ),
                           ),
                         ),
-                      ),
-                      AppSpacings.vertical(28),
-                      AppButton(
-                        color: AppColors.primary,
-                        enabled: !state.isLoading,
-                        height: 42,
-                        borderRadius: BorderRadius.circular(10.0.radius),
-                        margin: EdgeInsets.zero,
-                        onPressed: _submit,
-                        child: Text(
-                          "Login",
-                          style: context.text.titleMedium?.copyWith(
-                            color: AppColors.white,
+                        AppSpacings.vertical(10),
+                        Text(
+                          'Login to continue.',
+                          style: context.text.bodyLarge?.copyWith(
+                            color: AppColors.textSecondary,
                             fontSize: 16.0.fontSize,
-                            fontWeight: FontWeight.w800,
                           ),
                         ),
-                      ),
-                      AppSpacings.vertical(22),
-                      Center(
-                        child: TextButton(
-                          onPressed: () =>
-                              AppRouter.toReplacementNamed(AppRoutes.register),
-                          child: Text(
-                            'New here? Get Started',
-                            style: context.text.bodyMedium?.copyWith(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
+                        AppSpacings.vertical(42),
+                        AuthFormField(
+                          label: 'Email Address',
+                          hintText: 'Enter email Address',
+                          initialValue: state.email,
+                          inputType: TextInputType.emailAddress,
+                          validate: Validator.emailValidator,
+                          onChanged: cubit.emailChanged,
+                        ),
+                        AppSpacings.vertical(31),
+                        AuthPasswordField(
+                          label: 'Password',
+                          hintText: 'Enter Password',
+                          initialValue: state.password,
+                          textInputAction: TextInputAction.done,
+                          validate: (String? value) => Validator.emptyField(
+                            value,
+                            message: 'Enter password',
+                          ),
+                          onChanged: context.read<LoginCubit>().passwordChanged,
+                        ),
+                        AppSpacings.vertical(8),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: state.isLoading
+                                ? null
+                                : () => AppRouter.toNamed(
+                                    AppRoutes.forgotPassword,
+                                  ),
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              'Forgot Password?',
+                              style: context.text.bodyMedium?.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        AppSpacings.vertical(28),
+                        AppButton(
+                          color: AppColors.primary,
+                          enabled: !state.isLoading,
+                          height: 42,
+                          borderRadius: BorderRadius.circular(10.0.radius),
+                          margin: EdgeInsets.zero,
+                          onPressed: _submit,
+                          child: Text(
+                            "Login",
+                            style: context.text.titleMedium?.copyWith(
+                              color: AppColors.white,
+                              fontSize: 16.0.fontSize,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        AppSpacings.vertical(22),
+                        Center(
+                          child: TextButton(
+                            onPressed: () => AppRouter.toReplacementNamed(
+                              AppRoutes.register,
+                            ),
+                            child: Text(
+                              'New here? Get Started',
+                              style: context.text.bodyMedium?.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -61,128 +61,130 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
             appBar: const OnboardingAppBar(title: 'Personal Information'),
             body: SafeArea(
               child: SingleChildScrollView(
-                child: Padding(
-                  padding: AppPaddings.horizontal(16),
-                  child: Form(
-                    key: _formKey,
-                    child: AppAnimatedColumn(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        AppSpacings.vertical(35),
-                        _AvatarPicker(
-                          imagePath: state.profilePicturePath,
-                          initials: StringUtils.initials(
-                            context.watch<AuthCubit>().state.user?.name,
+                child: KeyboardAutoPadding(
+                  child: Padding(
+                    padding: AppPaddings.horizontal(16),
+                    child: Form(
+                      key: _formKey,
+                      child: AppAnimatedColumn(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          AppSpacings.vertical(35),
+                          _AvatarPicker(
+                            imagePath: state.profilePicturePath,
+                            initials: StringUtils.initials(
+                              context.watch<AuthCubit>().state.user?.name,
+                            ),
+                            onTap: _pickProfilePicture,
                           ),
-                          onTap: _pickProfilePicture,
-                        ),
-                        AppSpacings.vertical(50),
-                        if (widget.args.editMode)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Full Name',
-                                style: context.text.titleMedium?.copyWith(
-                                  color: AppColors.textColor.withValues(
-                                    alpha: .84,
+                          AppSpacings.vertical(50),
+                          if (widget.args.editMode)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Full Name',
+                                  style: context.text.titleMedium?.copyWith(
+                                    color: AppColors.textColor.withValues(
+                                      alpha: .84,
+                                    ),
+                                    fontSize: 14.5.fontSize,
+                                    fontWeight: FontWeight.w700,
                                   ),
-                                  fontSize: 14.5.fontSize,
-                                  fontWeight: FontWeight.w700,
                                 ),
-                              ),
-                              AppSpacings.vertical(10),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: AppTextField(
-                                      intiaVal: state.firstName,
-                                      hintText: 'First Name',
-                                      validate: (String? value) =>
-                                          Validator.emptyField(
-                                            value,
-                                            message: 'Enter first name',
-                                          ),
-                                      onChanged: cubit.firstNameChanged,
-                                      hasTextfieldLabel: false,
-                                      borderRadius: BorderRadius.circular(
-                                        10.0.radius,
-                                      ),
-                                      borderColor: AppColors.fieldBorder,
-                                      focusedBorderColor: AppColors.primary,
-                                      enabledBorderWidth: 1,
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 20.0.width,
-                                        vertical: 11.0.height,
-                                      ),
-                                    ),
-                                  ),
-                                  AppSpacings.horizontal(20),
-                                  Expanded(
-                                    child: AppTextField(
-                                      intiaVal: state.lastName,
-                                      hintText: 'Last Name',
-                                      validate: (String? value) =>
-                                          Validator.emptyField(
-                                            value,
-                                            message: 'Enter last name',
-                                          ),
-                                      onChanged: cubit.lastNameChanged,
-                                      hasTextfieldLabel: false,
-                                      borderRadius: BorderRadius.circular(
-                                        10.0.radius,
-                                      ),
-                                      borderColor: AppColors.fieldBorder,
-                                      focusedBorderColor: AppColors.primary,
-                                      enabledBorderWidth: 1,
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 20.0.width,
-                                        vertical: 11.0.height,
+                                AppSpacings.vertical(10),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: AppTextField(
+                                        intiaVal: state.firstName,
+                                        hintText: 'First Name',
+                                        validate: (String? value) =>
+                                            Validator.emptyField(
+                                              value,
+                                              message: 'Enter first name',
+                                            ),
+                                        onChanged: cubit.firstNameChanged,
+                                        hasTextfieldLabel: false,
+                                        borderRadius: BorderRadius.circular(
+                                          10.0.radius,
+                                        ),
+                                        borderColor: AppColors.fieldBorder,
+                                        focusedBorderColor: AppColors.primary,
+                                        enabledBorderWidth: 1,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 20.0.width,
+                                          vertical: 11.0.height,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              AppSpacings.vertical(26),
-                            ],
+                                    AppSpacings.horizontal(20),
+                                    Expanded(
+                                      child: AppTextField(
+                                        intiaVal: state.lastName,
+                                        hintText: 'Last Name',
+                                        validate: (String? value) =>
+                                            Validator.emptyField(
+                                              value,
+                                              message: 'Enter last name',
+                                            ),
+                                        onChanged: cubit.lastNameChanged,
+                                        hasTextfieldLabel: false,
+                                        borderRadius: BorderRadius.circular(
+                                          10.0.radius,
+                                        ),
+                                        borderColor: AppColors.fieldBorder,
+                                        focusedBorderColor: AppColors.primary,
+                                        enabledBorderWidth: 1,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 20.0.width,
+                                          vertical: 11.0.height,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                AppSpacings.vertical(26),
+                              ],
+                            ),
+                          _PhoneField(state: state),
+                          AppSpacings.vertical(26),
+                          OnboardingSelectField(
+                            label: 'City',
+                            value: state.city,
+                            items: ProfileDefaults.cities,
+                            onChanged: cubit.cityChanged,
                           ),
-                        _PhoneField(state: state),
-                        AppSpacings.vertical(26),
-                        OnboardingSelectField(
-                          label: 'City',
-                          value: state.city,
-                          items: ProfileDefaults.cities,
-                          onChanged: cubit.cityChanged,
-                        ),
-                        AppSpacings.vertical(26),
-                        OnboardingSelectField(
-                          label: 'Role',
-                          value: state.jobRole,
-                          items: ProfileDefaults.roles,
-                          onChanged: cubit.jobRoleChanged,
-                        ),
-                        if (!widget.args.editMode) AppSpacings.vertical(26),
-                        if (!widget.args.editMode)
-                          const StepDots(activeIndex: 0, count: 2),
-                        AppSpacings.vertical(24),
-                        AppButton(
-                          color: AppColors.primary,
-                          height: 42,
-                          borderRadius: BorderRadius.circular(10.0.radius),
-                          margin: EdgeInsets.zero,
-                          onPressed: _submit,
-                          child: Text(
-                            'Continue',
-                            style: context.text.titleMedium?.copyWith(
-                              color: AppColors.white,
-                              fontSize: 18.0.fontSize,
-                              fontWeight: FontWeight.w800,
+                          AppSpacings.vertical(26),
+                          OnboardingSelectField(
+                            label: 'Role',
+                            value: state.jobRole,
+                            items: ProfileDefaults.roles,
+                            onChanged: cubit.jobRoleChanged,
+                          ),
+                          if (!widget.args.editMode) AppSpacings.vertical(26),
+                          if (!widget.args.editMode)
+                            const StepDots(activeIndex: 0, count: 2),
+                          AppSpacings.vertical(24),
+                          AppButton(
+                            color: AppColors.primary,
+                            height: 42,
+                            borderRadius: BorderRadius.circular(10.0.radius),
+                            margin: EdgeInsets.zero,
+                            onPressed: _submit,
+                            child: Text(
+                              'Continue',
+                              style: context.text.titleMedium?.copyWith(
+                                color: AppColors.white,
+                                fontSize: 18.0.fontSize,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
                           ),
-                        ),
-                        AppSpacings.vertical(42),
-                      ],
+                          AppSpacings.vertical(42),
+                        ],
+                      ),
                     ),
                   ),
                 ),

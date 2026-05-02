@@ -48,6 +48,7 @@ export '../core/shared/splash_screen.dart';
 export '../core/shared/view_state.dart';
 export '../core/shared/app_network_image.dart';
 export '../core/shared/app_text_field.dart';
+export '../core/shared/key_board_auto_padding.dart';
 // Core - UI
 export '../core/ui/ui.dart';
 

@@ -136,26 +136,6 @@ class _ProfileBody extends StatelessWidget {
             body: '- Forklift\n- Packing',
             onEdit: () {},
           ),
-          AppSpacings.vertical(18),
-          BlocBuilder<AuthCubit, AuthState>(
-            builder: (BuildContext context, AuthState state) {
-              return AppButton(
-                color: AppColors.primary,
-                height: 42,
-                borderRadius: BorderRadius.circular(8.0.radius),
-                margin: EdgeInsets.zero,
-                enabled: !state.isLoading,
-                onPressed: context.read<AuthCubit>().logout,
-                child: Text(
-                  'Logout',
-                  style: context.text.titleMedium?.copyWith(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              );
-            },
-          ),
         ],
       ),
     );

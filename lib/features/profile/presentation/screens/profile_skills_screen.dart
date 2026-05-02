@@ -70,75 +70,79 @@ class _ProfileSkillsScreenState extends State<ProfileSkillsScreen> {
             backgroundColor: AppColors.white,
             appBar: const OnboardingAppBar(title: 'Skill'),
             body: SafeArea(
-              child: Padding(
-                padding: AppPaddings.horizontal(16),
-                child: Form(
-                  key: _formKey,
-                  child: AppAnimatedColumn(
-                    children: <Widget>[
-                      AppSpacings.vertical(50),
-                      _SkillInputField(
-                        controller: _skillController,
-                        focusNode: _skillFocusNode,
-                      ),
-                      AppSpacings.vertical(22),
-                      AppButton(
-                        enabled: canAddSkill,
-                        color: canAddSkill
-                            ? AppColors.primary
-                            : AppColors.ongoingChipBg,
-                        textColor: canAddSkill
-                            ? AppColors.white
-                            : AppColors.textSecondary,
-                        height: 42,
-                        borderRadius: BorderRadius.circular(8.0.radius),
-                        margin: EdgeInsets.zero,
-                        onPressed: canAddSkill
-                            ? () {
-                                context
-                                    .read<ProfileOnboardingCubit>()
-                                    .addSkill();
-                                _skillFocusNode.requestFocus();
-                              }
-                            : null,
-                        child: Text(
-                          'Add Skill',
-                          style: context.text.titleMedium?.copyWith(
+              child: KeyboardAutoPadding(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: AppPaddings.horizontal(16),
+                    child: Form(
+                      key: _formKey,
+                      child: AppAnimatedColumn(
+                        children: <Widget>[
+                          AppSpacings.vertical(50),
+                          _SkillInputField(
+                            controller: _skillController,
+                            focusNode: _skillFocusNode,
+                          ),
+                          AppSpacings.vertical(22),
+                          AppButton(
+                            enabled: canAddSkill,
                             color: canAddSkill
+                                ? AppColors.primary
+                                : AppColors.ongoingChipBg,
+                            textColor: canAddSkill
                                 ? AppColors.white
                                 : AppColors.textSecondary,
-                            fontSize: 18.0.fontSize,
-                            fontWeight: FontWeight.w600,
+                            height: 42,
+                            borderRadius: BorderRadius.circular(8.0.radius),
+                            margin: EdgeInsets.zero,
+                            onPressed: canAddSkill
+                                ? () {
+                                    context
+                                        .read<ProfileOnboardingCubit>()
+                                        .addSkill();
+                                    _skillFocusNode.requestFocus();
+                                  }
+                                : null,
+                            child: Text(
+                              'Add Skill',
+                              style: context.text.titleMedium?.copyWith(
+                                color: canAddSkill
+                                    ? AppColors.white
+                                    : AppColors.textSecondary,
+                                fontSize: 18.0.fontSize,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      AppSpacings.vertical(22),
-                      Divider(color: AppColors.fieldBorder),
-                      AppSpacings.vertical(16),
-                      _SkillChips(skills: state.skills),
-                      const Spacer(),
-                      if (!widget.args.editMode)
-                        const StepDots(activeIndex: 1, count: 2),
-                      AppSpacings.vertical(24),
-                      AppButton(
-                        color: AppColors.primary,
-                        height: 42,
-                        borderRadius: BorderRadius.circular(10.0.radius),
-                        margin: EdgeInsets.zero,
-                        onPressed: context
-                            .read<ProfileOnboardingCubit>()
-                            .saveSkills,
-                        child: Text(
-                          widget.args.editMode ? 'Save' : 'Continue',
-                          style: context.text.titleMedium?.copyWith(
-                            color: AppColors.white,
-                            fontSize: 18.0.fontSize,
-                            fontWeight: FontWeight.w800,
+                          AppSpacings.vertical(22),
+                          Divider(color: AppColors.fieldBorder),
+                          AppSpacings.vertical(16),
+                          _SkillChips(skills: state.skills),
+                          AppSpacings.vertical(300),
+                          if (!widget.args.editMode)
+                            const StepDots(activeIndex: 1, count: 2),
+                          AppSpacings.vertical(24),
+                          AppButton(
+                            color: AppColors.primary,
+                            height: 42,
+                            borderRadius: BorderRadius.circular(10.0.radius),
+                            margin: EdgeInsets.zero,
+                            onPressed: context
+                                .read<ProfileOnboardingCubit>()
+                                .saveSkills,
+                            child: Text(
+                              widget.args.editMode ? 'Save' : 'Continue',
+                              style: context.text.titleMedium?.copyWith(
+                                color: AppColors.white,
+                                fontSize: 18.0.fontSize,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                           ),
-                        ),
+                          AppSpacings.vertical(42),
+                        ],
                       ),
-                      AppSpacings.vertical(42),
-                    ],
+                    ),
                   ),
                 ),
               ),

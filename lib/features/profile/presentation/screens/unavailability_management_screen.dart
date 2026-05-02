@@ -44,52 +44,54 @@ class _UnavailabilityView extends StatelessWidget {
                   16.0.width,
                   34.0.height,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Select dates you are unavailable',
-                      style: context.text.titleLarge?.copyWith(
-                        color: AppColors.textColor.withValues(alpha: .82),
-                        fontSize: 17.0.fontSize,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    AppSpacings.vertical(24),
-                    UnavailabilityCalendarPicker(
-                      visibleMonth: visibleMonth,
-                      unavailablePeriods: state.items,
-                      onPreviousMonth: () => _loadMonth(
-                        context,
-                        DateTime(visibleMonth.year, visibleMonth.month - 1),
-                      ),
-                      onNextMonth: () => _loadMonth(
-                        context,
-                        DateTime(visibleMonth.year, visibleMonth.month + 1),
-                      ),
-                    ),
-                    AppSpacings.vertical(24),
-                    AppButton(
-                      color: AppColors.primary,
-                      height: 42,
-                      borderRadius: BorderRadius.circular(8.0.radius),
-                      margin: EdgeInsets.zero,
-                      onPressed: () =>
-                          _showAddDialog(context, visibleMonth: visibleMonth),
-                      child: Text(
-                        'Add unavailability',
-                        style: context.text.titleMedium?.copyWith(
-                          color: AppColors.white,
-                          fontSize: 16.0.fontSize,
-                          fontWeight: FontWeight.w800,
+                child: KeyboardAutoPadding(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Select dates you are unavailable',
+                        style: context.text.titleLarge?.copyWith(
+                          color: AppColors.textColor.withValues(alpha: .82),
+                          fontSize: 17.0.fontSize,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                    ),
-                    AppSpacings.vertical(26),
-                    Divider(color: AppColors.cardBorder),
-                    AppSpacings.vertical(18),
-                    _UnavailabilityEntries(items: state.items),
-                  ],
+                      AppSpacings.vertical(24),
+                      UnavailabilityCalendarPicker(
+                        visibleMonth: visibleMonth,
+                        unavailablePeriods: state.items,
+                        onPreviousMonth: () => _loadMonth(
+                          context,
+                          DateTime(visibleMonth.year, visibleMonth.month - 1),
+                        ),
+                        onNextMonth: () => _loadMonth(
+                          context,
+                          DateTime(visibleMonth.year, visibleMonth.month + 1),
+                        ),
+                      ),
+                      AppSpacings.vertical(24),
+                      AppButton(
+                        color: AppColors.primary,
+                        height: 42,
+                        borderRadius: BorderRadius.circular(8.0.radius),
+                        margin: EdgeInsets.zero,
+                        onPressed: () =>
+                            _showAddDialog(context, visibleMonth: visibleMonth),
+                        child: Text(
+                          'Add unavailability',
+                          style: context.text.titleMedium?.copyWith(
+                            color: AppColors.white,
+                            fontSize: 16.0.fontSize,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      AppSpacings.vertical(26),
+                      Divider(color: AppColors.cardBorder),
+                      AppSpacings.vertical(18),
+                      _UnavailabilityEntries(items: state.items),
+                    ],
+                  ),
                 ),
               ),
             ),
