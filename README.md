@@ -6,7 +6,7 @@ Flutter worker app for Orta Shift Manager. It covers the worker-facing assessmen
 
 View the app flow recording here:
 
-https://drive.google.com/file/d/17mNS0NApjt0ybzATXLYmh5QlllX9eDjT/view?usp=share_link
+https://drive.google.com/drive/folders/1beNkzmcl3Doxu5jTFpcPAb50dxOHl9W_?usp=share_link
 
 ## Tech Stack
 
